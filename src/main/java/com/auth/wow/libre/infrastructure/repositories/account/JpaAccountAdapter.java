@@ -1,0 +1,28 @@
+package com.auth.wow.libre.infrastructure.repositories.account;
+
+import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
+import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
+import com.auth.wow.libre.infrastructure.entities.AccountEntity;
+import org.springframework.stereotype.Service;
+
+@Service
+public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort {
+
+    private final AccountRepository accountRepository;
+
+    public JpaAccountAdapter(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public void save(Account data) {
+        accountRepository.save(AccountEntity.fromDomainModel(data));
+    }
+
+    @Override
+    public Account findByUsername(String username) {
+        AccountEntity accountFound = accountRepository.findByUsername(username);
+        return accountFound != null ? accountFound.toDomainModel() : null;
+    }
+}
