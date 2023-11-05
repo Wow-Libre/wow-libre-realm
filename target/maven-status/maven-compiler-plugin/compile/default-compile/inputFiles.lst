@@ -1,0 +1,13 @@
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\CoreApplication.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\model\constant\Constants.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\ports\in\account\AccountPort.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\ports\out\account\ObtainAccountPort.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\ports\out\account\LoadAccountPort.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\model\Account.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\model\shared\GenericResponse.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\infrastructure\repositories\account\AccountRepository.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\domain\model\shared\GenericResponseBuilder.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\infrastructure\entities\AccountEntity.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\infrastructure\repositories\account\JpaAccountAdapter.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\application\services\account\AccountService.java
+C:\Users\usuario\Documents\workspace\core\src\main\java\com\auth\wow\libre\infrastructure\controller\AccountController.java
