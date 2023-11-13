@@ -1,0 +1,24 @@
+spring:
+  main:
+      allow-circular-references: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth
+    username: mschitiva68
+    password: Loquendo96@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  address: 0.0.0.0
+  port: 8080
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui-custom.html
+    operationsSorter: method
+jwt:
+  secretKey: ecf1222c-88fd-47f3-988f-bdd78bade1ad

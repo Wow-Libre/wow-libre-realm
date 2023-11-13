@@ -1,16 +1,20 @@
-ALTER TABLE auth.account
-    ADD COLUMN country varchar(30);
+
+
+
+
+CREATE TABLE auth.account_web(
+                                 id bigint AUTO_INCREMENT  NOT NULL,
+                                 country varchar(30) NOT NULL,
+                                 date_of_birth DATE NOT NULL,
+                                 first_name varchar (30) NOT NULL,
+                                 last_name varchar (30) NOT NULL,
+                                 cell_phone varchar (20) NOT NULL,
+                                 password text not null,
+
+                                 PRIMARY KEY  (id)
+);
+
 
 ALTER TABLE auth.account
-    ADD COLUMN date_of_birth DATE;
-
-ALTER TABLE auth.account
-    ADD COLUMN first_name varchar(30);
-
-ALTER TABLE auth.account
-    ADD COLUMN last_name varchar(30);
-
-ALTER TABLE auth.account
-    ADD COLUMN cell_phone varchar(20);
-
-
+    ADD COLUMN account_web bigint,
+ ADD CONSTRAINT FOREIGN KEY (account_web) REFERENCES auth.account_web (id);

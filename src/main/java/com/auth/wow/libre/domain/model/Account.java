@@ -51,11 +51,15 @@ public class Account {
   @Length(min = 5, max = 50)
   private String email;
 
+  @NotNull
+  private String password;
+
   public Account() {
 
   }
 
-  public Account(String username, String country, LocalDate dateOfBirth, String firstName, String lastName, String cellPhone, String email) {
+  public Account(String username, String country, LocalDate dateOfBirth, String firstName,
+                 String lastName, String cellPhone, String email) {
     this.username = username;
     this.country = country;
     this.dateOfBirth = dateOfBirth;
@@ -64,4 +68,6 @@ public class Account {
     this.cellPhone = cellPhone;
     this.email = email;
   }
+
+
 }
