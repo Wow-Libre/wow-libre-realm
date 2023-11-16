@@ -2,95 +2,96 @@ package com.auth.wow.libre.domain.model.shared.jwt;
 
 import com.auth.wow.libre.infrastructure.conf.JwtProperties;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collection;
+import java.security.Key;
 import java.util.Date;
-
-import static java.util.stream.Collectors.joining;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class JwtTokenProvider {
-
-  private static final String AUTHORITIES_KEY = "roles";
 
   private final JwtProperties jwtProperties;
 
-  private SecretKey secretKey;
-
-  @PostConstruct
-  public void init() {
-    var secret = Base64.getEncoder()
-            .encodeToString(this.jwtProperties.getSecretKey().getBytes());
-    this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+  public JwtTokenProvider(JwtProperties jwtProperties) {
+    this.jwtProperties = jwtProperties;
   }
 
-  public String createToken(Authentication authentication) {
-
-    String username = authentication.getName();
-    Collection<? extends GrantedAuthority> authorities = authentication
-            .getAuthorities();
-    var claimsBuilder = Jwts.claims().subject(username);
-    if (!authorities.isEmpty()) {
-      claimsBuilder.add(AUTHORITIES_KEY, authorities.stream()
-              .map(GrantedAuthority::getAuthority).collect(joining(",")));
-    }
-
-    var claims = claimsBuilder.build();
-
-    Date now = new Date();
-    Date validity = new Date(now.getTime() + this.jwtProperties.getValidityInMs());
-
-    return Jwts.builder().claims(claims).issuedAt(now).expiration(validity)
-            .signWith(this.secretKey, Jwts.SIG.HS256).compact();
-
+  public String extractUsername(String token) {
+    return extractClaim(token, Claims::getSubject);
   }
 
-  public Authentication getAuthentication(String token) {
-    Claims claims = Jwts.parser().verifyWith(this.secretKey).build()
-            .parseSignedClaims(token).getPayload();
-
-    Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
-
-    Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
-            ? AuthorityUtils.NO_AUTHORITIES
-            : AuthorityUtils
-            .commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
-
-    User principal = new User(claims.getSubject(), "", authorities);
-
-    return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+  public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    final Claims claims = extractAllClaims(token);
+    return claimsResolver.apply(claims);
   }
 
-  public boolean validateToken(String token) {
-    try {
-      Jws<Claims> claims = Jwts.parser().verifyWith(this.secretKey)
-              .build().parseSignedClaims(token);
-      // parseClaimsJws will check expiration date. No need do here.
-      log.info("expiration date: {}", claims.getPayload().getExpiration());
-      return true;
-    } catch (JwtException | IllegalArgumentException e) {
-      log.info("Invalid JWT token: {}", e.getMessage());
-      log.trace("Invalid JWT token trace.", e);
-    }
-    return false;
+  public String generateToken(UserDetails userDetails) {
+    return generateToken(new HashMap<>(), userDetails);
+  }
+
+  public String generateToken(
+          Map<String, Object> extraClaims,
+          UserDetails userDetails
+  ) {
+    return buildToken(extraClaims, userDetails, jwtProperties.getJwtExpiration());
+  }
+
+  public String generateRefreshToken(
+          UserDetails userDetails
+  ) {
+    return buildToken(new HashMap<>(), userDetails, jwtProperties.getRefreshExpiration());
+  }
+
+  private String buildToken(
+          Map<String, Object> extraClaims,
+          UserDetails userDetails,
+          long expiration
+  ) {
+    return Jwts
+            .builder()
+            .claims(extraClaims)
+            .subject(userDetails.getUsername())
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date(System.currentTimeMillis() + expiration))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact();
+  }
+
+  public boolean isTokenValid(String token, UserDetails userDetails) {
+    final String username = extractUsername(token);
+    return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+  }
+
+  private boolean isTokenExpired(String token) {
+    return extractExpiration(token).before(new Date());
+  }
+
+  private Date extractExpiration(String token) {
+    return extractClaim(token, Claims::getExpiration);
+  }
+
+  private Claims extractAllClaims(String token) {
+    return Jwts
+            .parser()
+            .setSigningKey(getSignInKey())
+            .build()
+            .parseClaimsJws(token)
+            .getPayload();
+  }
+
+  private Key getSignInKey() {
+    byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+    return Keys.hmacShaKeyFor(keyBytes);
   }
 
 }

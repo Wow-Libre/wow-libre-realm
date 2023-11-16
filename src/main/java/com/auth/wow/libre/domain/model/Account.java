@@ -59,7 +59,7 @@ public class Account {
   }
 
   public Account(String username, String country, LocalDate dateOfBirth, String firstName,
-                 String lastName, String cellPhone, String email) {
+                 String lastName, String cellPhone, String email, String password) {
     this.username = username;
     this.country = country;
     this.dateOfBirth = dateOfBirth;
@@ -67,6 +67,7 @@ public class Account {
     this.lastName = lastName;
     this.cellPhone = cellPhone;
     this.email = email;
+    this.password = password;
   }
 
 

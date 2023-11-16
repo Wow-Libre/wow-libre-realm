@@ -4,12 +4,13 @@ import com.auth.wow.libre.domain.model.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "account")
-public class AccountEntity {
+public class AccountEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +56,7 @@ public class AccountEntity {
 
   public Account toDomainModel() {
     return new Account(username, accountWeb.getCountry(), accountWeb.getDateOfBirth(), accountWeb.getFirstName(),
-            accountWeb.getLastName(), accountWeb.getCellPhone(), email);
+            accountWeb.getLastName(), accountWeb.getCellPhone(), email, accountWeb.getPassword());
   }
 
   @PrePersist

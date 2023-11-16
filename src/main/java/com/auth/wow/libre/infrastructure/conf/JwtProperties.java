@@ -1,11 +1,16 @@
 package com.auth.wow.libre.infrastructure.conf;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Data
 public class JwtProperties {
-  private String secretKey = "rzxlszyykpbgqcflzxsqcysyhljt";
-  private long validityInMs = 3600000; // 1h
+  @Value("${application.security.jwt.secret-key}")
+  private String secretKey;
+  @Value("${application.security.jwt.expiration}")
+  private long jwtExpiration;
+  @Value("${application.security.jwt.refresh-token.expiration}")
+  private long refreshExpiration;
 }

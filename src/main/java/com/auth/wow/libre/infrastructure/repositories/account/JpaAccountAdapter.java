@@ -5,9 +5,11 @@ import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountEntity;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort {
 
   private final AccountRepository accountRepository;
