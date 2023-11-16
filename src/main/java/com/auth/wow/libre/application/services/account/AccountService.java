@@ -6,6 +6,7 @@ import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,22 +14,26 @@ public class AccountService implements AccountPort {
 
   private final LoadAccountPort loadAccountPort;
   private final ObtainAccountPort obtainAccountPort;
-
   private final AccountWebPort accountWebPort;
 
+  private final PasswordEncoder passwordEncoder;
+
   public AccountService(LoadAccountPort loadAccountPort, ObtainAccountPort obtainAccountPort,
-                        AccountWebPort accountWebPort) {
+                        AccountWebPort accountWebPort, PasswordEncoder passwordEncoder) {
     this.loadAccountPort = loadAccountPort;
     this.obtainAccountPort = obtainAccountPort;
     this.accountWebPort = accountWebPort;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
   public void create(Account account) {
 
-    if (obtainAccountPort.findByUsername(account.getUsername()) != null) {
+    if (getAccount(account.getUsername()) != null) {
       throw new RuntimeException("El cliente ya existe");
     }
+
+    account.setPassword(passwordEncoder.encode(account.getPassword()));
     AccountWebEntity accountWeb = accountWebPort.create(account);
     loadAccountPort.save(account, accountWeb);
   }
@@ -40,12 +45,11 @@ public class AccountService implements AccountPort {
 
   @Override
   public void updated(String username, Account account) {
-    Account accountFound = obtainAccountPort.findByUsername(account.getUsername());
+    Account accountFound = getAccount(account.getUsername());
 
     if (accountFound == null) {
       throw new RuntimeException("No existe el cliente");
     }
-
     accountFound.setCellPhone(account.getCellPhone());
     accountFound.setCountry(account.getCountry());
     accountFound.setDateOfBirth(account.getDateOfBirth());
@@ -53,4 +57,10 @@ public class AccountService implements AccountPort {
     accountFound.setLastName(account.getLastName());
 
   }
+
+  private Account getAccount(String username) {
+    return obtainAccountPort.findByUsername(username);
+  }
+
+
 }

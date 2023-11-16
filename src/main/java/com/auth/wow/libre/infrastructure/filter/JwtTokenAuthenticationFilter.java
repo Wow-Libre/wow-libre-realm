@@ -2,6 +2,7 @@ package com.auth.wow.libre.infrastructure.filter;
 
 import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
 import com.auth.wow.libre.domain.model.shared.jwt.JwtTokenProvider;
+import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,11 +23,11 @@ import java.io.IOException;
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
 
-  private final JwtTokenProvider jwtTokenProvider;
+  private final JwtPort jwtPort;
   private final UserDetailsServiceCustom userDetailsServiceCustom;
 
-  public JwtTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceCustom userDetailsServiceCustom) {
-    this.jwtTokenProvider = jwtTokenProvider;
+  public JwtTokenAuthenticationFilter(JwtTokenProvider jwtPort, UserDetailsServiceCustom userDetailsServiceCustom) {
+    this.jwtPort = jwtPort;
     this.userDetailsServiceCustom = userDetailsServiceCustom;
   }
 
@@ -41,14 +42,14 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     final String jwt = authHeader.substring(7);
-    final String userEmail = jwtTokenProvider.extractUsername(jwt);
+    final String userEmail = jwtPort.extractUsername(jwt);
 
     if (StringUtils.isNotEmpty(userEmail)
             && SecurityContextHolder.getContext().getAuthentication() == null) {
 
       UserDetails userDetails = userDetailsServiceCustom.loadUserByUsername(userEmail);
 
-      if (jwtTokenProvider.isTokenValid(jwt, userDetails)) {
+      if (jwtPort.isTokenValid(jwt, userDetails)) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());

@@ -23,7 +23,7 @@ public class AccountController {
 
 
   @PostMapping
-  public ResponseEntity<GenericResponse<Void>> account(
+  public ResponseEntity<GenericResponse<Void>> create(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
           @RequestBody @Valid Account account) {
     accountPort.create(account);
@@ -33,7 +33,7 @@ public class AccountController {
   }
 
   @GetMapping(path = "/user")
-  public ResponseEntity<GenericResponse<Account>> account(
+  public ResponseEntity<GenericResponse<Account>> get(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
           @RequestParam String username) {
     Account accountFound = accountPort.Obtain(username);
@@ -46,5 +46,6 @@ public class AccountController {
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
+
 
 }
