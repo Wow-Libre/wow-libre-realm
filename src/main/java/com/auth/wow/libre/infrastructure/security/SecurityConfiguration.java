@@ -1,9 +1,10 @@
 package com.auth.wow.libre.infrastructure.security;
 
-import com.auth.wow.libre.infrastructure.filter.JwtTokenAuthenticationFilter;
 import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
+import com.auth.wow.libre.infrastructure.filter.JwtTokenAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,7 +36,7 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/login")
+            .authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/account")
                     .permitAll().anyRequest().authenticated())
             .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider()).addFilterBefore(

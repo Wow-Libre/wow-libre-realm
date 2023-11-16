@@ -1,9 +1,12 @@
 package com.auth.wow.libre.infrastructure.handler;
 
+import com.auth.wow.libre.domain.model.exception.BadRequestException;
+import com.auth.wow.libre.domain.model.exception.GenericErrorException;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.NotNullValuesDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,5 +38,29 @@ public class ManagerExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
+  @ExceptionHandler(
+          value = {
+                  HttpMessageNotReadableException.class
+          })
+  public ResponseEntity<GenericResponse<Void>> httpMessageNotReadableException() {
+
+    GenericResponse<Void> response = new GenericResponse<>();
+    response.setMessage("Check the request body");
+    response.setCode(400);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(
+          value = {
+                  BadRequestException.class,
+          })
+  public ResponseEntity<GenericResponse<Void>> unauthorizedException(GenericErrorException e) {
+    GenericResponse<Void> response = new GenericResponse<>();
+    response.setMessage(e.getMessage() != null ? e.getMessage() : "");
+    response.setTransactionId(e.transactionId);
+    return ResponseEntity.status(e.httpStatus).body(response);
+  }
+
 
 }

@@ -28,7 +28,7 @@ public class AuthController {
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
           @RequestBody @Valid AccountLoginDto account) {
 
-    JwtDto jwt = authPort.login(account.getUsername(), account.getPassword());
+    JwtDto jwt = authPort.login(account.getUsername(), account.getPassword(), transactionId);
 
     return ResponseEntity
             .status(HttpStatus.OK)

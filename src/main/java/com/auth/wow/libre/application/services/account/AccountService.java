@@ -1,6 +1,7 @@
 package com.auth.wow.libre.application.services.account;
 
 import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.domain.model.exception.BadRequestException;
 import com.auth.wow.libre.domain.ports.in.account.AccountPort;
 import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
@@ -15,7 +16,6 @@ public class AccountService implements AccountPort {
   private final LoadAccountPort loadAccountPort;
   private final ObtainAccountPort obtainAccountPort;
   private final AccountWebPort accountWebPort;
-
   private final PasswordEncoder passwordEncoder;
 
   public AccountService(LoadAccountPort loadAccountPort, ObtainAccountPort obtainAccountPort,
@@ -27,10 +27,10 @@ public class AccountService implements AccountPort {
   }
 
   @Override
-  public void create(Account account) {
+  public void create(Account account, String transactionId) {
 
     if (getAccount(account.getUsername()) != null) {
-      throw new RuntimeException("El cliente ya existe");
+      throw new BadRequestException("El cliente ya existe", transactionId);
     }
 
     account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -39,7 +39,7 @@ public class AccountService implements AccountPort {
   }
 
   @Override
-  public Account Obtain(String username) {
+  public Account Obtain(String username, String transactionId) {
     return obtainAccountPort.findByUsername(username);
   }
 
@@ -61,6 +61,5 @@ public class AccountService implements AccountPort {
   private Account getAccount(String username) {
     return obtainAccountPort.findByUsername(username);
   }
-
 
 }

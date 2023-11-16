@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_USERNAME_JWT;
 
 @RestController
 @RequestMapping("/api/account")
@@ -26,7 +27,7 @@ public class AccountController {
   public ResponseEntity<GenericResponse<Void>> create(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
           @RequestBody @Valid Account account) {
-    accountPort.create(account);
+    accountPort.create(account, transactionId);
     return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(new GenericResponseBuilder<Void>(transactionId).created().build());
@@ -35,8 +36,8 @@ public class AccountController {
   @GetMapping(path = "/user")
   public ResponseEntity<GenericResponse<Account>> get(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-          @RequestParam String username) {
-    Account accountFound = accountPort.Obtain(username);
+          @RequestHeader(name = HEADER_USERNAME_JWT) final String username) {
+    Account accountFound = accountPort.Obtain(username, transactionId);
 
     if (accountFound != null) {
       return ResponseEntity
