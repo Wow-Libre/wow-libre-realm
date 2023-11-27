@@ -35,11 +35,9 @@ public class AccountService implements AccountPort {
 
     account.setPassword(passwordEncoder.encode(account.getPassword()));
     AccountWebEntity accountWeb = accountWebPort.create(account);
-    try {
+
       loadAccountPort.save(account, accountWeb);
-    } catch (DecoderException e) {
-      throw new BadRequestException("El cliente ya existe", transactionId);
-    }
+
   }
 
   @Override

@@ -1,6 +1,7 @@
 package com.auth.wow.libre.infrastructure.entities;
 
 import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.domain.model.exception.BadRequestException;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.apache.commons.codec.DecoderException;
@@ -52,9 +53,13 @@ public class AccountEntity implements Serializable {
     this.accountWeb = accountWeb;
   }
 
-  public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) throws DecoderException {
-    return new AccountEntity(account.getUsername(), Hex.decodeHex(account.getSalt()),
-            Hex.decodeHex(account.getVerifier()) , account.getEmail(), accountWeb);
+  public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) {
+    try {
+      return new AccountEntity(account.getUsername(), Hex.decodeHex(account.getSalt()),
+              Hex.decodeHex(account.getVerifier()), account.getEmail(), accountWeb);
+    } catch (DecoderException e) {
+      throw new BadRequestException("Ha ocurrido un error con el cifrado.", "");
+    }
   }
 
   public Account toDomainModel() {
