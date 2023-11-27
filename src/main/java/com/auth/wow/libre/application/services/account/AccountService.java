@@ -7,6 +7,7 @@ import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
+import org.apache.commons.codec.DecoderException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +29,17 @@ public class AccountService implements AccountPort {
 
   @Override
   public void create(Account account, String transactionId) {
-
     if (getAccount(account.getUsername()) != null) {
       throw new BadRequestException("El cliente ya existe", transactionId);
     }
 
     account.setPassword(passwordEncoder.encode(account.getPassword()));
     AccountWebEntity accountWeb = accountWebPort.create(account);
-    loadAccountPort.save(account, accountWeb);
+    try {
+      loadAccountPort.save(account, accountWeb);
+    } catch (DecoderException e) {
+      throw new BadRequestException("El cliente ya existe", transactionId);
+    }
   }
 
   @Override

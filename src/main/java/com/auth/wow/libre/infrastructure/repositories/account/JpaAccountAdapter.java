@@ -6,6 +6,7 @@ import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountEntity;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import jakarta.transaction.Transactional;
+import org.apache.commons.codec.DecoderException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +20,7 @@ public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort {
   }
 
   @Override
-  public void save(Account account, AccountWebEntity accountWeb) {
+  public void save(Account account, AccountWebEntity accountWeb) throws DecoderException {
     accountRepository.save(AccountEntity.fromDomainModel(account, accountWeb));
   }
 

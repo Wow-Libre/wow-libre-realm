@@ -3,6 +3,8 @@ package com.auth.wow.libre.infrastructure.entities;
 import com.auth.wow.libre.domain.model.Account;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -50,8 +52,9 @@ public class AccountEntity implements Serializable {
     this.accountWeb = accountWeb;
   }
 
-  public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) {
-    return new AccountEntity(account.getUsername(), account.getSalt(), account.getVerifier(), account.getEmail(), accountWeb);
+  public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) throws DecoderException {
+    return new AccountEntity(account.getUsername(), Hex.decodeHex(account.getSalt()),
+            Hex.decodeHex(account.getVerifier()) , account.getEmail(), accountWeb);
   }
 
   public Account toDomainModel() {

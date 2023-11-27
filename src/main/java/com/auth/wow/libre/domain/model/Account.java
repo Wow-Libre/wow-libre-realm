@@ -18,10 +18,10 @@ public class Account {
   private String username;
 
   @NotNull
-  private byte[] salt;
+  private String salt;
 
   @NotNull
-  private byte[] verifier;
+  private String verifier;
 
   @NotNull
   @Length(min = 5, max = 30)
