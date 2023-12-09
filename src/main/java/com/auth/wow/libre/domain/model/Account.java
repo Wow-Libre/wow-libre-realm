@@ -24,7 +24,7 @@ public class Account {
   private String verifier;
 
   @NotNull
-  @Length(min = 5, max = 30)
+  @Length(min = 2, max = 30)
   private String country;
 
   @NotNull
@@ -33,17 +33,15 @@ public class Account {
   private LocalDate dateOfBirth;
 
   @NotNull
-  @Length(min = 5, max = 30)
+  @Length(min = 3, max = 30)
   @JsonProperty("first_name")
   private String firstName;
 
   @NotNull
-  @Length(min = 5, max = 30)
+  @Length(min = 3, max = 30)
   @JsonProperty("last_name")
   private String lastName;
 
-  @NotNull
-  @Length(min = 6, max = 20)
   @JsonProperty("cell_phone")
   private String cellPhone;
 

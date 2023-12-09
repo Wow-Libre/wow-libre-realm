@@ -25,19 +25,20 @@ public class ManagerExceptionHandler {
     List<String> errors = new ArrayList<>();
 
     for (FieldError data : e.getBindingResult().getFieldErrors()) {
-      errors.add(String.format("Invalid Field: %s, Cause: %s", data.getField(), data.getDefaultMessage()));
+      errors.add(String.format("Attribute %s, Cause %s", data.getField(), data.getDefaultMessage()));
     }
 
     invalidData.setNumberOfInvalid(e.getBindingResult().getFieldErrorCount());
     invalidData.setValuesInvalid(errors);
 
     GenericResponse<NotNullValuesDto> response = new GenericResponse<>();
-    response.setMessage("The submitted fields are invalid.");
+    response.setMessage("Invalid Fields");
     response.setCode(400);
     response.setData(invalidData);
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
+
   @ExceptionHandler(
           value = {
                   HttpMessageNotReadableException.class
@@ -58,6 +59,7 @@ public class ManagerExceptionHandler {
   public ResponseEntity<GenericResponse<Void>> unauthorizedException(GenericErrorException e) {
     GenericResponse<Void> response = new GenericResponse<>();
     response.setMessage(e.getMessage() != null ? e.getMessage() : "");
+    response.setCode(e.httpStatus.value());
     response.setTransactionId(e.transactionId);
     return ResponseEntity.status(e.httpStatus).body(response);
   }

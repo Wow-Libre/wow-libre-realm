@@ -1,6 +1,7 @@
 package com.auth.wow.libre.domain.model.security;
 
 import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.domain.model.exception.BadRequestException;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     if (account == null) {
       LOGGER.error("El usuario no existe Username[{}]",
               username);
-      throw new RuntimeException("El usuario no existe");
+      throw new BadRequestException("El usuario no existe", "");
     }
 
     List<GrantedAuthority> authorities = new ArrayList<>();

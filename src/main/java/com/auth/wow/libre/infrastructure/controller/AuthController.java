@@ -29,7 +29,7 @@ public class AuthController {
           @RequestBody @Valid AccountLoginDto account) {
 
     JwtDto jwt = authPort.login(account.getUsername(), account.getPassword(), transactionId);
-
+    System.out.println("LOGIN SUCCESS");
     return ResponseEntity
             .status(HttpStatus.OK)
             .body(new GenericResponseBuilder<>(jwt, transactionId).ok().build());

@@ -59,7 +59,7 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/account")
+            .authorizeHttpRequests(request -> request.requestMatchers("/api/resources/country", "/api/auth/login", "/api/account")
                     .permitAll().anyRequest().authenticated())
             .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider()).addFilterBefore(
