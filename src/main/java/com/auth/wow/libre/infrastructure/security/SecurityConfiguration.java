@@ -46,6 +46,7 @@ public class SecurityConfiguration {
     corsConfigurationSource.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:3000"));
     corsConfigurationSource.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(),
             HttpMethod.POST.name(),
+            HttpMethod.PUT.name(),
             HttpMethod.DELETE.name()));
     corsConfigurationSource.setAllowedHeaders(List.of(HttpHeaders.CONTENT_TYPE,
             HttpHeaders.AUTHORIZATION));

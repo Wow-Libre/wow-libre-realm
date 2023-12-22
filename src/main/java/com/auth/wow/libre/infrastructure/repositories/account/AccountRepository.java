@@ -4,7 +4,9 @@ import com.auth.wow.libre.infrastructure.entities.AccountEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AccountRepository extends CrudRepository<AccountEntity, Integer> {
-    AccountEntity findByUsername(String username);
+    Optional<AccountEntity> findByUsername(String username);
 }

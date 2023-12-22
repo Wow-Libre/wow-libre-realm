@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 @Data
-public class AccountLoginDto {
+public class LoginDto {
   @NotNull
   @Length(min = 5, max = 50)
   private String username;

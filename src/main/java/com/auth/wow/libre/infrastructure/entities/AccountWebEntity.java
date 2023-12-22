@@ -13,7 +13,7 @@ public class AccountWebEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  private Long id;
 
   @Column(name = "country")
   private String country;
@@ -36,7 +36,8 @@ public class AccountWebEntity {
   public AccountWebEntity() {
   }
 
-  public AccountWebEntity(String country, LocalDate dateOfBirth, String firstName, String lastName, String cellPhone, String password) {
+  public AccountWebEntity(Long id, String country, LocalDate dateOfBirth, String firstName, String lastName, String cellPhone, String password) {
+    this.id = id;
     this.country = country;
     this.dateOfBirth = dateOfBirth;
     this.firstName = firstName;
@@ -46,8 +47,8 @@ public class AccountWebEntity {
   }
 
   public static AccountWebEntity fromDomainModel(Account account) {
-    return new AccountWebEntity(account.getCountry(), account.getDateOfBirth(), account.getFirstName(), account.getLastName(),
-            account.getCellPhone(), account.getPassword());
+    return new AccountWebEntity(account.accountWebId, account.country, account.dateOfBirth, account.firstName, account.lastName,
+            account.cellPhone, account.password);
   }
 
 

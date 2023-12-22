@@ -1,6 +1,6 @@
 package com.auth.wow.libre.infrastructure.controller;
 
-import com.auth.wow.libre.domain.model.dto.AccountLoginDto;
+import com.auth.wow.libre.domain.model.dto.LoginDto;
 import com.auth.wow.libre.domain.model.security.JwtDto;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
@@ -26,10 +26,10 @@ public class AuthController {
   @PostMapping(path = "login")
   public ResponseEntity<GenericResponse<JwtDto>> login(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-          @RequestBody @Valid AccountLoginDto account) {
+          @RequestBody @Valid LoginDto account) {
 
     JwtDto jwt = authPort.login(account.getUsername(), account.getPassword(), transactionId);
-    System.out.println("LOGIN SUCCESS");
+
     return ResponseEntity
             .status(HttpStatus.OK)
             .body(new GenericResponseBuilder<>(jwt, transactionId).ok().build());

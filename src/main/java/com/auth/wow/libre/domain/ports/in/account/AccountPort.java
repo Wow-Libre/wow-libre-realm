@@ -1,11 +1,13 @@
 package com.auth.wow.libre.domain.ports.in.account;
 
 import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.domain.model.UpdateAccount;
+import com.auth.wow.libre.domain.model.dto.AccountDto;
 
 public interface AccountPort {
-  void create(Account account, String transactionId);
+  void create(AccountDto account, String transactionId);
 
-  Account Obtain(String username, String transactionId);
+  Account obtain(String username, String transactionId);
 
-  void updated(String username, Account account);
+  void updated(String username, UpdateAccount account, String transactionId);
 }

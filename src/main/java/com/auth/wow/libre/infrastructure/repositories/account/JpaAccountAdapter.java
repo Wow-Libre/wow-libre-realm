@@ -19,14 +19,13 @@ public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort {
   }
 
   @Override
-  public void save(Account account, AccountWebEntity accountWeb) {
+  public void create(Account account, AccountWebEntity accountWeb) {
     accountRepository.save(AccountEntity.fromDomainModel(account, accountWeb));
   }
 
   @Override
   public Account findByUsername(String username) {
-    AccountEntity accountFound = accountRepository.findByUsername(username);
-    return accountFound != null ? accountFound.toDomainModel() : null;
+    return accountRepository.findByUsername(username).map(AccountEntity::toDomainModel).orElse(null);
   }
 
 

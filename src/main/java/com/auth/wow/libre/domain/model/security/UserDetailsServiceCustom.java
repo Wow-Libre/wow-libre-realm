@@ -41,7 +41,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     List<GrantedAuthority> authorities = new ArrayList<>();
     authorities.add(new SimpleGrantedAuthority("CLIENT"));
 
-    return new User(account.getUsername(), account.getPassword(),
+    return new User(account.username, account.password,
             true, true, true, true, authorities);
   }
 

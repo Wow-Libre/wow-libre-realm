@@ -1,11 +1,8 @@
 package com.auth.wow.libre.infrastructure.entities;
 
 import com.auth.wow.libre.domain.model.Account;
-import com.auth.wow.libre.domain.model.exception.BadRequestException;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,7 +14,7 @@ public class AccountEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  private Long id;
 
   @Column(name = "username", unique = true)
   private String username;
@@ -54,17 +51,20 @@ public class AccountEntity implements Serializable {
   }
 
   public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) {
-    try {
-      return new AccountEntity(account.getUsername(), Hex.decodeHex(account.getSalt()),
-              Hex.decodeHex(account.getVerifier()), account.getEmail(), accountWeb);
-    } catch (DecoderException e) {
-      throw new BadRequestException("Ha ocurrido un error con el cifrado.", "");
-    }
+    return new AccountEntity(account.username, account.salt,
+            account.verifier, account.email, accountWeb);
+
   }
 
   public Account toDomainModel() {
-    return new Account(username, accountWeb.getCountry(), accountWeb.getDateOfBirth(), accountWeb.getFirstName(),
-            accountWeb.getLastName(), accountWeb.getCellPhone(), email, accountWeb.getPassword());
+    return Account.builder()
+            .username(username)
+            .country(accountWeb.getCountry())
+            .lastName(accountWeb.getLastName())
+            .dateOfBirth(accountWeb.getDateOfBirth())
+            .firstName(accountWeb.getFirstName())
+            .cellPhone(accountWeb.getCellPhone())
+            .password(accountWeb.getPassword()).accountWebId(accountWeb.getId()).build();
   }
 
   @PrePersist

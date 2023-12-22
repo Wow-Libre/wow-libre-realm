@@ -1,13 +1,17 @@
 package com.auth.wow.libre.application.services.account;
 
 import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.domain.model.UpdateAccount;
+import com.auth.wow.libre.domain.model.dto.AccountDto;
 import com.auth.wow.libre.domain.model.exception.BadRequestException;
+import com.auth.wow.libre.domain.model.exception.FoundException;
 import com.auth.wow.libre.domain.ports.in.account.AccountPort;
 import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,35 +32,60 @@ public class AccountService implements AccountPort {
   }
 
   @Override
-  public void create(Account account, String transactionId) {
+  public void create(AccountDto account, String transactionId) {
+
     if (getAccount(account.getUsername()) != null) {
-      throw new BadRequestException("El cliente ya existe", transactionId);
+      throw new FoundException("There is already a registered client with this data", transactionId);
     }
 
-    account.setPassword(passwordEncoder.encode(account.getPassword()));
-    AccountWebEntity accountWeb = accountWebPort.create(account);
+    try {
+      byte[] verifier = Hex.decodeHex(account.getVerifier());
+      byte[] salt = Hex.decodeHex(account.getSalt());
 
-      loadAccountPort.save(account, accountWeb);
+      Account registerAccount = Account.builder()
+              .password(passwordEncoder.encode(account.getPassword()))
+              .email(account.getEmail())
+              .salt(salt)
+              .verifier(verifier)
+              .country(account.getCountry())
+              .dateOfBirth(account.getDateOfBirth())
+              .cellPhone(account.getCellPhone())
+              .lastName(account.getLastName())
+              .firstName(account.getFirstName())
+              .build();
+      AccountWebEntity accountWeb = accountWebPort.save(registerAccount, transactionId);
 
+      loadAccountPort.create(registerAccount, accountWeb);
+    } catch (DecoderException e) {
+      throw new BadRequestException("Ha ocurrido un error con el cifrado.", transactionId);
+    }
   }
 
   @Override
-  public Account Obtain(String username, String transactionId) {
+  public Account obtain(String username, String transactionId) {
     return obtainAccountPort.findByUsername(username);
   }
 
   @Override
-  public void updated(String username, Account account) {
-    Account accountFound = getAccount(account.getUsername());
+  public void updated(String username, UpdateAccount account, String transactionId) {
+    Account accountFound = getAccount(username);
 
     if (accountFound == null) {
-      throw new RuntimeException("No existe el cliente");
+      throw new FoundException("There is already a registered client with this data", transactionId);
     }
-    accountFound.setCellPhone(account.getCellPhone());
-    accountFound.setCountry(account.getCountry());
-    accountFound.setDateOfBirth(account.getDateOfBirth());
-    accountFound.setFirstName(account.getFirstName());
-    accountFound.setLastName(account.getLastName());
+
+    Account registerAccount = Account.builder()
+            .accountWebId(accountFound.accountWebId)
+            .email(account.getEmail())
+            .password(accountFound.password)
+            .country(account.getCountry())
+            .dateOfBirth(account.getDateOfBirth())
+            .cellPhone(account.getCellPhone())
+            .lastName(account.getLastName())
+            .firstName(account.getFirstName())
+            .build();
+
+    accountWebPort.update(registerAccount, transactionId);
 
   }
 
