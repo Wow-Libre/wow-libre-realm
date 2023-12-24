@@ -29,19 +29,20 @@ public class AccountWebService implements AccountWebPort {
   }
 
   @Override
-  public void update(Account account, String transactionId) {
-    AccountWebEntity accountWeb = obtainAccountWebPort.findById(account.accountWebId);
+  public void update(Account account, Long accountIdWeb, String transactionId) {
+
+    AccountWebEntity accountWeb = obtainAccountWebPort.findById(accountIdWeb);
 
     if (accountWeb == null) {
       throw new NotFoundException("There is no web account available to update", transactionId);
     }
 
-    accountWeb.setCountry(account.country);
-    accountWeb.setFirstName(account.firstName);
-    accountWeb.setLastName(account.lastName);
-    accountWeb.setPassword(account.password);
-    accountWeb.setDateOfBirth(account.dateOfBirth);
-    accountWeb.setCellPhone(account.cellPhone);
+    accountWeb.setCountry(account.country != null ? account.country : accountWeb.getCountry());
+    accountWeb.setFirstName(account.firstName != null ? account.firstName : accountWeb.getFirstName());
+    accountWeb.setLastName(account.lastName != null ? account.lastName : accountWeb.getLastName());
+    accountWeb.setPassword(account.password != null ? account.password : accountWeb.getPassword());
+    accountWeb.setDateOfBirth(account.dateOfBirth != null ? account.dateOfBirth : accountWeb.getDateOfBirth());
+    accountWeb.setCellPhone(account.cellPhone != null ? account.cellPhone : accountWeb.getCellPhone());
 
     updateAccountWebPort.update(accountWeb);
   }

@@ -53,7 +53,6 @@ public class AccountEntity implements Serializable {
   public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) {
     return new AccountEntity(account.username, account.salt,
             account.verifier, account.email, accountWeb);
-
   }
 
   public Account toDomainModel() {
@@ -62,6 +61,7 @@ public class AccountEntity implements Serializable {
             .country(accountWeb.getCountry())
             .lastName(accountWeb.getLastName())
             .dateOfBirth(accountWeb.getDateOfBirth())
+            .email(email)
             .firstName(accountWeb.getFirstName())
             .cellPhone(accountWeb.getCellPhone())
             .password(accountWeb.getPassword()).accountWebId(accountWeb.getId()).build();

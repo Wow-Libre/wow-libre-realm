@@ -9,6 +9,7 @@ import com.auth.wow.libre.domain.ports.in.account.AccountPort;
 import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
+import com.auth.wow.libre.domain.ports.out.account.UpdateAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -18,23 +19,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountService implements AccountPort {
 
+  private final AccountWebPort accountWebPort;
   private final LoadAccountPort loadAccountPort;
   private final ObtainAccountPort obtainAccountPort;
-  private final AccountWebPort accountWebPort;
   private final PasswordEncoder passwordEncoder;
+  private final UpdateAccountPort updateAccountPort;
 
   public AccountService(LoadAccountPort loadAccountPort, ObtainAccountPort obtainAccountPort,
-                        AccountWebPort accountWebPort, PasswordEncoder passwordEncoder) {
+                        AccountWebPort accountWebPort, PasswordEncoder passwordEncoder, UpdateAccountPort updateAccountPort) {
     this.loadAccountPort = loadAccountPort;
     this.obtainAccountPort = obtainAccountPort;
     this.accountWebPort = accountWebPort;
     this.passwordEncoder = passwordEncoder;
+    this.updateAccountPort = updateAccountPort;
   }
 
   @Override
   public void create(AccountDto account, String transactionId) {
 
-    if (getAccount(account.getUsername()) != null) {
+    if (obtainAccountPort.findByUsername(account.getUsername()) != null) {
       throw new FoundException("There is already a registered client with this data", transactionId);
     }
 
@@ -46,6 +49,7 @@ public class AccountService implements AccountPort {
               .password(passwordEncoder.encode(account.getPassword()))
               .email(account.getEmail())
               .salt(salt)
+              .username(account.getUsername())
               .verifier(verifier)
               .country(account.getCountry())
               .dateOfBirth(account.getDateOfBirth())
@@ -63,21 +67,25 @@ public class AccountService implements AccountPort {
 
   @Override
   public Account obtain(String username, String transactionId) {
-    return obtainAccountPort.findByUsername(username);
+    Account account = obtainAccountPort.findByUsername(username);
+    return Account.builder()
+            .email(account.email)
+            .username(username)
+            .country(account.country)
+            .dateOfBirth(account.dateOfBirth)
+            .cellPhone(account.cellPhone)
+            .accountWebId(account.accountWebId)
+            .lastName(account.lastName)
+            .firstName(account.firstName)
+            .build();
   }
 
   @Override
   public void updated(String username, UpdateAccount account, String transactionId) {
-    Account accountFound = getAccount(username);
 
-    if (accountFound == null) {
-      throw new FoundException("There is already a registered client with this data", transactionId);
-    }
-
-    Account registerAccount = Account.builder()
-            .accountWebId(accountFound.accountWebId)
+    Account accountUpdate = Account.builder()
             .email(account.getEmail())
-            .password(accountFound.password)
+            .username(username)
             .country(account.getCountry())
             .dateOfBirth(account.getDateOfBirth())
             .cellPhone(account.getCellPhone())
@@ -85,12 +93,9 @@ public class AccountService implements AccountPort {
             .firstName(account.getFirstName())
             .build();
 
-    accountWebPort.update(registerAccount, transactionId);
+    Account accountFound = updateAccountPort.update(accountUpdate, transactionId);
 
-  }
-
-  private Account getAccount(String username) {
-    return obtainAccountPort.findByUsername(username);
+    accountWebPort.update(accountUpdate, accountFound.accountWebId, transactionId);
   }
 
 }
