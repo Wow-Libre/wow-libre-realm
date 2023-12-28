@@ -1,7 +1,7 @@
 package com.auth.wow.libre.infrastructure.controller;
 
-import com.auth.wow.libre.domain.model.Account;
 import com.auth.wow.libre.domain.model.UpdateAccount;
+import com.auth.wow.libre.domain.model.dto.AccountDetail;
 import com.auth.wow.libre.domain.model.dto.AccountDto;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
@@ -36,15 +36,15 @@ public class AccountController {
   }
 
   @GetMapping(path = "/user")
-  public ResponseEntity<GenericResponse<Account>> get(
+  public ResponseEntity<GenericResponse<AccountDetail>> get(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
           @RequestHeader(name = HEADER_USERNAME_JWT) final String username) {
-    Account accountFound = accountPort.obtain(username, transactionId);
+    AccountDetail accountFound = accountPort.obtain(username, transactionId);
 
     if (accountFound != null) {
       return ResponseEntity
               .status(HttpStatus.OK)
-              .body(new GenericResponseBuilder<Account>(transactionId).ok(accountFound).build());
+              .body(new GenericResponseBuilder<AccountDetail>(transactionId).ok(accountFound).build());
     }
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

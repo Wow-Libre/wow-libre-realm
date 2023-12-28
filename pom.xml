@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.wow</groupId>
-    <artifactId>auth</artifactId>
+    <artifactId>libre-auth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>core</name>
+    <name>wow-libre-auth</name>
     <description>Server Wow</description>
     <properties>
         <java.version>17</java.version>

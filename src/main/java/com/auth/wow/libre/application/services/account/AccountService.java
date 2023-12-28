@@ -2,6 +2,7 @@ package com.auth.wow.libre.application.services.account;
 
 import com.auth.wow.libre.domain.model.Account;
 import com.auth.wow.libre.domain.model.UpdateAccount;
+import com.auth.wow.libre.domain.model.dto.AccountDetail;
 import com.auth.wow.libre.domain.model.dto.AccountDto;
 import com.auth.wow.libre.domain.model.exception.BadRequestException;
 import com.auth.wow.libre.domain.model.exception.FoundException;
@@ -66,9 +67,9 @@ public class AccountService implements AccountPort {
   }
 
   @Override
-  public Account obtain(String username, String transactionId) {
+  public AccountDetail obtain(String username, String transactionId) {
     Account account = obtainAccountPort.findByUsername(username);
-    return Account.builder()
+    return AccountDetail.builder()
             .email(account.email)
             .username(username)
             .country(account.country)

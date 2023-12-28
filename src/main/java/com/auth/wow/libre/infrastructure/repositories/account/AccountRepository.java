@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AccountRepository extends CrudRepository<AccountEntity, Integer> {
-    Optional<AccountEntity> findByUsername(String username);
+public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
+  Optional<AccountEntity> findByUsername(String username);
 }
