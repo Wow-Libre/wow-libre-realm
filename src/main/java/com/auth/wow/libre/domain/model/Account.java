@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Builder
 public class Account {
-
+  public final Long id;
   public final String username;
   public final byte[] salt;
   public final byte[] verifier;

@@ -57,6 +57,7 @@ public class AccountEntity implements Serializable {
 
   public Account toDomainModel() {
     return Account.builder()
+            .id(id)
             .username(username)
             .country(accountWeb.getCountry())
             .lastName(accountWeb.getLastName())

@@ -8,21 +8,20 @@ import java.time.LocalDate;
 @Builder
 public class AccountDetail {
 
-  private String username;
-  private byte[] salt;
-  private byte[] verifier;
-  private String country;
+  public final String username;
+  public final byte[] salt;
+  public final byte[] verifier;
+  public final String country;
   @JsonProperty("date_of_birth")
-  private LocalDate dateOfBirth;
+  public final LocalDate dateOfBirth;
   @JsonProperty("first_name")
-  private String firstName;
+  public final String firstName;
   @JsonProperty("last_name")
-  private String lastName;
+  public final String lastName;
   @JsonProperty("cell_phone")
-  private String cellPhone;
-  private String email;
-  private String password;
+  public final String cellPhone;
+  public final String email;
+  public final String password;
   @JsonProperty("account_web_id")
-  private Long accountWebId;
-
+  public final Long accountWebId;
 }

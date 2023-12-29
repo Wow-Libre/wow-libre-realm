@@ -7,13 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -28,7 +26,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
     Account account = obtainAccountPort.findByUsername(username);
 
@@ -38,12 +36,20 @@ public class UserDetailsServiceCustom implements UserDetailsService {
       throw new BadRequestException("El usuario no existe", "");
     }
 
-    List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority("CLIENT"));
-
-    return new User(account.username, account.password,
-            true, true, true, true, authorities);
+    return new CustomUserDetails(
+            defaultRol(),
+            account.password,
+            account.username,
+            true,
+            true,
+            true,
+            true,
+            account.id
+    );
   }
 
 
+  private List<GrantedAuthority> defaultRol() {
+    return Collections.singletonList(new SimpleGrantedAuthority("CLIENT"));
+  }
 }

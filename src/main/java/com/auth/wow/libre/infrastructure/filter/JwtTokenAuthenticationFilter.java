@@ -1,21 +1,23 @@
 package com.auth.wow.libre.infrastructure.filter;
 
 import com.auth.wow.libre.domain.model.exception.GenericErrorException;
+import com.auth.wow.libre.domain.model.security.CustomUserDetails;
 import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.jwt.JwtTokenProvider;
 import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -59,7 +61,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
       if (StringUtils.isNotEmpty(username)
               && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        UserDetails userDetails = userDetailsServiceCustom.loadUserByUsername(username);
+        CustomUserDetails userDetails = userDetailsServiceCustom.loadUserByUsername(username);
 
         if (jwtPort.isTokenValid(jwt, userDetails)) {
           SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -78,9 +80,16 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
       response.getOutputStream().write(responseWrapper.getByteArray());
 
     } catch (GenericErrorException e) {
+      responseBody.setCode(e.httpStatus.value());
       responseBody.setMessage(e.getMessage());
       responseBody.setTransactionId(e.transactionId);
       response.setStatus(e.httpStatus.value());
+      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+      response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(responseBody));
+    } catch (ExpiredJwtException e) {
+      responseBody.setMessage("Invalid JWT, has expired");
+      responseBody.setCode(401);
+      response.setStatus(HttpStatus.UNAUTHORIZED.value());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(responseBody));
     }
