@@ -9,8 +9,6 @@ import java.time.LocalDate;
 public class AccountDetail {
 
   public final String username;
-  public final byte[] salt;
-  public final byte[] verifier;
   public final String country;
   @JsonProperty("date_of_birth")
   public final LocalDate dateOfBirth;
@@ -21,7 +19,6 @@ public class AccountDetail {
   @JsonProperty("cell_phone")
   public final String cellPhone;
   public final String email;
-  public final String password;
   @JsonProperty("account_web_id")
   public final Long accountWebId;
 }
