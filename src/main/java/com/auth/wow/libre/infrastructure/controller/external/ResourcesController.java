@@ -1,5 +1,6 @@
 package com.auth.wow.libre.infrastructure.controller.external;
 
+import com.auth.wow.libre.domain.model.Benefit;
 import com.auth.wow.libre.domain.model.Country;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
@@ -33,4 +34,15 @@ public class ResourcesController {
             .status(HttpStatus.OK)
             .body(new GenericResponseBuilder<>(countryList, transactionId).ok().build());
   }
+
+
+  @GetMapping("/benefit")
+  public ResponseEntity<GenericResponse<List<Benefit>>> getBenefits(
+          @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
+    List<Benefit> benefits = resourcesPort.getBenefits(transactionId);
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(new GenericResponseBuilder<>(benefits, transactionId).ok().build());
+  }
+
 }

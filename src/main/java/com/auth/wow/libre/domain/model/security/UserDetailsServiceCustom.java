@@ -31,9 +31,9 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     Account account = obtainAccountPort.findByUsername(username);
 
     if (account == null) {
-      LOGGER.error("El usuario no existe Username[{}]",
+      LOGGER.error("There is no associated user [{}]",
               username);
-      throw new BadRequestException("El usuario no existe", "");
+      throw new BadRequestException("There is no associated user", "");
     }
 
     return new CustomUserDetails(

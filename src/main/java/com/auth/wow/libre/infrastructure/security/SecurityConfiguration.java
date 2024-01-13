@@ -1,15 +1,15 @@
 package com.auth.wow.libre.infrastructure.security;
 
 import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
-import com.auth.wow.libre.infrastructure.filter.JwtTokenAuthenticationFilter;
+import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
+import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
+import com.auth.wow.libre.infrastructure.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,13 +31,15 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 public class SecurityConfiguration {
 
-  private final JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final UserDetailsServiceCustom userDetailsServiceCustom;
+  private final JwtPort jwtPort;
 
-  public SecurityConfiguration(JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter,
-                               UserDetailsServiceCustom userDetailsServiceCustom) {
-    this.jwtTokenAuthenticationFilter = jwtTokenAuthenticationFilter;
+  public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
+                               UserDetailsServiceCustom userDetailsServiceCustom, JwtPort jwtPort) {
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.userDetailsServiceCustom = userDetailsServiceCustom;
+    this.jwtPort = jwtPort;
   }
 
   @Bean
@@ -56,15 +58,21 @@ public class SecurityConfiguration {
   }
 
 
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request -> request.requestMatchers("/api/resources/country", "/api/auth/login", "/api/account")
-                    .permitAll().anyRequest().authenticated())
+
+    http.authorizeHttpRequests(
+                    endpoints -> endpoints.requestMatchers("/api/auth/login").authenticated()
+            ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
+                    UsernamePasswordAuthenticationFilter.class)
+            .cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(request ->
+                    request.requestMatchers("/api/resources/country",
+                                    "/api/resources/benefit", "/api/account")
+                            .permitAll().anyRequest().authenticated())
             .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider()).addFilterBefore(
-                    jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                    jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
@@ -81,12 +89,6 @@ public class SecurityConfiguration {
     authProvider.setUserDetailsService(userDetailsServiceCustom);
     authProvider.setPasswordEncoder(passwordEncoder());
     return authProvider;
-  }
-
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-          throws Exception {
-    return config.getAuthenticationManager();
   }
 
 

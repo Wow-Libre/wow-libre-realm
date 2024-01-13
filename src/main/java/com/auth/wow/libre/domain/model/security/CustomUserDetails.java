@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
+
   @Getter
   private final Long accountId;
   private final Collection<? extends GrantedAuthority> authorities;
