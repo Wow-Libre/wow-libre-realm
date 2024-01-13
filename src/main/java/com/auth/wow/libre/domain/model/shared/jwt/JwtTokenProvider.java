@@ -10,15 +10,14 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -74,9 +73,18 @@ public class JwtTokenProvider implements JwtPort {
   }
 
   @Override
-  public boolean isTokenValid(String token, CustomUserDetails userDetails) {
-    final String username = extractUsername(token);
-    return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+  public boolean isTokenValid(String token) {
+    return isSignatureValid(token) && !isTokenExpired(token);
+  }
+
+  private boolean isSignatureValid(String token) {
+    try {
+      extractAllClaims(token);
+      return true;
+    } catch (Exception e) {
+      log.error("Error al validar la firma del token: {}", e.getMessage());
+      return false; // La firma no es válida
+    }
   }
 
   private boolean isTokenExpired(String token) {
@@ -86,6 +94,21 @@ public class JwtTokenProvider implements JwtPort {
   @Override
   public Date extractExpiration(String token) {
     return extractClaim(token, Claims::getExpiration);
+  }
+
+  @Override
+  public Collection<GrantedAuthority> extractRoles(String token) {
+    Claims claims = extractAllClaims(token);
+
+    Collection<Map<String, String>> rolesAsMap = Optional.ofNullable(claims.get("roles"))
+            .filter(Collection.class::isInstance)
+            .map(Collection.class::cast)
+            .orElse(Collections.emptyList());
+
+    // Convertir los roles a SimpleGrantedAuthority
+    return rolesAsMap.stream()
+            .map(roleMap -> new SimpleGrantedAuthority(roleMap.get("authority")))
+            .collect(Collectors.toList());
   }
 
   private Claims extractAllClaims(String token) {

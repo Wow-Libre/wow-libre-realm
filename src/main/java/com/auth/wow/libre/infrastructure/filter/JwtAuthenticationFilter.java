@@ -1,8 +1,6 @@
 package com.auth.wow.libre.infrastructure.filter;
 
 import com.auth.wow.libre.domain.model.exception.GenericErrorException;
-import com.auth.wow.libre.domain.model.security.CustomUserDetails;
-import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.jwt.JwtTokenProvider;
 import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
@@ -16,31 +14,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_USERNAME_JWT;
 
 
 @Component
-public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
   private final JwtPort jwtPort;
-  private final UserDetailsServiceCustom userDetailsServiceCustom;
 
-  public JwtTokenAuthenticationFilter(JwtTokenProvider jwtPort, UserDetailsServiceCustom userDetailsServiceCustom) {
+  public JwtAuthenticationFilter(JwtTokenProvider jwtPort) {
     this.jwtPort = jwtPort;
-    this.userDetailsServiceCustom = userDetailsServiceCustom;
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+          throws ServletException, IOException {
     GenericResponse<Void> responseBody = new GenericResponse<>();
     final String authHeader = request.getHeader("Authorization");
 
@@ -56,20 +54,20 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
       final String jwt = authHeader.substring(7);
       final String username = jwtPort.extractUsername(jwt);
+
       requestWrapper.setHeader(HEADER_USERNAME_JWT, username);
 
-      if (StringUtils.isNotEmpty(username)
-              && SecurityContextHolder.getContext().getAuthentication() == null) {
+      if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        CustomUserDetails userDetails = userDetailsServiceCustom.loadUserByUsername(username);
 
-        if (jwtPort.isTokenValid(jwt, userDetails)) {
-          SecurityContext context = SecurityContextHolder.createEmptyContext();
-          UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                  userDetails, null, userDetails.getAuthorities());
-          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-          context.setAuthentication(authToken);
-          SecurityContextHolder.setContext(context);
+        if (jwtPort.isTokenValid(jwt)) {
+          Collection<GrantedAuthority> authority = jwtPort.extractRoles(jwt);
+
+          UsernamePasswordAuthenticationToken authenticationToken =
+                  new UsernamePasswordAuthenticationToken(username, null,
+                                                          authority);
+          authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 
       }
@@ -80,7 +78,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
       response.getOutputStream().write(responseWrapper.getByteArray());
 
     } catch (GenericErrorException e) {
-      responseBody.setCode(e.httpStatus.value());
       responseBody.setMessage(e.getMessage());
       responseBody.setTransactionId(e.transactionId);
       response.setStatus(e.httpStatus.value());
