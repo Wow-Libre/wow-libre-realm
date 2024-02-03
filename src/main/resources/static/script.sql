@@ -1,7 +1,6 @@
 
 
 
-
 CREATE TABLE auth.account_web(
                                  id bigint AUTO_INCREMENT  NOT NULL,
                                  country varchar(30) NOT NULL,

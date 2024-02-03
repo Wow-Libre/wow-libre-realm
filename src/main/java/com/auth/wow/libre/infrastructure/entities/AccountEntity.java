@@ -1,7 +1,16 @@
 package com.auth.wow.libre.infrastructure.entities;
 
 import com.auth.wow.libre.domain.model.Account;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -32,11 +41,11 @@ public class AccountEntity implements Serializable {
   private String email;
 
   @JoinColumn(
-          name = "account_web",
-          referencedColumnName = "id")
+      name = "account_web",
+      referencedColumnName = "id")
   @ManyToOne(
-          optional = false,
-          fetch = FetchType.LAZY)
+      optional = false,
+      fetch = FetchType.LAZY)
   private AccountWebEntity accountWeb;
 
   public AccountEntity() {
@@ -52,20 +61,21 @@ public class AccountEntity implements Serializable {
 
   public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) {
     return new AccountEntity(account.username, account.salt,
-            account.verifier, account.email, accountWeb);
+        account.verifier, account.email, accountWeb);
   }
 
   public Account toDomainModel() {
     return Account.builder()
-            .id(id)
-            .username(username)
-            .country(accountWeb.getCountry())
-            .lastName(accountWeb.getLastName())
-            .dateOfBirth(accountWeb.getDateOfBirth())
-            .email(email)
-            .firstName(accountWeb.getFirstName())
-            .cellPhone(accountWeb.getCellPhone())
-            .password(accountWeb.getPassword()).accountWebId(accountWeb.getId()).build();
+        .id(id)
+        .username(username)
+        .verifier(verifier)
+        .country(accountWeb.getCountry())
+        .lastName(accountWeb.getLastName())
+        .dateOfBirth(accountWeb.getDateOfBirth())
+        .email(email)
+        .firstName(accountWeb.getFirstName())
+        .cellPhone(accountWeb.getCellPhone())
+        .password(accountWeb.getPassword()).accountWebId(accountWeb.getId()).build();
   }
 
   @PrePersist

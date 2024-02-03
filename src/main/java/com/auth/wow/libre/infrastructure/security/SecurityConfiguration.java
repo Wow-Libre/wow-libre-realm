@@ -47,11 +47,11 @@ public class SecurityConfiguration {
     CorsConfiguration corsConfigurationSource = new CorsConfiguration();
     corsConfigurationSource.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:3000"));
     corsConfigurationSource.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(),
-            HttpMethod.POST.name(),
-            HttpMethod.PUT.name(),
-            HttpMethod.DELETE.name()));
+        HttpMethod.POST.name(),
+        HttpMethod.PUT.name(),
+        HttpMethod.DELETE.name()));
     corsConfigurationSource.setAllowedHeaders(List.of(HttpHeaders.CONTENT_TYPE,
-            HttpHeaders.AUTHORIZATION));
+        HttpHeaders.AUTHORIZATION));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", corsConfigurationSource);
     return source;
@@ -62,17 +62,27 @@ public class SecurityConfiguration {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http.authorizeHttpRequests(
-                    endpoints -> endpoints.requestMatchers("/api/auth/login").authenticated()
-            ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
-                    UsernamePasswordAuthenticationFilter.class)
-            .cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request ->
-                    request.requestMatchers("/api/resources/country",
-                                    "/api/resources/benefit", "/api/account")
-                            .permitAll().anyRequest().authenticated())
-            .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-            .authenticationProvider(authenticationProvider()).addFilterBefore(
-                    jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            endpoints -> endpoints.requestMatchers("/api/auth/login").authenticated()
+        ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
+            UsernamePasswordAuthenticationFilter.class)
+        .cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(request ->
+            request.requestMatchers(
+                    "/api/resources/country",
+                    "/api/resources/benefit",
+                    "/api/account",  "/v2/api-docs",
+                    "/swagger-resources",
+                    "/swagger-resources/**",
+                    "/configuration/ui",
+                    "/configuration/security",
+                    "/swagger-ui.html",
+                    "/webjars/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**")
+                .permitAll().anyRequest().authenticated())
+        .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+        .authenticationProvider(authenticationProvider()).addFilterBefore(
+            jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

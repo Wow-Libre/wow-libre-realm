@@ -1,4 +1,4 @@
-package com.auth.wow.libre.domain.model;
+package com.auth.wow.libre.domain.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 @Getter
 @Setter
-public class UpdateAccount {
+public class UpdateAccountDto {
 
   @NotNull
   @Length(min = 2, max = 30)

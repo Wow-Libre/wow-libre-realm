@@ -18,4 +18,5 @@ public class Account {
   public final String email;
   public final String password;
   public final Long accountWebId;
+  public final long otpSecurityId;
 }

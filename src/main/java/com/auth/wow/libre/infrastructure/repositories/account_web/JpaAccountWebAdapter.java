@@ -5,9 +5,9 @@ import com.auth.wow.libre.domain.ports.out.account_web.LoadAccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account_web.ObtainAccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account_web.UpdateAccountWebPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class JpaAccountWebAdapter implements LoadAccountWebPort, UpdateAccountWebPort, ObtainAccountWebPort {
 
   private final AccountWebRepository accountWebRepository;
