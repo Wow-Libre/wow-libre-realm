@@ -147,6 +147,10 @@ public class AccountService implements AccountPort {
   public void webChangePassword(String username, WebPasswordAccountDto webPasswordAccountDto, String transactionId) {
     Account account = obtainAccountPort.findByUsername(username);
 
+    if (!passwordEncoder.matches(webPasswordAccountDto.oldPassword, account.password)) {
+      throw new BadRequestException("The web password provided is invalid, please check your data", transactionId);
+    }
+
     Account changePassword = Account.builder()
         .password(passwordEncoder.encode(webPasswordAccountDto.password))
         .build();

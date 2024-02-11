@@ -16,7 +16,7 @@ public class JpaAccountBannedAdapter implements ObtainAccountBannedPort {
 
   @Override
   public AccountBanned getAccountBanned(Long accountId) {
-    return accountBannedRepository.findById(accountId).map(this::mapToModel).orElse(null);
+    return accountBannedRepository.findByAccountIdAndActiveIsTrue(accountId).map(this::mapToModel).orElse(null);
   }
 
   private AccountBanned mapToModel(AccountBannedEntity accountBannedEntity) {

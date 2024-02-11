@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AccountBannedRepository extends CrudRepository<AccountBannedEntity, Long> {
-  Optional<AccountBannedEntity> findById(long accountId);
+  Optional<AccountBannedEntity> findByAccountIdAndActiveIsTrue(long id);
 }
