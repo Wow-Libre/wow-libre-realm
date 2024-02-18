@@ -59,10 +59,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     try {
       JwtDto jwtGenerate = generateToken(authResult);
-
-      body.put("token", jwtGenerate.jwt);
-      body.put("expiration_date", jwtGenerate.expirationDate);
-      body.put("refresh_token", jwtGenerate.refreshToken);
+      body.put("message", "ok");
+      body.put("code", 200);
+      body.put("data", jwtGenerate);
       body.put(Constants.HEADER_TRANSACTION_ID, transactionId);
 
       response.getWriter().write(new ObjectMapper().writeValueAsString(body));
@@ -71,7 +70,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     } catch (Exception e) {
       body.put("error", "oauth_invalid");
       body.put("message",
-              "An unexpected error has occurred and it was not possible to authenticate to the system, please try again later.");
+               "An unexpected error has occurred and it was not possible to authenticate to the system, please try " +
+                       "again later.");
       body.put("message_trace", e.getMessage());
       response.getWriter().write(new ObjectMapper().writeValueAsString(body));
       response.setStatus(401);
@@ -88,7 +88,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     Map<String, Object> body = new HashMap<>();
     body.put("error", "Please verify the information provided.");
     body.put("message",
-            "An unexpected error has occurred and it was not possible to authenticate to the system, please try again later.");
+             "An unexpected error has occurred and it was not possible to authenticate to the system, please try " +
+                     "again later.");
     body.put("message_trace", failed.getMessage());
 
     response.getWriter().write(new ObjectMapper().writeValueAsString(body));
@@ -106,7 +107,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
       return new ObjectMapper().readValue(request.getInputStream(), UserModel.class);
     } catch (java.io.IOException e) {
       logger.error(
-              "Unable to authenticate user. because your data was not sent correctly, please validate the information provided.");
+              "Unable to authenticate user. because your data was not sent correctly, please validate the information" +
+                      " provided.");
       throw new UnauthorizedException(e.getMessage(), transactionId);
     }
   }

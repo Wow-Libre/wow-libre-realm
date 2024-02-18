@@ -21,4 +21,8 @@ public class AccountDetail {
   public final String email;
   @JsonProperty("account_web_id")
   public final Long accountWebId;
+  @JsonProperty("account_banned")
+  public final AccountBannedDto accountBanned;
+  @JsonProperty("account_muted")
+  public final AccountMutedDto accountMuted;
 }

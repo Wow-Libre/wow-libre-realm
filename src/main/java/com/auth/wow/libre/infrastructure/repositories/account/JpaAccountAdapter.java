@@ -51,4 +51,5 @@ public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort, Up
     return accountUpdate.toDomainModel();
   }
 
+
 }
