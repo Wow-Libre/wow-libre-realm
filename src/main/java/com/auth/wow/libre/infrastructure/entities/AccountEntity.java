@@ -39,6 +39,12 @@ public class AccountEntity implements Serializable {
 
   @Column(name = "email")
   private String email;
+  @Column(name = "totp_secret")
+  private String otpSecret;
+
+
+  private boolean locked;
+
 
   @JoinColumn(
       name = "account_web",
@@ -51,18 +57,16 @@ public class AccountEntity implements Serializable {
   public AccountEntity() {
   }
 
-  public AccountEntity(String username, byte[] salt, byte[] verifier, String email, AccountWebEntity accountWeb) {
+  public AccountEntity(String username, byte[] salt, byte[] verifier, String email, AccountWebEntity accountWeb,
+                       boolean locked) {
     this.username = username;
     this.salt = salt;
     this.verifier = verifier;
     this.email = email;
     this.accountWeb = accountWeb;
+    this.locked = locked;
   }
 
-  public static AccountEntity fromDomainModel(Account account, AccountWebEntity accountWeb) {
-    return new AccountEntity(account.username, account.salt,
-        account.verifier, account.email, accountWeb);
-  }
 
   public Account toDomainModel() {
     return Account.builder()
@@ -75,6 +79,8 @@ public class AccountEntity implements Serializable {
         .email(email)
         .firstName(accountWeb.getFirstName())
         .cellPhone(accountWeb.getCellPhone())
+        .otpSecret(otpSecret)
+        .locked(locked)
         .password(accountWeb.getPassword()).accountWebId(accountWeb.getId()).build();
   }
 

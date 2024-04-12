@@ -14,4 +14,5 @@ public class Product {
   public Double discount;
   public String referenceNumber;
   public String itemCode;
+  public String category;
 }

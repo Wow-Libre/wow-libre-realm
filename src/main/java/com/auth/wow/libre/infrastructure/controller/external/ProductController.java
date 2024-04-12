@@ -25,18 +25,23 @@ public class ProductController {
   }
 
 
+
+
   @GetMapping
   public ResponseEntity<GenericResponse<List<Product>>> products(
-      @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
+          @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
     List<Product> products = productPort.getProducts(transactionId);
 
     if (products != null) {
       return ResponseEntity
-          .status(HttpStatus.OK)
-          .body(new GenericResponseBuilder<List<Product>>(transactionId).ok(products).build());
+              .status(HttpStatus.OK)
+              .body(new GenericResponseBuilder<List<Product>>(transactionId).ok(products).build());
     }
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
+
+
+
 
 }

@@ -15,7 +15,13 @@ public interface AccountPort {
   void updated(String username, UpdateAccountDto account, String transactionId);
 
   void gameChangePassword(String username, ChangePasswordAccountDto changePasswordAccountDto,
-                      String transactionId) throws DecoderException;
+                          String transactionId) throws DecoderException;
+
   void webChangePassword(String username, WebPasswordAccountDto webPasswordAccountDto,
-                            String transactionId);
+                         String transactionId);
+
+  void validateEmail(String email, String otp, String transactionId);
+
+  boolean searchEmail(String search,  String transactionId);
+
 }

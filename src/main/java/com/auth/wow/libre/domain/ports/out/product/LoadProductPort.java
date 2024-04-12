@@ -1,9 +1,7 @@
 package com.auth.wow.libre.domain.ports.out.product;
 
-import com.auth.wow.libre.infrastructure.entities.ProductEntity;
-
-import java.util.List;
+import com.auth.wow.libre.domain.model.dto.ProductDto;
 
 public interface LoadProductPort {
-  List<ProductEntity> findAll(String transactionId);
+  void loadProduct(ProductDto product, String transactionId);
 }

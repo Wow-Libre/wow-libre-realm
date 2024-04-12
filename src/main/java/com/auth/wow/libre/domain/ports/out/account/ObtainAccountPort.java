@@ -4,4 +4,5 @@ import com.auth.wow.libre.domain.model.Account;
 
 public interface ObtainAccountPort {
     Account findByUsername(String username);
+    Account findByEmail(String email);
 }

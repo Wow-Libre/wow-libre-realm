@@ -24,12 +24,17 @@ public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort, Up
 
   @Override
   public void create(Account account, AccountWebEntity accountWeb) {
-    accountRepository.save(AccountEntity.fromDomainModel(account, accountWeb));
+    accountRepository.save(mapToModel(account, accountWeb));
   }
 
   @Override
   public Account findByUsername(String username) {
     return accountRepository.findByUsername(username).map(AccountEntity::toDomainModel).orElse(null);
+  }
+
+  @Override
+  public Account findByEmail(String email) {
+    return accountRepository.findByEmail(email).map(AccountEntity::toDomainModel).orElse(null);
   }
 
   @Override
@@ -43,6 +48,7 @@ public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort, Up
 
     AccountEntity accountUpdate = accountEntity.get();
     accountUpdate.setEmail(account.email != null ? account.email : accountUpdate.getEmail());
+    accountUpdate.setLocked(account.locked != null ? account.locked : accountUpdate.isLocked());
     accountUpdate.setUsername(account.username != null ? account.username : accountUpdate.getUsername());
     accountUpdate.setSalt(account.salt != null ? account.salt : accountUpdate.getSalt());
     accountUpdate.setVerifier(account.verifier != null ? account.verifier : accountUpdate.getVerifier());
@@ -51,5 +57,10 @@ public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort, Up
     return accountUpdate.toDomainModel();
   }
 
+
+  private AccountEntity mapToModel(Account account, AccountWebEntity accountWeb) {
+    return new AccountEntity(account.username, account.salt,
+        account.verifier, account.email, accountWeb, false);
+  }
 
 }

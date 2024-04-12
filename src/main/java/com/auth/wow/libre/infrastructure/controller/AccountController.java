@@ -1,5 +1,6 @@
 package com.auth.wow.libre.infrastructure.controller;
 
+import com.auth.wow.libre.domain.model.SearchModel;
 import com.auth.wow.libre.domain.model.dto.AccountDetail;
 import com.auth.wow.libre.domain.model.dto.AccountDto;
 import com.auth.wow.libre.domain.model.dto.ChangePasswordAccountDto;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
@@ -39,8 +41,7 @@ public class AccountController {
       @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
       @RequestBody @Valid AccountDto account) {
     accountPort.create(account, transactionId);
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
+    return ResponseEntity.status(HttpStatus.CREATED)
         .body(new GenericResponseBuilder<Void>(transactionId).created().build());
   }
 
@@ -89,6 +90,30 @@ public class AccountController {
     accountPort.webChangePassword(username, webPasswordAccountDto, transactionId);
 
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @GetMapping(path = "/validate/email")
+  public ResponseEntity<GenericResponse<Void>> validateEmail(
+      @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+      @RequestParam(name = "email") final String email,
+      @RequestParam(name = "otp") final String otp) {
+
+    accountPort.validateEmail(email, otp, transactionId);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+  }
+
+
+  @GetMapping(path = "/search")
+  public ResponseEntity<GenericResponse<SearchModel>> searchEmail(
+      @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+      @RequestParam(name = "email") final String email) {
+
+    boolean existEmail = accountPort.searchEmail(email, transactionId);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new GenericResponseBuilder<SearchModel>(transactionId).ok(new SearchModel(existEmail)).build());
   }
 
 }

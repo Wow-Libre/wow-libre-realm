@@ -69,6 +69,8 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(request ->
             request.requestMatchers(
                     "/api/store/products",
+                    "/api/account/validate/email",
+                    "/api/account/search",
                     "/api/resources/country",
                     "/api/resources/benefit",
                     "/api/account", "/v2/api-docs",
