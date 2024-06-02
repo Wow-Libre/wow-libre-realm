@@ -30,7 +30,7 @@ public class ProductController {
   @GetMapping
   public ResponseEntity<GenericResponse<List<Product>>> products(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
-    List<Product> products = productPort.getProducts(transactionId);
+    List<Product> products = null;
 
     if (products != null) {
       return ResponseEntity

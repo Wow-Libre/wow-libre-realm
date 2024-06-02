@@ -1,6 +1,6 @@
 package com.auth.wow.libre.domain.model;
 
-public class Country {
+public class CountryModel {
   public String value;
   public String label;
   public String language;

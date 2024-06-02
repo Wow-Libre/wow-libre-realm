@@ -1,8 +1,12 @@
 package com.auth.wow.libre.domain.ports.out.account;
 
-import com.auth.wow.libre.domain.model.Account;
+import com.auth.wow.libre.infrastructure.entities.AccountEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface ObtainAccountPort {
-    Account findByUsername(String username);
-    Account findByEmail(String email);
+    Optional<AccountEntity> findByUsername(String username);
+
+    List<AccountEntity> findByAccountWebId(Long id);
 }

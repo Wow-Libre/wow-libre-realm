@@ -1,7 +1,6 @@
 package com.auth.wow.libre.infrastructure.repositories.json_loader;
 
-import com.auth.wow.libre.domain.model.Benefit;
-import com.auth.wow.libre.domain.model.Country;
+import com.auth.wow.libre.domain.model.CountryModel;
 import com.auth.wow.libre.domain.ports.out.resources.JsonLoaderPort;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,39 +17,31 @@ public class JsonLoader implements JsonLoaderPort {
   private final ObjectMapper objectMapper;
 
   private final Resource jsonFile;
-  private final Resource benefitJson;
 
-  private List<Country> jsonCountry;
-  private List<Benefit> jsonBenefit;
+  private List<CountryModel> jsonCountryModel;
 
 
   public JsonLoader(ObjectMapper objectMapper,
-                    @Value("classpath:/static/countrys.json") Resource jsonFile,
-                    @Value("classpath:/static/benefits.json") Resource benefitJson) {
+                    @Value("classpath:/static/countryAvailable.json") Resource jsonFile) {
     this.objectMapper = objectMapper;
     this.jsonFile = jsonFile;
-    this.benefitJson=benefitJson;
   }
 
   @PostConstruct
   public void loadJsonFile() {
     try {
-      jsonCountry = objectMapper.readValue(jsonFile.getInputStream(), new TypeReference<>() {
+      jsonCountryModel = objectMapper.readValue(jsonFile.getInputStream(), new TypeReference<>() {
       });
-      jsonBenefit = objectMapper.readValue(benefitJson.getInputStream(), new TypeReference<>() {
-      });
+
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
   @Override
-  public List<Country> getJsonCountry(String transactionId) {
-    return jsonCountry;
+  public List<CountryModel> getJsonCountry(String transactionId) {
+    return jsonCountryModel;
   }
 
-  @Override
-  public List<Benefit> getJsonBenefits(String transactionId) {
-    return jsonBenefit;
-  }
+
 }

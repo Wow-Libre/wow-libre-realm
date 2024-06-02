@@ -1,36 +1,29 @@
 package com.auth.wow.libre.infrastructure.repositories.account_web;
 
-import com.auth.wow.libre.domain.model.Account;
-import com.auth.wow.libre.domain.ports.out.account_web.LoadAccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account_web.ObtainAccountWebPort;
-import com.auth.wow.libre.domain.ports.out.account_web.UpdateAccountWebPort;
+import com.auth.wow.libre.domain.ports.out.account_web.SaveAccountWebPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
-public class JpaAccountWebAdapter implements LoadAccountWebPort, UpdateAccountWebPort, ObtainAccountWebPort {
+public class JpaAccountWebAdapter implements SaveAccountWebPort, ObtainAccountWebPort {
 
-  private final AccountWebRepository accountWebRepository;
+    private final AccountWebRepository accountWebRepository;
 
-  public JpaAccountWebAdapter(AccountWebRepository accountWebRepository) {
-    this.accountWebRepository = accountWebRepository;
-  }
+    public JpaAccountWebAdapter(AccountWebRepository accountWebRepository) {
+        this.accountWebRepository = accountWebRepository;
+    }
 
-  @Override
-  public AccountWebEntity save(Account account) {
-    AccountWebEntity accountWeb = AccountWebEntity.fromDomainModel(account);
-    accountWebRepository.save(accountWeb);
-    return accountWeb;
-  }
+    @Override
+    public AccountWebEntity save(AccountWebEntity accountWeb, String transactionId) {
+        return accountWebRepository.save(accountWeb);
+    }
 
-  @Override
-  public void update(AccountWebEntity account) {
-    accountWebRepository.save(account);
-  }
+    @Override
+    public Optional<AccountWebEntity> findByEmail(String email) {
+        return accountWebRepository.findByEmail(email);
+    }
 
-
-  @Override
-  public AccountWebEntity findById(Long id) {
-    return accountWebRepository.findById(id).orElse(null);
-  }
 }
