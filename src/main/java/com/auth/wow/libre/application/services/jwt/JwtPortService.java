@@ -19,6 +19,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_ACCOUNT_WEB_ID_JWT;
+import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_ROL_JWT_PROP;
+
 @Component
 @Slf4j
 public class JwtPortService implements JwtPort {
@@ -42,8 +45,8 @@ public class JwtPortService implements JwtPort {
     @Override
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("roles", userDetails.getAuthorities());
-        extraClaims.put("account_id", String.valueOf(userDetails.getAccountId()));
+        extraClaims.put(CONSTANT_ROL_JWT_PROP, userDetails.getAuthorities());
+        extraClaims.put(CONSTANT_ACCOUNT_WEB_ID_JWT, String.valueOf(userDetails.getAccountWebId()));
 
         return generateToken(extraClaims, userDetails);
     }
@@ -100,7 +103,7 @@ public class JwtPortService implements JwtPort {
     public Collection<GrantedAuthority> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
 
-        Collection<Map<String, String>> rolesAsMap = Optional.ofNullable(claims.get("roles"))
+        Collection<Map<String, String>> rolesAsMap = Optional.ofNullable(claims.get(CONSTANT_ROL_JWT_PROP))
                 .filter(Collection.class::isInstance)
                 .map(Collection.class::cast)
                 .orElseGet(Collections::emptyList);

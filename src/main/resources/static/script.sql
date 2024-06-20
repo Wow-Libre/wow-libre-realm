@@ -2,21 +2,47 @@
 /*
   DESCRIPTION : Responsible for managing the system's web services.
 */
-  CREATE TABLE auth.account_web
- */
+CREATE TABLE auth.account_web
+    */
 (
-    id            bigint AUTO_INCREMENT NOT NULL,
-    country       varchar(30) NOT NULL,
-    date_of_birth DATE        NOT NULL,
-    first_name    varchar(30) NOT NULL,
-    last_name     varchar(30) NOT NULL,
-    cell_phone    varchar(20) NOT NULL,
-    password      text        not null,
-    email         varchar(40) NOT NULL,
+    id
+    bigint
+    AUTO_INCREMENT
+    NOT
+    NULL,
+    country
+    varchar
+(
+    30
+) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    first_name varchar
+(
+    30
+) NOT NULL,
+    last_name varchar
+(
+    30
+) NOT NULL,
+    cell_phone varchar
+(
+    20
+) NOT NULL,
+    password text not null,
+    email varchar
+(
+    40
+) NOT NULL,
     ADD
-        CONSTRAINT uq_email UNIQUE (email),
-    PRIMARY KEY (id)
-);
+    CONSTRAINT uq_email UNIQUE
+(
+    email
+),
+    PRIMARY KEY
+(
+    id
+)
+    );
 
 
 ALTER TABLE auth.account
@@ -41,12 +67,13 @@ CREATE TABLE auth.product
 );
 
 
-CREATE TABLE auth.rol(
-                         id bigint AUTO_INCREMENT  NOT NULL,
-                         name varchar(50) NOT NULL,
-                         status boolean NOT NULL,
-                         PRIMARY KEY  (id),
-                         CONSTRAINT  name_uq UNIQUE (name)
+CREATE TABLE auth.rol
+(
+    id     bigint AUTO_INCREMENT NOT NULL,
+    name   varchar(50) NOT NULL,
+    status boolean     NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT name_uq UNIQUE (name)
 );
 
 
@@ -55,6 +82,16 @@ ALTER TABLE AUTH.account_web
 ADD CONSTRAINT fk_account_web_rol_id FOREIGN KEY (rol_id) REFERENCES AUTH.rol(id);
 
 
-INSERT INTO auth.rol (name, status) VALUES ('ADMIN', TRUE);
-INSERT INTO auth.rol (name, status) VALUES ('CLIENT', TRUE);
-INSERT INTO auth.rol (name, status) VALUES ('SUPPORT', TRUE);
+INSERT INTO auth.rol (name, status)
+VALUES ('ADMIN', TRUE);
+INSERT INTO auth.rol (name, status)
+VALUES ('CLIENT', TRUE);
+INSERT INTO auth.rol (name, status)
+VALUES ('SUPPORT', TRUE);
+
+ALTER TABLE AUTH.account_web
+    add column status boolean;
+ALTER TABLE AUTH.account_web
+    add column verified boolean;
+ALTER TABLE AUTH.account_web
+    add column avatar_url text;

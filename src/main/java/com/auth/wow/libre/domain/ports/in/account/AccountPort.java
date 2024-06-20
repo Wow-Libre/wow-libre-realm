@@ -1,8 +1,6 @@
 package com.auth.wow.libre.domain.ports.in.account;
 
-import com.auth.wow.libre.domain.model.dto.AccountGameDto;
-import com.auth.wow.libre.domain.model.dto.AccountWebDto;
-import com.auth.wow.libre.domain.model.dto.AccountsDetailDto;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.security.JwtDto;
 
 import java.util.List;
@@ -16,4 +14,8 @@ public interface AccountPort {
 
     void createGameAccount(AccountGameDto accountGameDto, String email, String transactionId);
 
+    AccountDetailDto accountDetail(Long accountId, String email, String transactionId);
+
+    void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
+                                   String transactionId);
 }

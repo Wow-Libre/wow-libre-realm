@@ -9,4 +9,7 @@ public interface ObtainAccountPort {
     Optional<AccountEntity> findByUsername(String username);
 
     List<AccountEntity> findByAccountWebId(Long id);
+
+    Optional<AccountEntity> findById(Long id);
+
 }

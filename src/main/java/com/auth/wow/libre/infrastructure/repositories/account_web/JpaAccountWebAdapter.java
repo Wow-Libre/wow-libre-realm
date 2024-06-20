@@ -22,8 +22,8 @@ public class JpaAccountWebAdapter implements SaveAccountWebPort, ObtainAccountWe
     }
 
     @Override
-    public Optional<AccountWebEntity> findByEmail(String email) {
-        return accountWebRepository.findByEmail(email);
+    public Optional<AccountWebEntity> findByEmailAndStatusIsTrue(String email) {
+        return accountWebRepository.findByEmailAndStatusIsTrue(email);
     }
 
 }

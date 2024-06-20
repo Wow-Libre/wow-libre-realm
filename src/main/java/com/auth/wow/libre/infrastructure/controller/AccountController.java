@@ -1,9 +1,7 @@
 package com.auth.wow.libre.infrastructure.controller;
 
 import com.auth.wow.libre.domain.model.SearchModel;
-import com.auth.wow.libre.domain.model.dto.AccountGameDto;
-import com.auth.wow.libre.domain.model.dto.AccountWebDto;
-import com.auth.wow.libre.domain.model.dto.AccountsDetailDto;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.security.JwtDto;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
@@ -15,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
 import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_EMAIL_JWT;
+import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
 
 @RestController
 @RequestMapping("/api/account")
@@ -27,7 +25,6 @@ public class AccountController {
     public AccountController(AccountPort accountPort) {
         this.accountPort = accountPort;
     }
-
 
     @PostMapping(path = "/web/create")
     public ResponseEntity<GenericResponse<JwtDto>> web(
@@ -49,7 +46,6 @@ public class AccountController {
                 .body(new GenericResponseBuilder<SearchModel>(transactionId).ok(new SearchModel(existEmail)).build());
     }
 
-
     @GetMapping(path = "/")
     public ResponseEntity<GenericResponse<List<AccountsDetailDto>>> accounts(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
@@ -66,6 +62,23 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping(path = "/{account_id}")
+    public ResponseEntity<GenericResponse<AccountDetailDto>> account(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMAIL_JWT) final String email,
+            @PathVariable final Long account_id) {
+
+        final AccountDetailDto account = accountPort.accountDetail(account_id, email, transactionId);
+
+        if (account != null) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new GenericResponseBuilder<AccountDetailDto>(transactionId).ok(account).build());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping(path = "/games/create")
     public ResponseEntity<GenericResponse<Void>> game(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
@@ -76,5 +89,14 @@ public class AccountController {
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
 
+    @PutMapping(path = "/games/change-password")
+    public ResponseEntity<GenericResponse<Void>> changePasswordGame(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid AccountChangePasswordDto account,
+            @RequestHeader(name = HEADER_EMAIL_JWT) final String email) {
 
+        accountPort.changePasswordAccountGame(account, email, transactionId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+    }
 }

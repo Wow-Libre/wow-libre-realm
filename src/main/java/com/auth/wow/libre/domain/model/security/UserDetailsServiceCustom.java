@@ -31,25 +31,23 @@ public class UserDetailsServiceCustom implements UserDetailsService {
         AccountWebModel account = accountWebPort.findByEmail(username, "");
 
         if (account == null) {
-            LOGGER.error("There is no associated user [{}]",
-                    username);
-            throw new BadRequestException("There is no associated user", "");
+            LOGGER.error("There is no associated user [{}]", username);
+            throw new BadRequestException("There is no data with the information sent.", "");
         }
 
-        return new CustomUserDetails(
-                defaultRol(),
-                account.password,
+        return new CustomUserDetails(assignRol(account.rolName), account.password,
                 account.email,
                 true,
                 true,
                 true,
                 true,
-                account.id
+                account.id,
+                account.avatarUrl
         );
     }
 
 
-    private List<GrantedAuthority> defaultRol() {
-        return Collections.singletonList(new SimpleGrantedAuthority("CLIENT"));
+    private List<GrantedAuthority> assignRol(String name) {
+        return Collections.singletonList(new SimpleGrantedAuthority(name));
     }
 }

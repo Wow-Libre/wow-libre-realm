@@ -8,7 +8,6 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 @Configuration
 public class ConfigurationEmail {
 
-
   @Primary
   @Bean
   public FreeMarkerConfigurationFactoryBean factoryBean() {

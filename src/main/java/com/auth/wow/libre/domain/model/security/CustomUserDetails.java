@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class CustomUserDetails implements UserDetails {
 
     @Getter
-    private final Long accountId;
+    private final Long accountWebId;
     private final Collection<? extends GrantedAuthority> authorities;
     private final String password;
     private final String username;
@@ -21,10 +21,12 @@ public class CustomUserDetails implements UserDetails {
     private final boolean accountNonLocked;
     private final boolean credentialsNonExpired;
     private final boolean enabled;
+    @Getter
+    private final String avatarUrl;
 
     public CustomUserDetails(Collection<? extends GrantedAuthority> authorities, String password, String username,
                              boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired,
-                             boolean enabled, Long accountId) {
+                             boolean enabled, Long accountWebId, String avatarUrl) {
         this.authorities = authorities;
         this.password = password;
         this.username = username;
@@ -32,12 +34,13 @@ public class CustomUserDetails implements UserDetails {
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
-        this.accountId = accountId;
+        this.accountWebId = accountWebId;
+        this.avatarUrl = avatarUrl;
     }
 
     public CustomUserDetails(List<RolModel> authorities, String password, String username,
                              boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired,
-                             boolean enabled, Long accountId) {
+                             boolean enabled, Long accountWebId, String avatarUrl) {
 
         this.authorities = authorities.stream()
                 .map(rolModel -> new SimpleGrantedAuthority(rolModel.name))
@@ -48,7 +51,8 @@ public class CustomUserDetails implements UserDetails {
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
-        this.accountId = accountId;
+        this.accountWebId = accountWebId;
+        this.avatarUrl = avatarUrl;
     }
 
     @Override

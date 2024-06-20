@@ -36,6 +36,11 @@ public class AccountWebEntity {
     @Column(name = "email")
     private String email;
 
+    private Boolean status;
+    private Boolean verified;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
     @JoinColumn(
             name = "rol_id",
             referencedColumnName = "id")
@@ -47,20 +52,9 @@ public class AccountWebEntity {
     public AccountWebEntity() {
     }
 
-    public AccountWebEntity(Long id, String country, LocalDate dateOfBirth, String firstName, String lastName,
-                            String cellPhone, String password, String email) {
-        this.id = id;
-        this.country = country;
-        this.dateOfBirth = dateOfBirth;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.cellPhone = cellPhone;
-        this.password = password;
-        this.email = email;
-    }
-
     public AccountWebEntity(String country, LocalDate dateOfBirth, String firstName, String lastName,
-                            String cellPhone, String password, String email, RolEntity rolId) {
+                            String cellPhone, String password, String email, RolEntity rolId, Boolean status,
+                            Boolean verified, String avatarUrl) {
         this.country = country;
         this.dateOfBirth = dateOfBirth;
         this.firstName = firstName;
@@ -69,19 +63,40 @@ public class AccountWebEntity {
         this.password = password;
         this.email = email;
         this.rolId = rolId;
+        this.status = status;
+        this.verified = verified;
+        this.avatarUrl = avatarUrl;
     }
 
-    public static AccountWebEntity fromDomainModel(AccountWebModel accountWebModel, RolEntity rol) {
+    public AccountWebEntity(Long id, String country, LocalDate dateOfBirth, String firstName, String lastName,
+                            String cellPhone, String password, String email, Boolean status, Boolean verified,
+                            String avatarUrl) {
+        this.id = id;
+        this.country = country;
+        this.dateOfBirth = dateOfBirth;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cellPhone = cellPhone;
+        this.password = password;
+        this.email = email;
+        this.status = status;
+        this.verified = verified;
+        this.avatarUrl = avatarUrl;
+    }
+
+
+    public static AccountWebEntity create(AccountWebModel accountWebModel, RolEntity rol) {
         return new AccountWebEntity(accountWebModel.country, accountWebModel.dateOfBirth,
-                accountWebModel.firstName,
-                accountWebModel.lastName,
-                accountWebModel.cellPhone, accountWebModel.password, accountWebModel.email, rol);
+                accountWebModel.firstName, accountWebModel.lastName,
+                accountWebModel.cellPhone, accountWebModel.password, accountWebModel.email, rol,
+                accountWebModel.status, accountWebModel.verified, accountWebModel.avatarUrl);
     }
 
     public static AccountWebEntity fromDomainModel(AccountWebModel accountWebModel) {
         return new AccountWebEntity(accountWebModel.id, accountWebModel.country, accountWebModel.dateOfBirth,
                 accountWebModel.firstName,
                 accountWebModel.lastName,
-                accountWebModel.cellPhone, accountWebModel.password, accountWebModel.email);
+                accountWebModel.cellPhone, accountWebModel.password, accountWebModel.email, accountWebModel.status,
+                accountWebModel.verified, accountWebModel.avatarUrl);
     }
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AccountWebRepository extends CrudRepository<AccountWebEntity, Long> {
-  Optional<AccountWebEntity> findByEmail(final String email);
+  Optional<AccountWebEntity> findByEmailAndStatusIsTrue(final String email);
 }

@@ -4,9 +4,8 @@ import com.auth.wow.libre.application.services.jwt.JwtPortService;
 import com.auth.wow.libre.domain.model.AccountWebModel;
 import com.auth.wow.libre.domain.model.RolModel;
 import com.auth.wow.libre.domain.model.comunication.MailSenderVars;
-import com.auth.wow.libre.domain.model.dto.AccountGameDto;
-import com.auth.wow.libre.domain.model.dto.AccountWebDto;
-import com.auth.wow.libre.domain.model.dto.AccountsDetailDto;
+import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.enums.Expansion;
 import com.auth.wow.libre.domain.model.exception.FoundException;
 import com.auth.wow.libre.domain.model.exception.GenericErrorException;
 import com.auth.wow.libre.domain.model.exception.InternalException;
@@ -38,6 +37,7 @@ import java.util.stream.Collectors;
 public class AccountService implements AccountPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     public static final int LIMIT_ACCOUNT = 10;
+    public static final String PICTURE_DEFAULT_PROFILE_WEB = "https://i.ibb.co/M8Kfq9X/icon-Default.png";
     private final PasswordEncoder passwordEncoder;
     private final EmailSend emailSend;
     private final JwtPortService jwtPort;
@@ -72,7 +72,8 @@ public class AccountService implements AccountPort {
 
         AccountWebModel accountWebModel = new AccountWebModel(accountWebDto.getCountry(),
                 accountWebDto.getDateOfBirth(), accountWebDto.getFirstName(), accountWebDto.getLastName(),
-                accountWebDto.getCellPhone(), accountWebDto.getEmail(), passwordEncode);
+                accountWebDto.getCellPhone(), accountWebDto.getEmail(), passwordEncode, true, false,
+                PICTURE_DEFAULT_PROFILE_WEB);
 
         final RolModel rolModel = rolPort.findByName(ROL_CLIENT_DEFAULT, transactionId);
 
@@ -92,7 +93,8 @@ public class AccountService implements AccountPort {
                 true,
                 true,
                 true,
-                id
+                id,
+                PICTURE_DEFAULT_PROFILE_WEB
         );
         final String token = jwtPort.generateToken(customUserDetails);
         final Date expiration = jwtPort.extractExpiration(token);
@@ -103,7 +105,7 @@ public class AccountService implements AccountPort {
                         "Por favor verifique su correo",
                 MailSenderVars.builder().email(email).transactionId(transactionId).build());
 
-        return new JwtDto(token, refreshToken, expiration);
+        return new JwtDto(token, refreshToken, expiration, PICTURE_DEFAULT_PROFILE_WEB);
     }
 
     @Override
@@ -117,11 +119,20 @@ public class AccountService implements AccountPort {
         final AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
 
         List<AccountEntity> accounts = obtainAccountPort.findByAccountWebId(accountWebModel.id);
+        return accounts.stream().map(account -> {
+                    Expansion expansion = Expansion.getById(Integer.parseInt(account.getExpansion()));
 
-        return accounts.stream().map(account ->
-                new AccountsDetailDto(account.getId(), account.getUsername(), account.getEmail(),
-                        account.getExpansion(), account.isOnline(), account.getFailedLogins(), account.getJoinDate(),
-                        account.getLastIp())
+                    return new AccountsDetailDto(account.getId(),
+                            account.getUsername(),
+                            account.getEmail(),
+                            expansion.getLogo(),
+                            expansion.getDisplayName(),
+                            account.isOnline(),
+                            account.getFailedLogins(),
+                            account.getJoinDate(),
+                            account.getLastIp());
+                }
+
         ).collect(Collectors.toList());
     }
 
@@ -152,25 +163,77 @@ public class AccountService implements AccountPort {
                     " support.", transactionId);
         }
 
-        try {
-            final String username = accountGameDto.getUsername();
-            byte[] verifier = Hex.decodeHex(accountGameDto.getVerifier());
-            byte[] salt = Hex.decodeHex(accountGameDto.getSalt());
-            AccountEntity account = new AccountEntity();
-            account.setSalt(salt);
-            account.setVerifier(verifier);
-            account.setLocked(false);
-            account.setUsername(username);
-            account.setEmail(accountWeb.email);
-            account.setAccountWeb(AccountWebEntity.fromDomainModel(accountWeb));
+        final String username = accountGameDto.getUsername();
+        byte[] verifier = hexToByte(accountGameDto.getVerifier(), transactionId);
+        byte[] salt = hexToByte(accountGameDto.getSalt(), transactionId);
 
-            saveAccountPort.save(account);
-        } catch (DecoderException e) {
-            LOGGER.error("Decoder Error Password. Message: [{}] -  TransactionId: [{}]",
-                    e.getMessage(), transactionId);
-            throw new InternalException("An unexpected error has occurred internally, please try again later.",
-                    transactionId);
+        AccountEntity account = new AccountEntity();
+        account.setSalt(salt);
+        account.setVerifier(verifier);
+        account.setLocked(false);
+        account.setUsername(username);
+        account.setEmail(accountWeb.email);
+        account.setAccountWeb(AccountWebEntity.fromDomainModel(accountWeb));
+
+        saveAccountPort.save(account);
+
+    }
+
+    @Override
+    public AccountDetailDto accountDetail(Long accountId, String email, String transactionId) {
+        final AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
+
+        AccountDetailDto.AccountWeb accountWeb =
+                AccountDetailDto.AccountWeb.builder()
+                        .id(accountWebModel.id)
+                        .cellPhone(accountWebModel.cellPhone)
+                        .country(accountWebModel.country)
+                        .dateOfBirth(accountWebModel.dateOfBirth)
+                        .email(accountWebModel.email)
+                        .firstName(accountWebModel.firstName)
+                        .lastName(accountWebModel.lastName)
+                        .rolName(accountWebModel.rolName)
+                        .status(accountWebModel.status)
+                        .verified(accountWebModel.verified)
+                        .build();
+
+        return obtainAccountPort.findById(accountId).map(account ->
+                new AccountDetailDto(account.getId(), account.getUsername(), account.getEmail(),
+                        account.getExpansion(), account.isOnline(), account.getFailedLogins(),
+                        account.getJoinDate(),
+                        account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
+                        account.getMuteTime() != null && account.getMuteTime() > 0,
+                        account.getLastLogin(), account.getOs(), accountWeb)
+        ).orElseThrow(() -> new NotFoundException("There is no associated account or it is not available.",
+                transactionId));
+    }
+
+    @Override
+    public void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
+                                          String transactionId) {
+
+        AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
+
+        if (!passwordEncoder.matches(accountChangePasswordDto.getPassword(), accountWebModel.password)) {
+            throw new GenericErrorException(transactionId, "The account password is invalid",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        Optional<AccountEntity> account =
+                obtainAccountPort.findById(accountChangePasswordDto.getAccountId());
+
+        if (account.isEmpty()) {
+            throw new NotFoundException("You do not have an administrative account or it is not valid, please contact" +
+                    " support.", transactionId);
+        }
+
+        byte[] verifier = hexToByte(accountChangePasswordDto.getVerifier(), transactionId);
+        byte[] salt = hexToByte(accountChangePasswordDto.getSalt(), transactionId);
+
+        AccountEntity accountModify = account.get();
+        accountModify.setVerifier(verifier);
+        accountModify.setSalt(salt);
+        saveAccountPort.save(accountModify);
     }
 
     private AccountWebModel getAccountWebModel(String email, String transactionId) {
@@ -187,5 +250,14 @@ public class AccountService implements AccountPort {
         return accountWebModel;
     }
 
-
+    private byte[] hexToByte(String hex, String transactionId) {
+        try {
+            return Hex.decodeHex(hex);
+        } catch (DecoderException e) {
+            LOGGER.error("Decoder Error Password. Message: [{}] -  TransactionId: [{}]",
+                    e.getMessage(), transactionId);
+            throw new InternalException("An unexpected error has occurred internally, please try again later.",
+                    transactionId);
+        }
+    }
 }

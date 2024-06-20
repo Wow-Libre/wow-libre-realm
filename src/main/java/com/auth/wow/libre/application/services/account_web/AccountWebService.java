@@ -24,14 +24,16 @@ public class AccountWebService implements AccountWebPort {
 
     @Override
     public AccountWebModel save(AccountWebModel accountWebModel, RolModel rol, String transactionId) {
-        AccountWebEntity accountWebEntity = saveAccountWebPort.save(AccountWebEntity.fromDomainModel(accountWebModel,
-                RolEntity.mapToAccountRolEntity(rol)), transactionId);
-        return mapToModel(accountWebEntity);
+
+        final AccountWebEntity accountWebEntity = AccountWebEntity.create(accountWebModel,
+                RolEntity.mapToAccountRolEntity(rol));
+
+        return mapToModel(saveAccountWebPort.save(accountWebEntity, transactionId));
     }
 
     @Override
     public AccountWebModel findByEmail(String email, String transactionId) {
-        return obtainAccountWebPort.findByEmail(email).map(this::mapToModel).orElse(null);
+        return obtainAccountWebPort.findByEmailAndStatusIsTrue(email).map(this::mapToModel).orElse(null);
     }
 
     private AccountWebModel mapToModel(AccountWebEntity accountWebEntity) {
@@ -39,7 +41,8 @@ public class AccountWebService implements AccountWebPort {
                 accountWebEntity.getDateOfBirth(),
                 accountWebEntity.getFirstName(), accountWebEntity.getLastName(), accountWebEntity.getCellPhone(),
                 accountWebEntity.getEmail(), accountWebEntity.getPassword(), accountWebEntity.getRolId().getId(),
-                accountWebEntity.getRolId().getName());
+                accountWebEntity.getRolId().getName(), accountWebEntity.getStatus(), accountWebEntity.getVerified(),
+                accountWebEntity.getAvatarUrl());
     }
 
 }

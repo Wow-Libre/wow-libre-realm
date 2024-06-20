@@ -123,6 +123,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtPort.generateToken(customUserDetails);
         Date expiration = jwtPort.extractExpiration(token);
         String refreshToken = jwtPort.generateRefreshToken(customUserDetails);
-        return new JwtDto(token, refreshToken, expiration);
+        return new JwtDto(token, refreshToken, expiration, customUserDetails.getAvatarUrl());
     }
 }

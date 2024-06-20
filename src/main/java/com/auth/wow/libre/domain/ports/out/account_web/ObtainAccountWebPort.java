@@ -5,5 +5,5 @@ import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import java.util.Optional;
 
 public interface ObtainAccountWebPort {
-    Optional<AccountWebEntity> findByEmail(String email);
+    Optional<AccountWebEntity> findByEmailAndStatusIsTrue(String email);
 }
