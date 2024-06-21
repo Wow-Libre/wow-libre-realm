@@ -20,6 +20,7 @@ import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.SaveAccountPort;
 import com.auth.wow.libre.infrastructure.conf.comunication.EmailSend;
 import com.auth.wow.libre.infrastructure.entities.AccountEntity;
+import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
@@ -177,8 +178,7 @@ public class AccountService implements AccountPort {
         account.setLocked(false);
         account.setUsername(username);
         account.setEmail(accountWeb.email);
-        account.setAccountWeb(account.getAccountWeb());
-       // account.setAccountWeb(AccountWebEntity.fromDomainModel(accountWeb));
+        account.setAccountWeb(AccountWebEntity.fromDomainModel(accountWeb));
 
         saveAccountPort.save(account);
 
