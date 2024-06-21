@@ -43,12 +43,14 @@ public class AccountEntity implements Serializable {
     private String muteBy;
     private String os;
 
-    @JoinColumn(
-            name = "account_web",
-            referencedColumnName = "id")
-    @ManyToOne(
-            optional = false,
-            fetch = FetchType.EAGER)
+    @Column(name = "account_web") // Aquí usamos el nombre correcto de la columna
+    private Long accountWebId;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_web",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false)
     private AccountWebEntity accountWeb;
 
     @PrePersist

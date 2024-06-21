@@ -78,13 +78,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         //INTERNAL API
-                                        "/api/account/",
                                         "/api/account/web/create",
                                         "/api/account/search",
                                         "/api/resources/country",
                                         "/api/resources/benefit",
                                         //SWAGGER
-                                        "/api/account", "/v2/api-docs", "/swagger-resources",
+                                        "/v2/api-docs", "/swagger-resources",
                                         "/swagger-resources/**", "/configuration/ui",
                                         "/configuration/security", "/swagger-ui.html", "/webjars/**",
                                         "/v3/api-docs/**", "/swagger-ui/**")

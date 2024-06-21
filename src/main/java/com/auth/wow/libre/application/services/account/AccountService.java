@@ -13,13 +13,13 @@ import com.auth.wow.libre.domain.model.exception.NotFoundException;
 import com.auth.wow.libre.domain.model.security.CustomUserDetails;
 import com.auth.wow.libre.domain.model.security.JwtDto;
 import com.auth.wow.libre.domain.ports.in.account.AccountPort;
+import com.auth.wow.libre.domain.ports.in.account_banned.AccountBannedPort;
 import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
 import com.auth.wow.libre.domain.ports.in.rol.RolPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.SaveAccountPort;
 import com.auth.wow.libre.infrastructure.conf.comunication.EmailSend;
 import com.auth.wow.libre.infrastructure.entities.AccountEntity;
-import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
@@ -36,22 +36,24 @@ import java.util.stream.Collectors;
 @Service
 public class AccountService implements AccountPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
-    public static final int LIMIT_ACCOUNT = 10;
-    public static final String PICTURE_DEFAULT_PROFILE_WEB = "https://i.ibb.co/M8Kfq9X/icon-Default.png";
-    private final PasswordEncoder passwordEncoder;
-    private final EmailSend emailSend;
-    private final JwtPortService jwtPort;
-    private final RolPort rolPort;
+    private static final int LIMIT_ACCOUNT = 10;
+    private static final String PICTURE_DEFAULT_PROFILE_WEB = "https://i.ibb.co/M8Kfq9X/icon-Default.png";
     private static final String ROL_CLIENT_DEFAULT = "CLIENT";
 
+    private final JwtPortService jwtPort;
+    private final RolPort rolPort;
     private final AccountWebPort accountWebPort;
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
+    private final AccountBannedPort accountBannedPort;
+
+    private final PasswordEncoder passwordEncoder;
+    private final EmailSend emailSend;
 
 
     public AccountService(AccountWebPort accountWebPort, PasswordEncoder passwordEncoder, JwtPortService jwtPort,
                           RolPort rolPort, EmailSend emailSend, ObtainAccountPort obtainAccountPort,
-                          SaveAccountPort saveAccountPort) {
+                          SaveAccountPort saveAccountPort, AccountBannedPort accountBannedPort) {
         this.accountWebPort = accountWebPort;
         this.passwordEncoder = passwordEncoder;
         this.jwtPort = jwtPort;
@@ -59,6 +61,7 @@ public class AccountService implements AccountPort {
         this.emailSend = emailSend;
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
+        this.accountBannedPort = accountBannedPort;
     }
 
     @Override
@@ -96,6 +99,7 @@ public class AccountService implements AccountPort {
                 id,
                 PICTURE_DEFAULT_PROFILE_WEB
         );
+
         final String token = jwtPort.generateToken(customUserDetails);
         final Date expiration = jwtPort.extractExpiration(token);
         final String refreshToken = jwtPort.generateRefreshToken(customUserDetails);
@@ -173,7 +177,8 @@ public class AccountService implements AccountPort {
         account.setLocked(false);
         account.setUsername(username);
         account.setEmail(accountWeb.email);
-        account.setAccountWeb(AccountWebEntity.fromDomainModel(accountWeb));
+        account.setAccountWeb(account.getAccountWeb());
+       // account.setAccountWeb(AccountWebEntity.fromDomainModel(accountWeb));
 
         saveAccountPort.save(account);
 
@@ -182,6 +187,7 @@ public class AccountService implements AccountPort {
     @Override
     public AccountDetailDto accountDetail(Long accountId, String email, String transactionId) {
         final AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
+
 
         AccountDetailDto.AccountWeb accountWeb =
                 AccountDetailDto.AccountWeb.builder()
@@ -197,13 +203,15 @@ public class AccountService implements AccountPort {
                         .verified(accountWebModel.verified)
                         .build();
 
-        return obtainAccountPort.findById(accountId).map(account ->
+
+        return obtainAccountPort.findByIdAndAccountWeb(accountId, accountWeb.id).map(account ->
                 new AccountDetailDto(account.getId(), account.getUsername(), account.getEmail(),
                         account.getExpansion(), account.isOnline(), account.getFailedLogins(),
                         account.getJoinDate(),
                         account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
                         account.getMuteTime() != null && account.getMuteTime() > 0,
-                        account.getLastLogin(), account.getOs(), accountWeb)
+                        account.getLastLogin(), account.getOs(), accountWeb,
+                        accountBannedPort.getAccountBanned(accountId))
         ).orElseThrow(() -> new NotFoundException("There is no associated account or it is not available.",
                 transactionId));
     }
@@ -236,6 +244,7 @@ public class AccountService implements AccountPort {
         saveAccountPort.save(accountModify);
     }
 
+
     private AccountWebModel getAccountWebModel(String email, String transactionId) {
         final AccountWebModel accountWebModel = accountWebPort.findByEmail(email, transactionId);
 
@@ -260,4 +269,6 @@ public class AccountService implements AccountPort {
                     transactionId);
         }
     }
+
+
 }

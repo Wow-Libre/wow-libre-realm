@@ -18,4 +18,5 @@ public interface AccountPort {
 
     void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
                                    String transactionId);
+
 }

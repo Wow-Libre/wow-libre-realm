@@ -38,4 +38,9 @@ public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
     public Optional<AccountEntity> findById(Long id) {
         return accountRepository.findById(id);
     }
+
+    @Override
+    public Optional<AccountEntity> findByIdAndAccountWeb(Long id, Long accountWebId) {
+        return accountRepository.findByIdAndAccountWebId(id, accountWebId);
+    }
 }

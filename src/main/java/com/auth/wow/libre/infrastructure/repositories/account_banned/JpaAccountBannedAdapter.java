@@ -1,9 +1,10 @@
 package com.auth.wow.libre.infrastructure.repositories.account_banned;
 
-import com.auth.wow.libre.domain.model.AccountBanned;
 import com.auth.wow.libre.domain.ports.out.account_banned.ObtainAccountBannedPort;
 import com.auth.wow.libre.infrastructure.entities.AccountBannedEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class JpaAccountBannedAdapter implements ObtainAccountBannedPort {
@@ -15,18 +16,8 @@ public class JpaAccountBannedAdapter implements ObtainAccountBannedPort {
   }
 
   @Override
-  public AccountBanned getAccountBanned(Long accountId) {
-    return accountBannedRepository.findByAccountIdAndActiveIsTrue(accountId).map(this::mapToModel).orElse(null);
+  public Optional<AccountBannedEntity> getAccountBanned(Long accountId) {
+    return accountBannedRepository.findByAccountIdAndActiveIsTrue(accountId);
   }
 
-  private AccountBanned mapToModel(AccountBannedEntity accountBannedEntity) {
-    return new AccountBanned(
-        accountBannedEntity.getAccountId(),
-        new java.util.Date(accountBannedEntity.getBandate() * 1000),
-        new java.util.Date(accountBannedEntity.getUnbandate() * 1000),
-        accountBannedEntity.getBannedby(),
-        accountBannedEntity.getBanreason(),
-        accountBannedEntity.getActive() == 1
-    );
-  }
 }
