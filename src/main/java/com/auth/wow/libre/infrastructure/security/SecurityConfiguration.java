@@ -81,6 +81,7 @@ public class SecurityConfiguration {
                                         "/api/account/web/create",
                                         "/api/account/search",
                                         "/api/resources/country",
+                                        "/api/resources/faqs",
                                         "/api/resources/benefit",
                                         //SWAGGER
                                         "/v2/api-docs", "/swagger-resources",

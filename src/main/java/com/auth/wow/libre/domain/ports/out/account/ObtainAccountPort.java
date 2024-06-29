@@ -12,5 +12,5 @@ public interface ObtainAccountPort {
 
     Optional<AccountEntity> findById(Long id);
 
-    Optional<AccountEntity> findByIdAndAccountWeb(Long id, Long accountWebId);
+    Optional<AccountEntity> findByIdAndAccountWeb(Long id, Long accountWebId, String transactionId);
 }

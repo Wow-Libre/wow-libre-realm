@@ -13,5 +13,5 @@ public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
 
     List<AccountEntity> findByAccountWebId(Long id);
 
-    Optional<AccountEntity> findByIdAndAccountWebId(Long id, Long accountWeb);
+    Optional<AccountEntity> findByIdAndAccountWebId(Long id, Long accountWebId);
 }

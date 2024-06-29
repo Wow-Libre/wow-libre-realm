@@ -204,7 +204,7 @@ public class AccountService implements AccountPort {
                         .build();
 
 
-        return obtainAccountPort.findByIdAndAccountWeb(accountId, accountWeb.id).map(account ->
+        return obtainAccountPort.findByIdAndAccountWeb(accountId, accountWeb.id, transactionId).map(account ->
                 new AccountDetailDto(account.getId(), account.getUsername(), account.getEmail(),
                         account.getExpansion(), account.isOnline(), account.getFailedLogins(),
                         account.getJoinDate(),
@@ -270,5 +270,9 @@ public class AccountService implements AccountPort {
         }
     }
 
+    @Override
+    public boolean findByIdAndAccountWebId(Long id, Long accountWebId, String transactionId) {
+        return obtainAccountPort.findByIdAndAccountWeb(id, accountWebId, transactionId).isPresent();
+    }
 
 }

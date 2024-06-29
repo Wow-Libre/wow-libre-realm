@@ -18,5 +18,6 @@ public interface AccountPort {
 
     void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
                                    String transactionId);
+    boolean findByIdAndAccountWebId(Long id, Long accountWebId, String transactionId);
 
 }
