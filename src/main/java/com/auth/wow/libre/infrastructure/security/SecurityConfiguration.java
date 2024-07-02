@@ -83,6 +83,7 @@ public class SecurityConfiguration {
                                         "/api/resources/country",
                                         "/api/resources/faqs",
                                         "/api/resources/benefit",
+                                        "/api/account/verify/{account_id}/{account_web_id}",
                                         //SWAGGER
                                         "/v2/api-docs", "/swagger-resources",
                                         "/swagger-resources/**", "/configuration/ui",

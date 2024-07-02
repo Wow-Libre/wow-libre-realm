@@ -103,10 +103,10 @@ public class AccountController {
     @GetMapping(path = "/verify/{account_id}/{account_web_id}")
     public ResponseEntity<GenericResponse<Boolean>> account(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @PathVariable final Long account_id,
-            @PathVariable final Long account_web_id) {
+            @PathVariable(name = "account_id") final Long accountId,
+            @PathVariable(name = "account_web_id") final Long accountWebId) {
 
-        final boolean existAccount = accountPort.findByIdAndAccountWebId(account_id, account_web_id, transactionId);
+        final boolean existAccount = accountPort.findByIdAndAccountWebId(accountId, accountWebId, transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
