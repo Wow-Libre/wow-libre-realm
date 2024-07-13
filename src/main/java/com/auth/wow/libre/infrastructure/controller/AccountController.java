@@ -1,8 +1,9 @@
 package com.auth.wow.libre.infrastructure.controller;
 
-import com.auth.wow.libre.domain.model.SearchModel;
-import com.auth.wow.libre.domain.model.dto.*;
-import com.auth.wow.libre.domain.model.security.JwtDto;
+import com.auth.wow.libre.domain.model.dto.AccountChangePasswordDto;
+import com.auth.wow.libre.domain.model.dto.AccountDetailDto;
+import com.auth.wow.libre.domain.model.dto.AccountGameDto;
+import com.auth.wow.libre.domain.model.dto.AccountsDetailDto;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
 import com.auth.wow.libre.domain.ports.in.account.AccountPort;
@@ -24,26 +25,6 @@ public class AccountController {
 
     public AccountController(AccountPort accountPort) {
         this.accountPort = accountPort;
-    }
-
-    @PostMapping(path = "/web/create")
-    public ResponseEntity<GenericResponse<JwtDto>> web(
-            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestBody @Valid AccountWebDto accountWeb) {
-        JwtDto jwtDto = accountPort.createWebAccount(accountWeb, transactionId);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new GenericResponseBuilder<>(jwtDto, transactionId).created().build());
-    }
-
-    @GetMapping(path = "/search")
-    public ResponseEntity<GenericResponse<SearchModel>> email(
-            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestParam(name = "email") final String email) {
-
-        boolean existEmail = accountPort.isEmailExists(email, transactionId);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<SearchModel>(transactionId).ok(new SearchModel(existEmail)).build());
     }
 
     @GetMapping(path = "/")
@@ -100,12 +81,12 @@ public class AccountController {
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
 
-    @GetMapping(path = "/verify/{account_id}/{account_web_id}")
-    public ResponseEntity<GenericResponse<Boolean>> account(
+    @GetMapping(path = "/verify")
+    public ResponseEntity<GenericResponse<Boolean>> verify(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @PathVariable(name = "account_id") final Long accountId,
-            @PathVariable(name = "account_web_id") final Long accountWebId) {
-
+            @RequestParam(name = "account_id") final Long accountId,
+            @RequestParam(name = "account_web_id") final Long accountWebId) {
+            System.out.println(transactionId);
         final boolean existAccount = accountPort.findByIdAndAccountWebId(accountId, accountWebId, transactionId);
 
         return ResponseEntity

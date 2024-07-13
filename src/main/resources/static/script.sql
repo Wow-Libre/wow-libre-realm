@@ -55,7 +55,7 @@ ALTER TABLE characters.guild
 CREATE TABLE characters.benefit
 (
     id          BIGINT AUTO_INCREMENT NOT NULL,
-    logo text,
+    logo        text,
     title       varchar(255) NOT NULL,
     sub_title   TEXT         NOT NULL,
     description TEXT,
@@ -76,19 +76,37 @@ CREATE TABLE characters.guild_benefits
     constraint fk_benefit_id FOREIGN key (benefit_id) references characters.guild_benefits (id)
 );
 
-INSERT INTO characters.benefit (title,logo, sub_title, description)
-VALUES ('Mas De 500 Miembros', "", "Mas De 500 Miembros", "Al unirte a esta hermandad podras reclamar el beneficio de los 500 miembros.");
+INSERT INTO characters.benefit (title, logo, sub_title, description)
+VALUES ('Mas De 500 Miembros', "", "Mas De 500 Miembros",
+        "Al unirte a esta hermandad podras reclamar el beneficio de los 500 miembros.");
 
-INSERT INTO characters.benefit (title,logo, sub_title, description)
-VALUES ('Banco Con Todas Las Casillas',"", "Banco Con Todas Las Casillas",
+INSERT INTO characters.benefit (title, logo, sub_title, description)
+VALUES ('Banco Con Todas Las Casillas', "", "Banco Con Todas Las Casillas",
         "Al unirte a esta hermandad, podrás disfrutar del beneficio de contar con un compañero");
 
-INSERT INTO characters.benefit (title,logo, sub_title, description)
-VALUES ('Acumulador',"", "Acumulador", "Al unirte a esta hermandad, podras reclamar el beneficio de una montura");
+INSERT INTO characters.benefit (title, logo, sub_title, description)
+VALUES ('Acumulador', "", "Acumulador", "Al unirte a esta hermandad, podras reclamar el beneficio de una montura");
 
 
 alter table characters.guild
     add column banner_primary text,
 	add column banner_secondary text,
     add column logo text;
+
+
+CREATE TABLE characters.services
+(
+    id           bigint auto_increment NOT NULL,
+    character_id bigint       NOT NULL,
+    skill_id bigint NOT NULL,
+    name         varchar(35)  NOT NULL,
+    description  varchar(300) NOT NULL,
+    level        DATE         NOT NULL,
+    score        double,
+    public       boolean,
+
+    PRIMARY KEY (id),
+    CONSTRAINT skill_id_character_id_uq UNIQUE (skill_id, character_id)
+);
+
 
