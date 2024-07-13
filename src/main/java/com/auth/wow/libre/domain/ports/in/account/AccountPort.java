@@ -11,12 +11,12 @@ public interface AccountPort {
 
     List<AccountsDetailDto> availableAccounts(String email, String transactionId);
 
-    void createGameAccount(AccountGameDto accountGameDto, String email, String transactionId);
+    void createGame(AccountGameDto accountGameDto, String email, String transactionId);
 
-    AccountDetailDto accountDetail(Long accountId, String email, String transactionId);
+    AccountDetailDto detail(Long accountId, String email, String transactionId);
 
     void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
                                    String transactionId);
-    boolean findByIdAndAccountWebId(Long id, Long accountWebId, String transactionId);
+    boolean findByAccountIdAndAccountWebId(Long accountId, Long accountWebId, String transactionId);
 
 }

@@ -49,7 +49,7 @@ public class AccountController {
             @RequestHeader(name = HEADER_EMAIL_JWT) final String email,
             @PathVariable final Long account_id) {
 
-        final AccountDetailDto account = accountPort.accountDetail(account_id, email, transactionId);
+        final AccountDetailDto account = accountPort.detail(account_id, email, transactionId);
 
         if (account != null) {
             return ResponseEntity
@@ -65,7 +65,7 @@ public class AccountController {
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid AccountGameDto account,
             @RequestHeader(name = HEADER_EMAIL_JWT) final String email) {
-        accountPort.createGameAccount(account, email, transactionId);
+        accountPort.createGame(account, email, transactionId);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
@@ -87,7 +87,7 @@ public class AccountController {
             @RequestParam(name = "account_id") final Long accountId,
             @RequestParam(name = "account_web_id") final Long accountWebId) {
             System.out.println(transactionId);
-        final boolean existAccount = accountPort.findByIdAndAccountWebId(accountId, accountWebId, transactionId);
+        final boolean existAccount = accountPort.findByAccountIdAndAccountWebId(accountId, accountWebId, transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -74,7 +74,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void createGameAccount(AccountGameDto accountGameDto, String email, String transactionId) {
+    public void createGame(AccountGameDto accountGameDto, String email, String transactionId) {
 
         if (obtainAccountPort.findByUsername(accountGameDto.getUsername()).isPresent()) {
             throw new FoundException("There is already a registered client with this data", transactionId);
@@ -117,7 +117,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public AccountDetailDto accountDetail(Long accountId, String email, String transactionId) {
+    public AccountDetailDto detail(Long accountId, String email, String transactionId) {
         final AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
 
 
@@ -203,8 +203,8 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public boolean findByIdAndAccountWebId(Long id, Long accountWebId, String transactionId) {
-        return obtainAccountPort.findByIdAndAccountWeb(id, accountWebId, transactionId).isPresent();
+    public boolean findByAccountIdAndAccountWebId(Long accountId, Long accountWebId, String transactionId) {
+        return obtainAccountPort.findByIdAndAccountWeb(accountId, accountWebId, transactionId).isPresent();
     }
 
 }
