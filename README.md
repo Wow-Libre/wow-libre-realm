@@ -15,7 +15,7 @@ Características Principales
 
 - Java 17
 - Maven
-
+- Swagger UI http://localhost:8080/swagger-ui/index.html#/
 
 ## Contribución
 Estamos abiertos a contribuciones de la comunidad. Si tienes ideas, sugerencias o deseas colaborar, por favor, abre un issue o envía un pull request. ¡Tu participación es bienvenida!
