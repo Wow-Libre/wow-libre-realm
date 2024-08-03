@@ -21,5 +21,7 @@ Características Principales
 Estamos abiertos a contribuciones de la comunidad. Si tienes ideas, sugerencias o deseas colaborar, por favor, abre un issue o envía un pull request. ¡Tu participación es bienvenida!
 
 
+## Redes sociales
+Facebook: https://www.facebook.com/WowLibre/
 
 
