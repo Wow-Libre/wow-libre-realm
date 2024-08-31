@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 public class EmailSend {
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailSend.class);
-  private static final String NEW_USER_TEMPLATE = "new-user.ftlh";
+  private static final String NEW_USER_TEMPLATE = "sierracode.ftlh";
   private static final String EMAIL_DEFAULT = "mschitiva68@gmail.com";
   private final JavaMailSender mailSender;
   private final Configuration freeMakerConfiguration;
@@ -37,8 +37,8 @@ public class EmailSend {
       String body = sendRegisterConfirmation(messageVars, template);
 
       mailBuilder.setText(body, true);
-      mailBuilder.setTo(EMAIL_DEFAULT);
-      mailBuilder.setFrom(emailFrom);
+      mailBuilder.setTo(emailFrom);
+      mailBuilder.setFrom(EMAIL_DEFAULT);
       mailBuilder.setSubject(subject);
       mailSender.send(emailMessage);
     } catch (Exception e) {

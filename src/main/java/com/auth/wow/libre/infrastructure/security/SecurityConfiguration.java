@@ -60,7 +60,7 @@ public class SecurityConfiguration {
                 HttpHeaders.AUTHORIZATION,
                 HEADER_TRANSACTION_ID
         ));
-        corsConfiguration.setAllowCredentials(true); // Permitir cookies y cabeceras de autorización
+        corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
@@ -78,6 +78,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
+                                        "/api/sierra/*",
                                         //INTERNAL API
                                         "/api/account/web/create",
                                         "/api/account/web/search",
@@ -98,7 +99,6 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -111,6 +111,5 @@ public class SecurityConfiguration {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-
 
 }

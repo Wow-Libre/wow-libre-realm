@@ -13,7 +13,6 @@ public class AccountBannedService implements AccountBannedPort {
     public AccountBannedService(ObtainAccountBannedPort obtainAccountBannedPort) {
         this.obtainAccountBannedPort = obtainAccountBannedPort;
     }
-
     @Override
     public AccountBanned getAccountBanned(Long accountId) {
         return obtainAccountBannedPort.getAccountBanned(accountId).map(this::mapToModel).orElse(null);

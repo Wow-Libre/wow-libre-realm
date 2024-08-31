@@ -120,7 +120,6 @@ public class AccountService implements AccountPort {
     public AccountDetailDto detail(Long accountId, String email, String transactionId) {
         final AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
 
-
         AccountDetailDto.AccountWeb accountWeb =
                 AccountDetailDto.AccountWeb.builder()
                         .id(accountWebModel.id)
@@ -134,7 +133,6 @@ public class AccountService implements AccountPort {
                         .status(accountWebModel.status)
                         .verified(accountWebModel.verified)
                         .build();
-
 
         return obtainAccountPort.findByIdAndAccountWeb(accountId, accountWeb.id, transactionId).map(account ->
                 new AccountDetailDto(account.getId(), account.getUsername(), account.getEmail(),

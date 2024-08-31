@@ -1,7 +1,3 @@
-/* ACCOUNT WEB */
-/*
-  DESCRIPTION : Responsible for managing the system's web services.
-*/
 
 CREATE TABLE auth.rol
 (

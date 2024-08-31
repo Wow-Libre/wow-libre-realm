@@ -1,19 +1,24 @@
 # World of Warcraft Community Wow Libre 
 
+<br>
+¡Bienvenido a WowLibre! Esta es una aplicación web diseñada para revolucionar la experiencia de los jugadores de World of Warcraft.
 
-Bienvenido a WowLibre, una aplicación web diseñada para transformar la experiencia de los jugadores de World of Warcraft.
+<br>
+<br>
+<br>
 
 ![cuentas](https://github.com/user-attachments/assets/59f93882-7ed6-470a-a738-ea04f3cbffd1)
 
+
 ## Introducción 
 
-Api encargada de administrar las cuentas de un servidor de world of warcraft actualmente esta basado en el emulador trinity core de la 3.3.5 
+WowLibre es una API dedicada a la gestión de cuentas en un servidor de World of Warcraft. Actualmente, está basada en el emulador Trinity Core para la versión 3.3.5a.
 
-Características Principales
+### Características Principales
 
--  Administracion de las cuentas
--  Seguridad
--  Recursos y parametrizaciones adicionales para el [sitio web](https://github.com/ManuChitiva/wow-libre-web-server)
+- Administración de cuentas: Gestión eficiente y segura de las cuentas de usuario.
+- Seguridad: Implementación de prácticas de seguridad avanzadas.
+- Recursos adicionales: Integración con nuestro sitio web para una experiencia enriquecida.
 
 ## Tecnologías Utilizadas
 
@@ -24,49 +29,55 @@ Características Principales
 
 
 ## Contribución
-Estamos abiertos a contribuciones de la comunidad. Si tienes ideas, sugerencias o deseas colaborar, por favor, abre un issue o envía un pull request. ¡Tu participación es bienvenida!
 
-## Como levantar la aplicacion:
-
-Paso 1: 
-
-Instalar Mysql, cualquier version reciente.
-
-- Descargar : https://dev.mysql.com/downloads/installer/
-
-Herramienta grafica para conectarse a MYSQL
-
--  https://dev.mysql.com/downloads/workbench/
--  https://dbeaver.io/download/
+Estamos abiertos a contribuciones de la comunidad. Si tienes ideas, sugerencias o deseas colaborar, por favor abre un issue o envía un pull request. ¡Tu participación es bienvenida y apreciada!
 
 
-Paso 2: 
+## Requisitos
 
-Instalar Java 
-- Guia : https://www.youtube.com/watch?v=TRsCMJrKglw
-- Descargar : https://www.oracle.com/co/java/technologies/downloads/#java17
+### Instalación de MySQL
+
+- Descargar MySQL desde [aquí](https://dev.mysql.com/downloads/installer/)
+
+### Herramientas Gráficas para MySQL
+
+-  [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
+-  [DBeaver](https://dbeaver.io/download/)
+
+### Instalación de Java
+
+- Guía: [Instalación de Java](https://www.youtube.com/watch?v=TRsCMJrKglw)
+- Descargar : [Java 17](https://www.oracle.com/co/java/technologies/downloads/#java17)
 
 
-Paso 3: 
+### Ejecución de Scripts
 
-Descargar el emulador, y ejecutar los scripts requeridos.
-Descargar emulador :  https://wowcreador.com/threads/wow-repack-trinitycore-wotlk-3-3-5a-12340-en-espanol.363
+Para ejecutar los scripts necesarios para el proyecto, sigue la ruta indicada en la imagen o encuéntralos en nuestra [wiki](https://github.com/ManuChitiva/wow-libre-auth/wiki/Scripts).
 
 
-Paso 4: 
-Ejecutar scripts del proyecto, estos los encuentras en la siguiente ruta como lo muestra la imagen.
 ![image](https://github.com/user-attachments/assets/3f7f1157-be28-4a90-bac5-74a0092a70b1)
 
-O encuentralos en la wiki https://github.com/ManuChitiva/wow-libre-auth/wiki/Scripts
+## Cómo Iniciar la Aplicación
 
-Paso 5:
 
-Colocar la contraseña cuando instalo mysql.
+Configurar MySQL: Ingresa la contraseña que estableciste durante la instalación de MySQL.
 
 ![image](https://github.com/user-attachments/assets/d7573d7a-2c45-415d-b7b9-80219299a83b)
 
-## Redes sociales
-Facebook: https://www.facebook.com/WowLibre/
+Puede descargar este emulador de trinity core 3.3.5  o cualquier otro mas reciente [Descargar emulador]( https://wowcreador.com/threads/wow-repack-trinitycore-wotlk-3-3-5a-12340-en-espanol.363)
 
 
 
+## 🌟 Únete a Nuestra Comunidad 🌟
+
+¡Sumérgete en el universo de World of Warcraft como nunca antes! Síguenos en nuestras redes sociales y sé parte de una comunidad apasionada, donde compartimos la emoción, las aventuras y los secretos del juego que nos une.
+
+Conéctate con otros jugadores, recibe las últimas novedades, y disfruta de contenido exclusivo que te llevará al siguiente nivel. ¡No te pierdas nada!
+
+📲 Síguenos y forma parte de algo épico:
+
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/WowLibre/)
+[![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@WowLibre)
+[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gPgNaXF87p)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://chat.whatsapp.com/KSfPkvHWgP66dFx8DvrVDx)
+[![TikTok](https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white)](https://www.tiktok.com/@wowlibre?_t=8ootaqKLQKj&_r=1)

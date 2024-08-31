@@ -1,6 +1,5 @@
 package com.auth.wow.libre.application.services.account_web;
 
-import com.auth.wow.libre.domain.mapper.MapToModel;
 import com.auth.wow.libre.domain.model.AccountWebModel;
 import com.auth.wow.libre.domain.model.RolModel;
 import com.auth.wow.libre.domain.model.comunication.MailSenderVars;
@@ -27,10 +26,9 @@ import java.util.List;
 
 @Service
 public class AccountWebService implements AccountWebPort {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountWebService.class);
     private static final String PICTURE_DEFAULT_PROFILE_WEB = "https://i.ibb.co/M8Kfq9X/icon-Default.png";
     private static final String ROL_CLIENT_DEFAULT = "CLIENT";
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountWebService.class);
-
     private final SaveAccountWebPort saveAccountWebPort;
     private final ObtainAccountWebPort obtainAccountWebPort;
     private final PasswordEncoder passwordEncoder;
@@ -55,12 +53,12 @@ public class AccountWebService implements AccountWebPort {
         final AccountWebEntity accountWebEntity = AccountWebEntity.create(accountWebModel,
                 RolEntity.mapToAccountRolEntity(rol));
 
-        return MapToModel.accountWebService(saveAccountWebPort.save(accountWebEntity, transactionId));
+        return mapToModel(saveAccountWebPort.save(accountWebEntity, transactionId));
     }
 
     @Override
     public AccountWebModel findByEmail(String email, String transactionId) {
-        return obtainAccountWebPort.findByEmailAndStatusIsTrue(email).map(MapToModel::accountWebService).orElse(null);
+        return obtainAccountWebPort.findByEmailAndStatusIsTrue(email).map(this::mapToModel).orElse(null);
     }
 
     @Override
@@ -111,5 +109,12 @@ public class AccountWebService implements AccountWebPort {
         return new JwtDto(token, refreshToken, expiration, PICTURE_DEFAULT_PROFILE_WEB);
     }
 
-
+    public AccountWebModel mapToModel(AccountWebEntity accountWebEntity) {
+        return new AccountWebModel(accountWebEntity.getId(), accountWebEntity.getCountry(),
+                accountWebEntity.getDateOfBirth(),
+                accountWebEntity.getFirstName(), accountWebEntity.getLastName(), accountWebEntity.getCellPhone(),
+                accountWebEntity.getEmail(), accountWebEntity.getPassword(), accountWebEntity.getRolId().getId(),
+                accountWebEntity.getRolId().getName(), accountWebEntity.getStatus(), accountWebEntity.getVerified(),
+                accountWebEntity.getAvatarUrl());
+    }
 }

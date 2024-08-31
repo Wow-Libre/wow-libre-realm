@@ -32,5 +32,4 @@ public class AccountMutedService implements AccountMutedPort {
     return accountMuted;
   }
 
-
 }

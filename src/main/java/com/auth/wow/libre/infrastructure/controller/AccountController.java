@@ -94,4 +94,7 @@ public class AccountController {
                 .body(new GenericResponseBuilder<Boolean>(transactionId).ok(existAccount).build());
 
     }
+
+
+
 }
