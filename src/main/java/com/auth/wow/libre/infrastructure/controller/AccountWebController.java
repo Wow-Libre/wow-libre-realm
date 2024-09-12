@@ -2,6 +2,7 @@ package com.auth.wow.libre.infrastructure.controller;
 
 import com.auth.wow.libre.domain.model.SearchModel;
 import com.auth.wow.libre.domain.model.dto.AccountWebDto;
+import com.auth.wow.libre.domain.model.dto.ValidateOtpDto;
 import com.auth.wow.libre.domain.model.security.JwtDto;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
@@ -43,4 +44,39 @@ public class AccountWebController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<>(jwtDto, transactionId).created().build());
     }
+
+    @GetMapping(path = "/recover/password")
+    public ResponseEntity<GenericResponse<Void>> recoverPassword(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam(name = "email") final String email) {
+
+        accountWebPort.recoverPassword(email, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
+
+    @PostMapping(path = "/validate/otp")
+    public ResponseEntity<GenericResponse<Void>> validateOtp(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody ValidateOtpDto request) {
+
+        accountWebPort.validateOtp(request, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
+
+    @PutMapping(path = "/confirmation")
+    public ResponseEntity<GenericResponse<Void>> confirm(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam(name = "code") final String code,
+            @RequestParam(name = "email") final String email) {
+
+        accountWebPort.confirmation(email, code, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
+
 }

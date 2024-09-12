@@ -23,10 +23,12 @@ public class CustomUserDetails implements UserDetails {
     private final boolean enabled;
     @Getter
     private final String avatarUrl;
+    @Getter
+    private final String language;
 
     public CustomUserDetails(Collection<? extends GrantedAuthority> authorities, String password, String username,
                              boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired,
-                             boolean enabled, Long accountWebId, String avatarUrl) {
+                             boolean enabled, Long accountWebId, String avatarUrl, String language) {
         this.authorities = authorities;
         this.password = password;
         this.username = username;
@@ -36,11 +38,12 @@ public class CustomUserDetails implements UserDetails {
         this.enabled = enabled;
         this.accountWebId = accountWebId;
         this.avatarUrl = avatarUrl;
+        this.language = language;
     }
 
     public CustomUserDetails(List<RolModel> authorities, String password, String username,
                              boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired,
-                             boolean enabled, Long accountWebId, String avatarUrl) {
+                             boolean enabled, Long accountWebId, String avatarUrl, String language) {
 
         this.authorities = authorities.stream()
                 .map(rolModel -> new SimpleGrantedAuthority(rolModel.name))
@@ -53,6 +56,7 @@ public class CustomUserDetails implements UserDetails {
         this.enabled = enabled;
         this.accountWebId = accountWebId;
         this.avatarUrl = avatarUrl;
+        this.language = language;
     }
 
     @Override

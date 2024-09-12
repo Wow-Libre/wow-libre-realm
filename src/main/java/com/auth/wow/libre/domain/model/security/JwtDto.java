@@ -14,10 +14,13 @@ public class JwtDto {
     @JsonProperty("avatar_url")
     public String avatarUrl;
 
-    public JwtDto(String jwt, String refreshToken, Date expirationDate, String avatarUrl) {
+    public String language;
+
+    public JwtDto(String jwt, String refreshToken, Date expirationDate, String avatarUrl, String language) {
         this.jwt = jwt;
         this.refreshToken = refreshToken;
         this.expirationDate = expirationDate;
         this.avatarUrl = avatarUrl;
+        this.language = language;
     }
 }

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANTS_UNIQUE_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_UNIQUE_ID;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -44,7 +44,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) {
         String transactionId = request.getHeader(Constants.HEADER_TRANSACTION_ID);
-        ThreadContext.put(CONSTANTS_UNIQUE_ID, transactionId);
+        ThreadContext.put(CONSTANT_UNIQUE_ID, transactionId);
         UserModel user = getParamsUser(request, transactionId);
         return authenticationProvider
                 .authenticate(new UsernamePasswordAuthenticationToken(user.username, user.password));
@@ -58,24 +58,21 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String transactionId = request.getHeader(Constants.HEADER_TRANSACTION_ID);
 
         Map<String, Object> body = new HashMap<>();
-        ThreadContext.put(CONSTANTS_UNIQUE_ID, transactionId);
+        ThreadContext.put(CONSTANT_UNIQUE_ID, transactionId);
 
         try {
-            JwtDto jwtGenerate = generateToken(authResult);
+            final JwtDto jwt = generateToken(authResult);
             body.put("message", "ok");
             body.put("code", 200);
-            body.put("data", jwtGenerate);
+            body.put("data", jwt);
             body.put(Constants.HEADER_TRANSACTION_ID, transactionId);
 
             response.getWriter().write(new ObjectMapper().writeValueAsString(body));
             response.setStatus(200);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         } catch (Exception e) {
-            body.put("error", "oauth_invalid");
-            body.put("message",
-                    "An unexpected error has occurred and it was not possible to authenticate to the system, please " +
-                            "try " +
-                            "again later.");
+            body.put("error", "invalid data");
+            body.put("message", Constants.Errors.CONSTANT_GENERIC_ERROR_MESSAGE);
             body.put("message_trace", e.getMessage());
             response.getWriter().write(new ObjectMapper().writeValueAsString(body));
             response.setStatus(401);
@@ -91,9 +88,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         Map<String, Object> body = new HashMap<>();
         body.put("error", "Please verify the information provided.");
-        body.put("message",
-                "An unexpected error has occurred and it was not possible to authenticate to the system, please try " +
-                        "again later.");
+        body.put("message", Constants.Errors.CONSTANT_GENERIC_ERROR_MESSAGE);
         body.put("message_trace", failed.getMessage());
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
@@ -110,11 +105,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try {
             return new ObjectMapper().readValue(request.getInputStream(), UserModel.class);
         } catch (java.io.IOException e) {
-            logger.error(
-                    "Unable to authenticate user. because your data was not sent correctly, please validate the " +
-                            "information" +
-                            " provided.");
-            throw new UnauthorizedException(e.getMessage(), transactionId);
+            logger.error("Invalid parameters, please check your information");
+            throw new UnauthorizedException(Constants.Errors.CONSTANT_GENERIC_ERROR_MESSAGE, transactionId);
         }
     }
 
@@ -123,6 +115,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtPort.generateToken(customUserDetails);
         Date expiration = jwtPort.extractExpiration(token);
         String refreshToken = jwtPort.generateRefreshToken(customUserDetails);
-        return new JwtDto(token, refreshToken, expiration, customUserDetails.getAvatarUrl());
+        return new JwtDto(token, refreshToken, expiration, customUserDetails.getAvatarUrl(),
+                customUserDetails.getLanguage());
     }
 }

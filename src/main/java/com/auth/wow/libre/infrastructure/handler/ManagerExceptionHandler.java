@@ -56,7 +56,7 @@ public class ManagerExceptionHandler {
             value = {MissingServletRequestParameterException.class
             })
     public ResponseEntity<GenericResponse<Void>> missingServletRequestParameterException(MissingServletRequestParameterException e) {
-          
+
         GenericResponse<Void> response = new GenericResponse<>();
         response.setMessage(e.getMessage());
         response.setCode(400);

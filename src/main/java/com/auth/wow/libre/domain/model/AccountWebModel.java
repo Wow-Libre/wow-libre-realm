@@ -1,6 +1,7 @@
 package com.auth.wow.libre.domain.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AccountWebModel {
     public Long id;
@@ -16,11 +17,22 @@ public class AccountWebModel {
     public final boolean status;
     public final boolean verified;
     public final String avatarUrl;
+    public final String language;
+    public final String otp;
 
+    public final Integer recoveryRequests;
+    public final LocalDateTime dateRecovery;
+    public final RolModel rol;
+    public final String activationCode;
 
     public AccountWebModel(String country, LocalDate dateOfBirth, String firstName, String lastName,
                            String cellPhone, String email, String password, boolean status, boolean verified,
-                           String avatarUrl) {
+                           String avatarUrl, String language, String otp, Integer recoveryRequests,
+                           LocalDateTime dateRecovery, RolModel rol, String activationCode) {
+        this.otp = otp;
+        this.recoveryRequests = recoveryRequests;
+        this.dateRecovery = dateRecovery;
+        this.activationCode = activationCode;
         this.id = null;
         this.country = country;
         this.dateOfBirth = dateOfBirth;
@@ -32,11 +44,14 @@ public class AccountWebModel {
         this.status = status;
         this.verified = verified;
         this.avatarUrl = avatarUrl;
+        this.language = language;
+        this.rol = rol;
     }
 
     public AccountWebModel(Long id, String country, LocalDate dateOfBirth, String firstName, String lastName,
                            String cellPhone, String email, String password, Long rolId, String rolName,
-                           boolean status, boolean verified, String avatarUrl) {
+                           boolean status, boolean verified, String avatarUrl, String language, String otp,
+                           Integer recoveryRequests, LocalDateTime dateRecovery, RolModel rol, String activationCode) {
         this.id = id;
         this.country = country;
         this.dateOfBirth = dateOfBirth;
@@ -50,5 +65,11 @@ public class AccountWebModel {
         this.status = status;
         this.verified = verified;
         this.avatarUrl = avatarUrl;
+        this.language = language;
+        this.otp = otp;
+        this.recoveryRequests = recoveryRequests;
+        this.dateRecovery = dateRecovery;
+        this.rol = rol;
+        this.activationCode = activationCode;
     }
 }

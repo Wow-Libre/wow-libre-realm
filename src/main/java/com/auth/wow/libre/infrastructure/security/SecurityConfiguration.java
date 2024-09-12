@@ -78,7 +78,6 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
-                                        "/api/sierra/*",
                                         //INTERNAL API
                                         "/api/account/web/create",
                                         "/api/account/web/search",
@@ -86,6 +85,9 @@ public class SecurityConfiguration {
                                         "/api/resources/faqs",
                                         "/api/resources/benefit",
                                         "/api/account/verify",
+                                        "/api/account/web/recover/password",
+                                        "/api/account/web/validate/otp",
+                                        "/api/account/web/confirmation/*",
                                         //SWAGGER
                                         "/v2/api-docs", "/swagger-resources",
                                         "/swagger-resources/**", "/configuration/ui",
@@ -95,7 +97,6 @@ public class SecurityConfiguration {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

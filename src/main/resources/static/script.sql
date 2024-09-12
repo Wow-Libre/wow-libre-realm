@@ -41,7 +41,18 @@ ALTER TABLE auth.account
     ADD COLUMN account_web bigint,
  ADD CONSTRAINT FOREIGN KEY (account_web) REFERENCES auth.account_web (id);
 
+ALTER TABLE auth.account_web
+    ADD COLUMN language varchar(10);
 
+
+ALTER TABLE auth.account_web
+    ADD COLUMN otp varchar (5),
+    ADD COLUMN recovery_requests integer,
+    ADD COLUMN date_recovery DATETIME;
+
+
+ALTER TABLE auth.account_web
+    ADD COLUMN activation_code  varchar (15);
 
 
 

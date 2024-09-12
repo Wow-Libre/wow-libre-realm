@@ -27,7 +27,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANTS_UNIQUE_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_UNIQUE_ID;
 import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_EMAIL_JWT;
 
 
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String transactionId = request.getHeader(Constants.HEADER_TRANSACTION_ID);
-        ThreadContext.put(CONSTANTS_UNIQUE_ID, transactionId);
+        ThreadContext.put(CONSTANT_UNIQUE_ID, transactionId);
 
         try {
 
@@ -83,8 +83,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setContentType(request.getContentType());
             response.getOutputStream().write(responseWrapper.getByteArray());
         } catch (GenericErrorException e) {
-            System.out.println(e.getClass());
-
             responseBody.setMessage(e.getMessage());
             responseBody.setTransactionId(e.transactionId);
             response.setStatus(e.httpStatus.value());

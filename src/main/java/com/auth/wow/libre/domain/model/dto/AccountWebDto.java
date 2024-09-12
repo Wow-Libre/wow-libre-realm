@@ -35,4 +35,7 @@ public class AccountWebDto {
 
     @NotNull
     private String password;
+    @NotNull
+    @Length(min = 1, max = 4)
+    private String language;
 }

@@ -29,4 +29,8 @@ public class RolEntity implements Serializable {
     public static RolEntity mapToAccountRolEntity(RolModel rol) {
         return new RolEntity(rol.id, rol.name, rol.status);
     }
+
+    public static RolModel mapToModel(RolEntity rol) {
+        return new RolModel(rol.id, rol.name, rol.status);
+    }
 }
