@@ -84,6 +84,7 @@ public class SecurityConfiguration {
                                         "/api/account/web/search",
                                         "/api/resources/country",
                                         "/api/resources/faqs",
+                                        "/api/resources/bank/plans",
                                         "/api/resources/benefit",
                                         "/api/account/verify",
                                         "/api/account/online",
