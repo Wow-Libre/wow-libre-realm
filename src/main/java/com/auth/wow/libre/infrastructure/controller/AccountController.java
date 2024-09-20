@@ -86,7 +86,6 @@ public class AccountController {
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestParam(name = "account_id") final Long accountId,
             @RequestParam(name = "account_web_id") final Long accountWebId) {
-            System.out.println(transactionId);
         final boolean existAccount = accountPort.findByAccountIdAndAccountWebId(accountId, accountWebId, transactionId);
 
         return ResponseEntity
@@ -95,6 +94,17 @@ public class AccountController {
 
     }
 
+    @GetMapping(path = "/online")
+    public ResponseEntity<GenericResponse<Boolean>> isOnline(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam(name = "account_id") final Long accountId) {
 
+        final Boolean existAccount = accountPort.isOnline(accountId, transactionId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Boolean>(transactionId).ok(existAccount).build());
+
+    }
 
 }

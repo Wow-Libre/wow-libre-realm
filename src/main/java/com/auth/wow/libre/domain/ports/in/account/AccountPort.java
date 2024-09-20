@@ -18,5 +18,6 @@ public interface AccountPort {
     void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
                                    String transactionId);
     boolean findByAccountIdAndAccountWebId(Long accountId, Long accountWebId, String transactionId);
+    Boolean isOnline(Long accountId,  String transactionId);
 
 }

@@ -47,7 +47,8 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
-                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001"));
+                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001", "http://15.204.134" +
+                        ".74:3000", "http://15.204.134.74:8080","http://15.204.134.74"));
         corsConfiguration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -85,6 +86,7 @@ public class SecurityConfiguration {
                                         "/api/resources/faqs",
                                         "/api/resources/benefit",
                                         "/api/account/verify",
+                                        "/api/account/online",
                                         "/api/account/web/recover/password",
                                         "/api/account/web/validate/otp",
                                         "/api/account/web/confirmation/*",
