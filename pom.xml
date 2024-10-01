@@ -11,7 +11,7 @@
     <groupId>com.wow</groupId>
     <artifactId>libre-auth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>wow-libre-auth</name>
+    <name>wow-libre-client</name>
     <description>Server Wow</description>
     <properties>
         <java.version>17</java.version>

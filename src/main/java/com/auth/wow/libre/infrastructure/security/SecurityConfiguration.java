@@ -47,8 +47,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
-                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001", "http://15.204.134" +
-                        ".74:3000", "http://15.204.134.74:8080","http://15.204.134.74"));
+                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001"));
         corsConfiguration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -80,17 +79,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         //INTERNAL API
-                                        "/api/account/web/create",
-                                        "/api/account/web/search",
-                                        "/api/resources/country",
-                                        "/api/resources/faqs",
-                                        "/api/resources/bank/plans",
-                                        "/api/resources/benefit",
-                                        "/api/account/verify",
-                                        "/api/account/online",
-                                        "/api/account/web/recover/password",
-                                        "/api/account/web/validate/otp",
-                                        "/api/account/web/confirmation/*",
+                                        "/api/account/create",
                                         //SWAGGER
                                         "/v2/api-docs", "/swagger-resources",
                                         "/swagger-resources/**", "/configuration/ui",

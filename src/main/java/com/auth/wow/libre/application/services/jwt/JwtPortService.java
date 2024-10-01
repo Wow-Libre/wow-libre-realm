@@ -45,8 +45,8 @@ public class JwtPortService implements JwtPort {
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put(CONSTANT_ROL_JWT_PROP, userDetails.getAuthorities());
-        extraClaims.put(HEADER_ACCOUNT_WEB_ID_JWT, userDetails.getAccountWebId());
-        extraClaims.put(HEADER_LANGUAGE_JWT, userDetails.getAccountWebId());
+        extraClaims.put(HEADER_ACCOUNT_WEB_ID_JWT, userDetails.getUserId());
+        extraClaims.put(HEADER_LANGUAGE_JWT, userDetails.getUserId());
 
         return generateToken(extraClaims, userDetails);
     }

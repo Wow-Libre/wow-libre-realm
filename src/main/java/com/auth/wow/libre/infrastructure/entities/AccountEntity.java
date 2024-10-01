@@ -42,17 +42,14 @@ public class AccountEntity implements Serializable {
     @Column(name = "muteby")
     private String muteBy;
     private String os;
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_web",
-            referencedColumnName = "id")
-    private AccountWebEntity accountWeb;
+    @Column(name = "user_id")
+    private Long userId;
 
     @PrePersist
     public void prePersist() {
         this.joinDate = LocalDate.now();
         this.failedLogins = "0";
         this.lastIp = "";
-        this.expansion = "2";
         this.os = "";
         this.muteBy = "";
         this.muteReason = "";

@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
     Optional<AccountEntity> findByUsername(String username);
 
-    List<AccountEntity> findByAccountWebId(Long id);
+    List<AccountEntity> findByUserId(Long id);
 
-    Optional<AccountEntity> findByIdAndAccountWebId(Long id, Long accountWebId);
 }

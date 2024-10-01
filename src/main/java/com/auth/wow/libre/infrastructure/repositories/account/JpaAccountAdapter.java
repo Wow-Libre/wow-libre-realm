@@ -30,8 +30,8 @@ public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
     }
 
     @Override
-    public List<AccountEntity> findByAccountWebId(Long id) {
-        return accountRepository.findByAccountWebId(id);
+    public List<AccountEntity> findByUserId(Long id) {
+        return accountRepository.findByUserId(id);
     }
 
     @Override
@@ -39,8 +39,5 @@ public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
         return accountRepository.findById(id);
     }
 
-    @Override
-    public Optional<AccountEntity> findByIdAndAccountWeb(Long id, Long accountWebId, String transactionId) {
-        return accountRepository.findByIdAndAccountWebId(id, accountWebId);
-    }
+
 }
