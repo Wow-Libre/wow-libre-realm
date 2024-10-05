@@ -21,15 +21,16 @@ public class AccountController {
 
 
     @PostMapping(path = "/create")
-    public ResponseEntity<GenericResponse<Void>> create(
+    public ResponseEntity<GenericResponse<Long>> create(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid CreateAccountDto request) {
 
-        accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(), request.getApiKey(),
-                request.isRebuildUsername(), request.getUserId(), transactionId);
+        Long accountId = accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(),
+                request.isRebuildUsername(), request.getUserId(), request.getExpansion(), request.getSalt(),
+                transactionId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+                .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
     }
 
 

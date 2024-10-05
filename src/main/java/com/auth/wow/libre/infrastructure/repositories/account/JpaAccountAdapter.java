@@ -20,8 +20,8 @@ public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
     }
 
     @Override
-    public void save(AccountEntity account) {
-        accountRepository.save(account);
+    public AccountEntity save(AccountEntity account) {
+        return accountRepository.save(account);
     }
 
     @Override

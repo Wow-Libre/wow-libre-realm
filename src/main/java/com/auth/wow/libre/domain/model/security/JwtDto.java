@@ -1,8 +1,8 @@
 package com.auth.wow.libre.domain.model.security;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
-import java.util.Date;
+import java.util.*;
 
 public class JwtDto {
 

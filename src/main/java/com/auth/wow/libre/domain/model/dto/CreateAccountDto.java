@@ -7,16 +7,18 @@ import org.hibernate.validator.constraints.*;
 @Data
 public class CreateAccountDto {
     @NotNull
-    @Length(min = 5, max = 40)
+    @Length(min = 5, max = 20)
     private String username;
     @NotNull
     private String password;
     @NotNull
     private String email;
-    @NotNull
-    @Length(min = 40, max = 50)
-    private String apiKey;
     private boolean rebuildUsername;
     @NotNull
     private Long userId;
+    @NotNull
+    @Length(min = 1, max = 10)
+    private String expansion;
+    @NotNull
+    private byte[] salt;
 }
