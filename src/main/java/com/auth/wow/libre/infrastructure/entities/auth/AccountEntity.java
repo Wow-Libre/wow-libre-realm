@@ -1,4 +1,4 @@
-package com.auth.wow.libre.infrastructure.entities;
+package com.auth.wow.libre.infrastructure.entities.auth;
 
 import jakarta.persistence.*;
 import lombok.Data;

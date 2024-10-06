@@ -1,0 +1,26 @@
+package com.auth.wow.libre.infrastructure.repositories.characters.character;
+
+import com.auth.wow.libre.domain.ports.out.characters.*;
+import com.auth.wow.libre.infrastructure.entities.characters.*;
+import org.springframework.stereotype.*;
+
+import java.util.*;
+
+@Repository
+public class JpaCharactersAdapter implements ObtainCharacters {
+    private final CharactersRepository charactersRepository;
+
+    public JpaCharactersAdapter(CharactersRepository charactersRepository) {
+        this.charactersRepository = charactersRepository;
+    }
+
+    @Override
+    public List<CharactersEntity> getCharacters(Long accountId, String transactionId) {
+        return charactersRepository.findByAccount(accountId);
+    }
+
+    @Override
+    public Optional<CharactersEntity> getCharacter(Long characterId, Long accountId, String transactionId) {
+        return charactersRepository.findByGuidAndAccount(characterId, accountId);
+    }
+}

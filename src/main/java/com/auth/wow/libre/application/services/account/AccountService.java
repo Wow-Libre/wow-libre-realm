@@ -6,7 +6,7 @@ import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
-import com.auth.wow.libre.infrastructure.entities.*;
+import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.util.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
@@ -35,7 +35,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public Long create(String username, String password, String email,  boolean rebuildUsername,
+    public Long create(String username, String password, String email,
                        Long userId, String expansion, byte[] saltPassword,
                        String transactionId) {
 
@@ -48,12 +48,8 @@ public class AccountService implements AccountPort {
 
             boolean usernameExist = obtainAccountPort.findByUsername(username).isPresent();
 
-            if (usernameExist && !rebuildUsername) {
-                throw new InternalException("The username is not available", transactionId);
-            }
-
             if (usernameExist) {
-                username = String.format("%s", username + randomString.nextString());
+                throw new InternalException("The username is not available", transactionId);
             }
 
             SecureRandom random = new SecureRandom();
@@ -71,7 +67,7 @@ public class AccountService implements AccountPort {
             account.setUsername(username);
             account.setEmail(email);
             account.setExpansion(expansion);
-
+            account.setUserId(userId);
             return saveAccountPort.save(account).getId();
         } catch (NoSuchAlgorithmException e) {
             throw new InternalException(

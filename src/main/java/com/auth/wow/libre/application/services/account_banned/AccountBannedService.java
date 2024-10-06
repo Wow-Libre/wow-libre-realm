@@ -3,7 +3,7 @@ package com.auth.wow.libre.application.services.account_banned;
 import com.auth.wow.libre.domain.model.AccountBanned;
 import com.auth.wow.libre.domain.ports.in.account_banned.AccountBannedPort;
 import com.auth.wow.libre.domain.ports.out.account_banned.ObtainAccountBannedPort;
-import com.auth.wow.libre.infrastructure.entities.AccountBannedEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountBannedEntity;
 import org.springframework.stereotype.Service;
 
 @Service

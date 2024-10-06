@@ -17,4 +17,8 @@ public class Configurations {
     private String loginPassword;
     @Value("${application.account.api-key}")
     private String serverApiKey;
+    @Value("${application.wow-libre.username}")
+    private String authWowLibre;
+    @Value("${application.wow-libre.password}")
+    private String authPassWowLibre;
 }

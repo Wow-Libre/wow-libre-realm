@@ -1,6 +1,6 @@
-package com.auth.wow.libre.infrastructure.repositories.account_muted;
+package com.auth.wow.libre.infrastructure.repositories.auth.account_muted;
 
-import com.auth.wow.libre.infrastructure.entities.AccountMutedEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountMutedEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

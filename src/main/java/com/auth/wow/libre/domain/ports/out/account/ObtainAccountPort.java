@@ -1,6 +1,6 @@
 package com.auth.wow.libre.domain.ports.out.account;
 
-import com.auth.wow.libre.infrastructure.entities.AccountEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountEntity;
 
 import java.util.List;
 import java.util.Optional;

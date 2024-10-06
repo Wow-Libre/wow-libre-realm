@@ -36,7 +36,12 @@ public class JwtPortService implements JwtPort {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    @Override
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get(HEADER_USER_ID, Long.class));
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -45,8 +50,6 @@ public class JwtPortService implements JwtPort {
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put(CONSTANT_ROL_JWT_PROP, userDetails.getAuthorities());
-        extraClaims.put(HEADER_ACCOUNT_WEB_ID_JWT, userDetails.getUserId());
-        extraClaims.put(HEADER_LANGUAGE_JWT, userDetails.getUserId());
 
         return generateToken(extraClaims, userDetails);
     }
@@ -79,6 +82,7 @@ public class JwtPortService implements JwtPort {
     public boolean isTokenValid(String token) {
         return isSignatureValid(token) && !isTokenExpired(token);
     }
+
 
     private boolean isSignatureValid(String token) {
         try {

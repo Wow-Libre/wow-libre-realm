@@ -1,5 +1,6 @@
 package com.auth.wow.libre.domain.model.security;
 
+import com.auth.wow.libre.infrastructure.conf.*;
 import org.springframework.security.core.*;
 import org.springframework.security.core.authority.*;
 import org.springframework.security.core.userdetails.*;
@@ -10,17 +11,16 @@ import java.util.*;
 @Component
 public class UserDetailsServiceCustom implements UserDetailsService {
 
+    private final Configurations configurations;
+
+    public UserDetailsServiceCustom(Configurations configurations) {
+        this.configurations = configurations;
+    }
 
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        //AccountWebEntity account = obtainAccountWebPort.findByEmailAndStatusIsTrue(username)
-        //  .orElseThrow(() -> new BadRequestException(CONSTANT_GENERIC_ERROR_ACCOUNT_IS_NOT_AVAILABLE + username
-        //   , ""));
-
-
-        return new CustomUserDetails(assignRol(""), "",
-                "",
+        return new CustomUserDetails(assignRol(), configurations.getAuthPassWowLibre(),
+                configurations.getLoginUsername(),
                 true,
                 true,
                 true,
@@ -32,8 +32,8 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     }
 
 
-    private List<GrantedAuthority> assignRol(String name) {
-        return Collections.singletonList(new SimpleGrantedAuthority(name));
+    private List<GrantedAuthority> assignRol() {
+        return Collections.singletonList(new SimpleGrantedAuthority("CLIENT"));
     }
 
 

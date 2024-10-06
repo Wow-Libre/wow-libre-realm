@@ -1,6 +1,6 @@
-package com.auth.wow.libre.infrastructure.repositories.rol;
+package com.auth.wow.libre.infrastructure.repositories.auth.rol;
 
-import com.auth.wow.libre.infrastructure.entities.RolEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.RolEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

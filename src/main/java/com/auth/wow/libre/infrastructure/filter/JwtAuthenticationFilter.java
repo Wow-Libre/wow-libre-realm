@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_UNIQUE_ID;
-import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_EMAIL_JWT;
+import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_EMAIL;
 
 
 @Component
@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = authHeader.substring(7);
             final String email = jwtPort.extractUsername(jwt);
 
-            requestWrapper.setHeader(HEADER_EMAIL_JWT, email);
+            requestWrapper.setHeader(HEADER_EMAIL, email);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 

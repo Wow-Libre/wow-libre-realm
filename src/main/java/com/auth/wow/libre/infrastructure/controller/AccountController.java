@@ -19,14 +19,13 @@ public class AccountController {
         this.accountPort = accountPort;
     }
 
-
     @PostMapping(path = "/create")
     public ResponseEntity<GenericResponse<Long>> create(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid CreateAccountDto request) {
 
         Long accountId = accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(),
-                request.isRebuildUsername(), request.getUserId(), request.getExpansion(), request.getSalt(),
+                request.getUserId(), request.getExpansion(), request.getSalt(),
                 transactionId);
 
         return ResponseEntity.status(HttpStatus.CREATED)

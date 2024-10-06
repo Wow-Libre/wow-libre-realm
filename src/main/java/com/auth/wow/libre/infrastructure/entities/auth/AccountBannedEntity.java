@@ -1,4 +1,4 @@
-package com.auth.wow.libre.infrastructure.entities;
+package com.auth.wow.libre.infrastructure.entities.auth;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

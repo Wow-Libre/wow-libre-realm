@@ -1,6 +1,6 @@
-package com.auth.wow.libre.infrastructure.repositories.account;
+package com.auth.wow.libre.infrastructure.repositories.auth.account;
 
-import com.auth.wow.libre.infrastructure.entities.AccountEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

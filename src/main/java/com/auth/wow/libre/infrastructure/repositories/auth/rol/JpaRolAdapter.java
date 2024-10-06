@@ -1,7 +1,7 @@
-package com.auth.wow.libre.infrastructure.repositories.rol;
+package com.auth.wow.libre.infrastructure.repositories.auth.rol;
 
 import com.auth.wow.libre.domain.ports.out.rol.ObtainRolPort;
-import com.auth.wow.libre.infrastructure.entities.RolEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.RolEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

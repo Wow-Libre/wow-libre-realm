@@ -1,10 +1,10 @@
-package com.auth.wow.libre.infrastructure.repositories.account_muted;
+package com.auth.wow.libre.infrastructure.repositories.auth.account_muted;
 
 import com.auth.wow.libre.domain.model.AccountMuted;
 import com.auth.wow.libre.domain.model.constant.DateHelper;
 import com.auth.wow.libre.domain.ports.out.account_muted.DeleteAccountMutedPort;
 import com.auth.wow.libre.domain.ports.out.account_muted.ObtainAccountMutedPort;
-import com.auth.wow.libre.infrastructure.entities.AccountMutedEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountMutedEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;

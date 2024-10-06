@@ -3,7 +3,7 @@ package com.auth.wow.libre.application.services.rol;
 import com.auth.wow.libre.domain.model.RolModel;
 import com.auth.wow.libre.domain.ports.in.rol.RolPort;
 import com.auth.wow.libre.domain.ports.out.rol.ObtainRolPort;
-import com.auth.wow.libre.infrastructure.entities.RolEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.RolEntity;
 import org.springframework.stereotype.Service;
 
 @Service

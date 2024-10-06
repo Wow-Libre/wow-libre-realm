@@ -1,8 +1,8 @@
-package com.auth.wow.libre.infrastructure.repositories.account;
+package com.auth.wow.libre.infrastructure.repositories.auth.account;
 
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.SaveAccountPort;
-import com.auth.wow.libre.infrastructure.entities.AccountEntity;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
