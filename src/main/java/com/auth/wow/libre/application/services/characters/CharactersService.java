@@ -21,10 +21,10 @@ public class CharactersService implements CharactersPort {
 
 
     @Override
-    public CharactersDto getCharacters(Long accountId, Long userId, String transactionId) {
+    public CharactersDto getCharacters(Long accountId, String transactionId) {
 
         final List<CharacterModel> characterAccount =
-                obtainCharacters.getCharacters(accountId, transactionId).stream().map(this::mapToModel).toList();
+                obtainCharacters.getCharactersAndAccountId(accountId, transactionId).stream().map(this::mapToModel).toList();
 
         CharactersDto charactersDto = new CharactersDto();
         charactersDto.setCharacters(characterAccount.stream()
@@ -36,8 +36,16 @@ public class CharactersService implements CharactersPort {
     }
 
     @Override
-    public CharacterDetailDto getCharacter(Long characterId, Long accountId, Long accountWebId, String transactionId) {
+    public CharacterDetailDto getCharacter(Long characterId, Long accountId,  String transactionId) {
         return obtainCharacters.getCharacter(characterId, accountId, transactionId)
+                .map(this::mapToModel)
+                .map(CharacterDetailDto::new)
+                .orElse(null);
+    }
+
+    @Override
+    public CharacterDetailDto getCharacter(Long characterId, String transactionId) {
+        return obtainCharacters.getCharacterId(characterId, transactionId)
                 .map(this::mapToModel)
                 .map(CharacterDetailDto::new)
                 .orElse(null);

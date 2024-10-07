@@ -20,10 +20,9 @@ public class CharactersController {
     @GetMapping
     public ResponseEntity<GenericResponse<CharactersDto>> characters(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestParam(name = PARAM_ACCOUNT_ID) final Long accountId,
-            @RequestHeader(name = HEADER_USER_ID) final Long userId) {
+            @RequestParam(name = PARAM_ACCOUNT_ID) final Long accountId) {
 
-        CharactersDto characters = charactersPort.getCharacters(accountId, userId, transactionId);
+        CharactersDto characters = charactersPort.getCharacters(accountId, transactionId);
 
         if (characters != null) {
             return ResponseEntity.status(HttpStatus.OK)
@@ -38,10 +37,9 @@ public class CharactersController {
     public ResponseEntity<GenericResponse<CharacterDetailDto>> character(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestParam(name = PARAM_ACCOUNT_ID) final Long accountId,
-            @PathVariable(name = "character_id") final Long characterId,
-            @RequestHeader(name = HEADER_USER_ID) final Long userId) {
+            @PathVariable(name = "character_id") final Long characterId) {
 
-        CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, userId, transactionId);
+        CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
 
         if (character != null) {
             return ResponseEntity.status(HttpStatus.OK).body(new GenericResponseBuilder<CharacterDetailDto>(transactionId)

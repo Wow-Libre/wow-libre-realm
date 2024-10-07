@@ -2,35 +2,37 @@ package com.auth.wow.libre.application.services.account;
 
 import com.auth.wow.libre.application.services.encryption.*;
 import com.auth.wow.libre.domain.model.*;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
+import com.auth.wow.libre.domain.ports.in.account_banned.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.util.*;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 import javax.crypto.*;
 import java.security.*;
+import java.util.*;
 
 @Service
 public class AccountService implements AccountPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
-    private final RandomString randomString;
+    private final AccountBannedPort accountBannedPort;
 
     private final WowLibrePort wowLibrePort;
 
     public AccountService(ObtainAccountPort obtainAccountPort,
                           SaveAccountPort saveAccountPort,
-                          @Qualifier("random-username") RandomString randomString,
+                          AccountBannedPort accountBannedPort,
                           WowLibrePort wowLibrePort) {
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
-        this.randomString = randomString;
+        this.accountBannedPort = accountBannedPort;
         this.wowLibrePort = wowLibrePort;
     }
 
@@ -84,6 +86,33 @@ public class AccountService implements AccountPort {
     @Override
     public Boolean isOnline(Long accountId, String transactionId) {
         return obtainAccountPort.findById(accountId).map(AccountEntity::isOnline).orElse(null);
+    }
+
+    @Override
+    public AccountDetailDto account(Long accountId, String transactionId) {
+
+        return obtainAccountPort.findById(accountId).map(account ->
+                new AccountDetailDto(account.getId(), account.getUsername(), account.getEmail(),
+                        account.getExpansion(), account.isOnline(), account.getFailedLogins(),
+                        account.getJoinDate(),
+                        account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
+                        account.getMuteTime() != null && account.getMuteTime() > 0,
+                        account.getLastLogin(), account.getOs(),
+                        accountBannedPort.getAccountBanned(accountId))
+        ).orElseThrow(() -> new NotFoundException("There is no associated account or it is not available.",
+                transactionId));
+    }
+
+    @Override
+    public void changePassword(Long accountId, String password, byte[] salt, String transactionId) {
+
+        final Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
+
+        if (account.isEmpty()) {
+            throw new InternalException("The server where your character is currently located is not available",
+                    transactionId);
+        }
+        
     }
 
 }

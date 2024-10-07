@@ -32,5 +32,32 @@ public class AccountController {
                 .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
     }
 
+    @GetMapping(path = "/{account_id}")
+    public ResponseEntity<GenericResponse<AccountDetailDto>> account(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @PathVariable final Long account_id) {
+
+        final AccountDetailDto account = accountPort.account(account_id, transactionId);
+
+        if (account != null) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new GenericResponseBuilder<AccountDetailDto>(transactionId).ok(account).build());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    @PostMapping(path = "/change-password")
+    public ResponseEntity<GenericResponse<Long>> changePassword(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid UpdateAccountDto request) {
+
+        Long accountId = accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(),
+                request.getUserId(), request.getExpansion(), request.getSalt(),
+                transactionId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
+    }
 
 }

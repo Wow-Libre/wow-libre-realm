@@ -15,12 +15,17 @@ public class JpaCharactersAdapter implements ObtainCharacters {
     }
 
     @Override
-    public List<CharactersEntity> getCharacters(Long accountId, String transactionId) {
+    public List<CharactersEntity> getCharactersAndAccountId(Long accountId, String transactionId) {
         return charactersRepository.findByAccount(accountId);
     }
 
     @Override
     public Optional<CharactersEntity> getCharacter(Long characterId, Long accountId, String transactionId) {
         return charactersRepository.findByGuidAndAccount(characterId, accountId);
+    }
+
+    @Override
+    public Optional<CharactersEntity> getCharacterId(Long characterId, String transactionId) {
+        return charactersRepository.findByGuid(characterId);
     }
 }

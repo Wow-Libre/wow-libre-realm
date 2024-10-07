@@ -2,25 +2,27 @@ package com.auth.wow.libre.domain.model.dto;
 
 import com.auth.wow.libre.domain.model.*;
 import com.fasterxml.jackson.annotation.*;
+import lombok.*;
 
+@Getter
 public class CharacterDetailDto {
-    protected Long id;
-    protected String name;
+    public Long id;
+    public String name;
     @JsonProperty("race_id")
-    protected Integer raceId;
-    protected String raceLogo;
-    protected String race;
+    public Integer raceId;
+    public String raceLogo;
+    public String race;
     @JsonProperty("class")
-    protected String classCharacters;
+    public String classCharacters;
     @JsonProperty("class_id")
-    protected Integer classId;
-    protected String classLogo;
-    protected Integer gender;
-    protected Integer level;
-    protected Integer xp;
-    protected Long money;
-    protected Integer logoutTime;
-    protected Integer totalTime;
+    public Integer classId;
+    public String classLogo;
+    public Integer gender;
+    public Integer level;
+    public Integer xp;
+    public Long money;
+    public Integer logoutTime;
+    public Integer totalTime;
 
 
     public CharacterDetailDto(CharacterModel character) {
@@ -40,5 +42,21 @@ public class CharacterDetailDto {
         this.totalTime = character.totalTime;
     }
 
+    public CharacterDetailDto(CharacterDetailDto character) {
+        this.id = character.id;
+        this.name = character.name;
+        this.race = character.race;
+        this.raceLogo = character.raceLogo;
+        this.raceId = character.raceId;
+        this.gender = character.gender;
+        this.level = character.level;
+        this.xp = character.xp;
+        this.money = character.money;
+        this.classCharacters = character.classCharacters;
+        this.classId = character.classId;
+        this.classLogo = character.classLogo;
+        this.logoutTime = character.logoutTime;
+        this.totalTime = character.totalTime;
+    }
 
 }

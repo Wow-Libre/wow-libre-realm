@@ -27,13 +27,13 @@ application:
   account:
     api-key: tt8wt17cx6nb0lb
     username: mschitiva68@gmail.com
-    password: sebas
+    password: 'sebas'
   urls:
     wow-libre-login: http://localhost:8090/api/auth/login
     wow-libre-server: http://localhost:8090/api/server/key
   security:
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 86400000 # a day
+      expiration: 604800000 # a day
       refresh-token:
         expiration: 604800000 # 7 days

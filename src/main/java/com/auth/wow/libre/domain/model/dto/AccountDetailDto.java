@@ -1,9 +1,8 @@
 package com.auth.wow.libre.domain.model.dto;
 
-import com.auth.wow.libre.domain.model.AccountBanned;
-import lombok.Builder;
+import com.auth.wow.libre.domain.model.*;
 
-import java.time.LocalDate;
+import java.time.*;
 
 public record AccountDetailDto(
         Long id,
@@ -19,22 +18,9 @@ public record AccountDetailDto(
         boolean mute,
         LocalDate lastLogin,
         String os,
-        AccountWeb accountWeb,
         AccountBanned accountBanned
 ) {
-    @Builder
-    public static class AccountWeb {
-        public Long id;
-        public String country;
-        public LocalDate dateOfBirth;
-        public String firstName;
-        public String lastName;
-        public String cellPhone;
-        public String email;
-        public String rolName;
-        public boolean status;
-        public boolean verified;
-    }
+
 
 
 }
