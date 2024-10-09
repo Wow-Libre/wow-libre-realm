@@ -1,6 +1,6 @@
 package com.auth.wow.libre.infrastructure.entities.auth;
 
-import com.auth.wow.libre.infrastructure.entities.dto.AccountMutedId;
+import com.auth.wow.libre.infrastructure.entities.characters.dto.AccountMutedId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

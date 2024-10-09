@@ -1,10 +1,9 @@
 package com.auth.wow.libre.infrastructure.entities.auth;
 
-import com.auth.wow.libre.domain.model.RolModel;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 @Data
 @Entity
@@ -20,17 +19,6 @@ public class RolEntity implements Serializable {
     public RolEntity() {
     }
 
-    public RolEntity(Long id, String name, boolean status) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-    }
 
-    public static RolEntity mapToAccountRolEntity(RolModel rol) {
-        return new RolEntity(rol.id, rol.name, rol.status);
-    }
 
-    public static RolModel mapToModel(RolEntity rol) {
-        return new RolModel(rol.id, rol.name, rol.status);
-    }
 }

@@ -1,4 +1,4 @@
-package com.auth.wow.libre.infrastructure.entities.dto;
+package com.auth.wow.libre.infrastructure.entities.characters.dto;
 
 import java.io.Serializable;
 import java.util.Objects;

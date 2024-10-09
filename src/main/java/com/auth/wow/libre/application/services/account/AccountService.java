@@ -104,7 +104,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void changePassword(Long accountId, String password, byte[] salt, String transactionId) {
+    public void changePassword(Long accountId, String password, byte[] saltPassword, String transactionId) {
 
         final Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
 
@@ -112,7 +112,38 @@ public class AccountService implements AccountPort {
             throw new InternalException("The server where your character is currently located is not available",
                     transactionId);
         }
-        
+
+        final String jwt = wowLibrePort.getJwt(transactionId);
+        final ServerModel apiSecret = wowLibrePort.apiSecret(jwt, transactionId);
+
+        try {
+            SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret.keyPassword, saltPassword);
+            final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
+            SecureRandom random = new SecureRandom();
+            byte[] salt = new byte[32];
+            random.nextBytes(salt);
+
+            AccountEntity accountUpdate = account.get();
+            accountUpdate.setSalt(salt);
+
+            byte[] verifier = EncryptionService.computeVerifier(ParamsEncrypt.trinitycore, salt,
+                    accountUpdate.getUsername().toUpperCase(),
+                    decryptedPassword.toUpperCase());
+
+
+            accountUpdate.setVerifier(verifier);
+
+            saveAccountPort.save(accountUpdate);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InternalException(
+                    transactionId, "The account could not be created, something has failed in the encryption");
+        } catch (Exception e) {
+            LOGGER.error("Could not update password: {}", e.getMessage(), e);
+            throw new InternalException(
+                    transactionId, "Could not update password");
+        }
+
+
     }
 
 }
