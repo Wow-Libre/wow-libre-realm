@@ -69,10 +69,9 @@ public class ManagerExceptionHandler {
                     GenericErrorException.class,
             })
     public ResponseEntity<GenericResponse<Void>> unauthorizedException(GenericErrorException e) {
-        System.out.println(e.getClass());
         GenericResponse<Void> response = new GenericResponse<>();
         response.setMessage(e.getMessage() != null ? e.getMessage() : "");
-        response.setCode(e.httpStatus.value());
+        response.setCode(e.code != null ? e.code : e.httpStatus.value());
         response.setTransactionId(e.transactionId);
         return ResponseEntity.status(e.httpStatus).body(response);
     }

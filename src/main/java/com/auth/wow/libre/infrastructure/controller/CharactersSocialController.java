@@ -3,6 +3,7 @@ package com.auth.wow.libre.infrastructure.controller;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.character_social.*;
+import jakarta.validation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +23,10 @@ public class CharactersSocialController {
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @PathVariable final Long friendGuid,
             @PathVariable(name = "character_id") final Long characterId,
-            @RequestParam final Long account_id) {
+            @RequestParam(name = "account_id") final Long account_id,
+            @RequestParam(name = "user_id") final Long userId) {
 
-        characterSocialPort.deleteFriend(characterId, account_id, friendGuid, transactionId);
+        characterSocialPort.deleteFriend(characterId, account_id, friendGuid, userId, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -45,5 +47,26 @@ public class CharactersSocialController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PostMapping("/send/money")
+    public ResponseEntity<GenericResponse<CharactersDto>> sendMoney(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid SendMoneyDto request) {
+
+        characterSocialPort.sendMoney(request.getCharacterId(), request.getAccountId(), request.getUserId(),
+                request.getFriendId(), request.getMoney(), request.getCost(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/send/level")
+    public ResponseEntity<GenericResponse<CharactersDto>> sendLevel(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid SendLevelDto request) {
+
+        characterSocialPort.sendLevel(request.getCharacterId(), request.getAccountId(), request.getUserId(),
+                request.getFriendId(), request.getLevel(), request.getCost(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }

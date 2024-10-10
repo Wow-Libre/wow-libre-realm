@@ -11,4 +11,7 @@ public interface ObtainAccountPort {
     List<AccountEntity> findByUserId(Long id);
 
     Optional<AccountEntity> findById(Long id);
+
+    Optional<AccountEntity> findByIdAndUserId(Long id, Long userId);
+
 }

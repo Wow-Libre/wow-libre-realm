@@ -1,4 +1,4 @@
-package com.auth.wow.libre.infrastructure.filter;
+package com.auth.wow.libre.infrastructure.filter.dto;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;

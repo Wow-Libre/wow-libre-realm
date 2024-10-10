@@ -9,5 +9,5 @@ public interface CharactersPort {
 
     CharacterDetailDto getCharacter(Long characterId, String transactionId);
 
-
+    void updateMoney(Long characterId, Long amount, String transactionId0);
 }

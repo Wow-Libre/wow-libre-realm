@@ -20,7 +20,7 @@ public class JpaMailAdapter implements ObtainMail {
     }
 
     @Override
-    public List<MailEntityDto> findByItemsAndMailId(Long mailId, String transactionId) {
+    public List<MailEntityModel> findByItemsAndMailId(Long mailId, String transactionId) {
         return mailRepository.findByMailsAndItems(mailId);
     }
 }

@@ -21,6 +21,10 @@ server:
   address: 0.0.0.0
   port: 8080
 application:
+  credentials:
+    command:
+      username: 'admin'
+      password: 'admin'
   wow-libre:
     username: wowlibre@support.com
     password: '$2a$10$WE7IIhe.mhRW8AXuh1cj.OvBWI7PqyfaDi5qR/h8k4ahvSIdCbnwe'

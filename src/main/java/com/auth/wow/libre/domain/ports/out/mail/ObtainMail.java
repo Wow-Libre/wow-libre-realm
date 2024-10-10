@@ -8,5 +8,5 @@ import java.util.*;
 public interface ObtainMail {
     List<MailEntity> findByMailGuidId(Long guidId, String transactionId);
 
-    List<MailEntityDto> findByItemsAndMailId(Long mailId, String transactionId);
+    List<MailEntityModel> findByItemsAndMailId(Long mailId, String transactionId);
 }

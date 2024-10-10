@@ -13,4 +13,5 @@ public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
 
     List<AccountEntity> findByUserId(Long id);
 
+    Optional<AccountEntity> findByIdAndUserId(Long Long, Long userId);
 }

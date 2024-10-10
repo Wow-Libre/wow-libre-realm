@@ -10,11 +10,11 @@ import java.util.*;
 public interface MailRepository extends CrudRepository<MailEntity, Long> {
     List<MailEntity> findByReceiverGuidId(Long characterId);
 
-    @Query("SELECT new com.auth.wow.libre.infrastructure.repositories.characters.mail.MailEntityDto(" +
+    @Query("SELECT new com.auth.wow.libre.infrastructure.repositories.characters.mail.MailEntityModel(" +
             "m.mailId, m.characterReceiverId, " +
             " ii.itemEntry, ii.duration, ii.id) " +
             "FROM MailItemsEntity m " +
             "JOIN ItemInstanceEntity ii ON ii.id = m.itemId " +
             "WHERE m.mailId = :mailId")
-    List<MailEntityDto> findByMailsAndItems(@Param("mailId") Long mailId);
+    List<MailEntityModel> findByMailsAndItems(@Param("mailId") Long mailId);
 }

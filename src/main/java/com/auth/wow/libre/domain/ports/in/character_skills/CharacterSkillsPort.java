@@ -5,6 +5,6 @@ import com.auth.wow.libre.domain.model.*;
 import java.util.*;
 
 public interface CharacterSkillsPort {
-    List<CharacterProfessionsModel> getProfessions(Long characterId, String transactionId);
+    List<CharacterProfessionsModel> getProfessions(Long characterId, Long accountId, String transactionId);
 
 }

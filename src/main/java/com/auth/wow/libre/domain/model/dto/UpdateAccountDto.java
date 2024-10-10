@@ -11,5 +11,7 @@ public class UpdateAccountDto {
     @NotNull
     private Long accountId;
     @NotNull
+    private Long userId;
+    @NotNull
     private byte[] salt;
 }

@@ -104,9 +104,10 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void changePassword(Long accountId, String password, byte[] saltPassword, String transactionId) {
+    public void changePassword(Long accountId, Long userId, String password, byte[] saltPassword,
+                               String transactionId) {
 
-        final Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
+        final Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
 
         if (account.isEmpty()) {
             throw new InternalException("The server where your character is currently located is not available",

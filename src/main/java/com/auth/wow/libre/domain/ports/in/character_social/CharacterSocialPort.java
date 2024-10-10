@@ -5,11 +5,11 @@ import com.auth.wow.libre.domain.model.dto.*;
 public interface CharacterSocialPort {
     CharacterSocialDto getFriends(Long characterId, String transactionId);
 
-    void deleteFriend(Long characterId, Long accountId, Long friendGuid, String transactionId);
+    void deleteFriend(Long characterId, Long accountId, Long friendGuid, Long userId, String transactionId);
 
-    void sendMoney(Long characterId, Long accountId, Long friendGuid, Long money,
+    void sendMoney(Long characterId, Long accountId, Long userId, Long friendGuid, Long money, Double cost,
                    String transactionId);
 
-    void sendLevel(Long characterId, Long accountId, Long friendGuid, int level,
+    void sendLevel(Long characterId, Long accountId, Long userId, Long friendGuid, int level, Double cost,
                    String transactionId);
 }

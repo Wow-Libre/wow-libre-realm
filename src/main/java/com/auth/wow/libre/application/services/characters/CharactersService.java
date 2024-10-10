@@ -3,6 +3,7 @@ package com.auth.wow.libre.application.services.characters;
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.enums.*;
+import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.out.characters.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
@@ -14,9 +15,11 @@ import java.util.*;
 public class CharactersService implements CharactersPort {
 
     private final ObtainCharacters obtainCharacters;
+    private final SaveCharacters saveCharacters;
 
-    public CharactersService(ObtainCharacters obtainCharacters) {
+    public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters) {
         this.obtainCharacters = obtainCharacters;
+        this.saveCharacters = saveCharacters;
     }
 
 
@@ -36,7 +39,7 @@ public class CharactersService implements CharactersPort {
     }
 
     @Override
-    public CharacterDetailDto getCharacter(Long characterId, Long accountId,  String transactionId) {
+    public CharacterDetailDto getCharacter(Long characterId, Long accountId, String transactionId) {
         return obtainCharacters.getCharacter(characterId, accountId, transactionId)
                 .map(this::mapToModel)
                 .map(CharacterDetailDto::new)
@@ -49,6 +52,20 @@ public class CharactersService implements CharactersPort {
                 .map(this::mapToModel)
                 .map(CharacterDetailDto::new)
                 .orElse(null);
+    }
+
+    @Override
+    public void updateMoney(Long characterId, Long amount, String transactionId) {
+
+        Optional<CharactersEntity> character = obtainCharacters.getCharacterId(characterId, transactionId);
+
+        if (character.isEmpty()) {
+            throw new InternalException("Could not update character", transactionId);
+        }
+
+        CharactersEntity characterUpdate = character.get();
+        characterUpdate.setMoney(amount);
+        saveCharacters.save(characterUpdate, transactionId);
     }
 
 

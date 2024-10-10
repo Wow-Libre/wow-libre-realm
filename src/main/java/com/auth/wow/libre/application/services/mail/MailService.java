@@ -43,7 +43,7 @@ public class MailService implements MailPort {
                 : null);
     }
 
-    private MailModel.Items mapToModel(MailEntityDto mailDto) {
+    private MailModel.Items mapToModel(MailEntityModel mailDto) {
         return new MailModel.Items(mailDto.getMailId(), mailDto.getItemId(), mailDto.getDuration(),
                 mailDto.getItemInstanceId());
     }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.*;
 import java.util.*;
 
 @Repository
-public class JpaCharactersAdapter implements ObtainCharacters {
+public class JpaCharactersAdapter implements ObtainCharacters, SaveCharacters {
     private final CharactersRepository charactersRepository;
 
     public JpaCharactersAdapter(CharactersRepository charactersRepository) {
@@ -27,5 +27,10 @@ public class JpaCharactersAdapter implements ObtainCharacters {
     @Override
     public Optional<CharactersEntity> getCharacterId(Long characterId, String transactionId) {
         return charactersRepository.findByGuid(characterId);
+    }
+
+    @Override
+    public void save(CharactersEntity characters, String transactionId) {
+        charactersRepository.save(characters);
     }
 }

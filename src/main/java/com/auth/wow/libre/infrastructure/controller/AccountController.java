@@ -47,16 +47,18 @@ public class AccountController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
     @PostMapping(path = "/change-password")
     public ResponseEntity<GenericResponse<Void>> changePassword(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid UpdateAccountDto request) {
 
-      accountPort.changePassword(request.getAccountId(),request.getPassword(), request.getSalt(),
+        accountPort.changePassword(request.getAccountId(), request.getUserId(), request.getPassword(),
+                request.getSalt(),
                 transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<Void>( transactionId).created().build());
+                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
 
 }
