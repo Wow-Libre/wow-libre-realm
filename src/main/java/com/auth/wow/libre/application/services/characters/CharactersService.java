@@ -39,6 +39,23 @@ public class CharactersService implements CharactersPort {
     }
 
     @Override
+    public CharactersDto loanApplicationCharacters(Long accountId, int level, int totalTimeSeconds,
+                                                   String transactionId) {
+
+        final List<CharacterModel> characterAccount =
+                obtainCharacters.findByAccountAndLevel(accountId, level, transactionId)
+                        .stream().filter(character -> character.getTotalTime() >= totalTimeSeconds).map(this::mapToModel).toList();
+
+        CharactersDto charactersDto = new CharactersDto();
+        charactersDto.setCharacters(characterAccount.stream()
+                .map(CharacterDetailDto::new)
+                .toList());
+        charactersDto.setTotalQuantity(characterAccount.size());
+
+        return charactersDto;
+    }
+
+    @Override
     public CharacterDetailDto getCharacter(Long characterId, Long accountId, String transactionId) {
         return obtainCharacters.getCharacter(characterId, accountId, transactionId)
                 .map(this::mapToModel)

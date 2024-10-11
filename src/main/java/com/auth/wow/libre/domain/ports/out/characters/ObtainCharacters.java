@@ -7,6 +7,8 @@ import java.util.*;
 public interface ObtainCharacters {
     List<CharactersEntity> getCharactersAndAccountId(Long accountId, String transactionId);
 
+    List<CharactersEntity> findByAccountAndLevel(Long accountId, int level, String transactionId);
+
     Optional<CharactersEntity> getCharacter(Long characterId, Long accountId, String transactionId);
 
     Optional<CharactersEntity> getCharacterId(Long characterId, String transactionId);

@@ -9,6 +9,8 @@ import java.util.*;
 public interface CharactersRepository extends CrudRepository<CharactersEntity, Long> {
     List<CharactersEntity> findByAccount(Long accountId);
 
+    List<CharactersEntity> findByAccountAndLevel(Long account, Integer level);
+
     Optional<CharactersEntity> findByGuidAndAccount(Long characterId, Long account);
 
     Optional<CharactersEntity> findByGuid(Long characterId);

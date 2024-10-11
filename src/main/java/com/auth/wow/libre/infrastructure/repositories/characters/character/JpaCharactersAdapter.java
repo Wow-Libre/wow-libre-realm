@@ -20,6 +20,11 @@ public class JpaCharactersAdapter implements ObtainCharacters, SaveCharacters {
     }
 
     @Override
+    public List<CharactersEntity> findByAccountAndLevel(Long accountId, int level, String transactionId) {
+        return charactersRepository.findByAccountAndLevel(accountId, level);
+    }
+
+    @Override
     public Optional<CharactersEntity> getCharacter(Long characterId, Long accountId, String transactionId) {
         return charactersRepository.findByGuidAndAccount(characterId, accountId);
     }

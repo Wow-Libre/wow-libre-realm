@@ -20,7 +20,7 @@ public class CommandsController {
     }
 
     @PostMapping
-    public ResponseEntity<GenericResponse<Void>> changePassword(
+    public ResponseEntity<GenericResponse<Void>> commands(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid ExecuteCommandRequest request) throws Exception {
 

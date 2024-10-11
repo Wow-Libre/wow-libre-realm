@@ -33,6 +33,24 @@ public class CharactersController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/loan/bank")
+    public ResponseEntity<GenericResponse<CharactersDto>> loanApplicationCharacters(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam(name = PARAM_ACCOUNT_ID) final Long accountId,
+            @RequestParam int time,
+            @RequestParam int level) {
+
+        CharactersDto characters = charactersPort.loanApplicationCharacters(accountId, level, time, transactionId);
+
+        if (characters != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new GenericResponseBuilder<CharactersDto>
+                            (transactionId).ok(characters).build());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @GetMapping("/{character_id}")
     public ResponseEntity<GenericResponse<CharacterDetailDto>> character(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
