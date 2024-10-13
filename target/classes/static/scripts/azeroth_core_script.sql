@@ -14,8 +14,6 @@ VALUES ('ADMIN', TRUE);
 ALTER TABLE acore_auth.account
     ADD COLUMN user_id bigint;
 
-
-
 CREATE TABLE acore_characters.character_transaction
 (
     id               bigint auto_increment NOT NULL,
@@ -34,3 +32,5 @@ CREATE TABLE acore_characters.character_transaction
 
 
 
+ALTER TABLE acore_characters.guild
+    ADD COLUMN public_access boolean;
