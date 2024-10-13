@@ -103,8 +103,53 @@ public class GuildService implements GuildPort {
     }
 
     @Override
-    public void unInviteGuild(Long accountId, Long characterId, String transactionId) {
+    public void unInviteGuild(Long accountId, Long characterId, Long guildId, String transactionId) {
+        Optional<GuildModel> getGuild = obtainGuild.getGuild(guildId).map(this::mapToModel);
 
+        if (getGuild.isEmpty()) {
+            throw new NotFoundException("The requested guild does not exist", transactionId);
+        }
+
+        CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
+
+        if (character == null) {
+            throw new InternalException("The requested characters does not exist", transactionId);
+        }
+
+        try {
+
+            executeCommandsPort.execute(CommandsCore.unInvite(character.getName()), transactionId);
+        } catch (SoapFaultClientException | JAXBException e) {
+            LOGGER.error("It was not possible to link the client to the brotherhood. TransactionId [{}] - " +
+                            "LocalizedMessage [{}] - Message [{}]",
+                    transactionId, e.getLocalizedMessage(), e.getMessage());
+            throw new InternalException("The request to join the brotherhood could not be made, please check if " +
+                    "you  already belong to it", transactionId);
+        }
+
+    }
+
+    @Override
+    public GuildDto detail(Long accountId, Long characterId, String transactionId) {
+
+        GuildMemberModel guildMember = guildMemberPort.guildMemberByCharacterId(characterId, transactionId);
+
+        if (guildMember == null) {
+            throw new NotFoundException("The requested guild does not exist", transactionId);
+        }
+
+        Optional<GuildModel> getGuild = obtainGuild.getGuild(guildMember.guildId()).map(this::mapToModel);
+
+        if (getGuild.isEmpty()) {
+            throw new NotFoundException("The requested guild does not exist", transactionId);
+        }
+
+        GuildModel guild = getGuild.get();
+
+        return new GuildDto(guild.id, guild.name, guild.leaderName, guild.emblemStyle, guild.emblemColor,
+                guild.borderStyle, guild.borderColor, guild.info, guild.motd, guild.createDate, guild.bankMoney,
+                guild.members, null,
+                guild.publicAccess, calculateMoneyString(guild.bankMoney));
     }
 
     private GuildModel mapToModel(GuildEntity guildEntity) {

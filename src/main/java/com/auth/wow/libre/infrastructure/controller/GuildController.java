@@ -47,11 +47,11 @@ public class GuildController {
                 .body(new GenericResponseBuilder<GuildDto>(transactionId).ok(guild).build());
     }
 
-    @PutMapping(path = "/{guild_id}/attach")
+    @PutMapping(path = "/attach")
     public ResponseEntity<GenericResponse<Void>> attach(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestParam(name = "account_id") final Long accountId,
-            @PathVariable(name = "guild_id") final Long guildId,
+            @RequestParam(name = "guild_id") final Long guildId,
             @RequestParam(name = "character_id") final Long characterId) {
 
         guildPort.attach(guildId, accountId, characterId, transactionId);
@@ -62,18 +62,31 @@ public class GuildController {
     }
 
 
-    @DeleteMapping(path = "/member/{character_id}")
+    @DeleteMapping(path = "/member")
     public ResponseEntity<GenericResponse<Void>> unInviteGuild(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @PathVariable(name = "character_id") final Long characterId,
-            @RequestParam(name = "account_id") final Long accountId) {
+            @RequestParam(name = "character_id") final Long characterId,
+            @RequestParam(name = "account_id") final Long accountId,
+            @RequestParam(name = "guild_id") final Long guildId) {
 
-        guildPort.unInviteGuild(accountId, characterId, transactionId);
+        guildPort.unInviteGuild(accountId, characterId, guildId, transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
 
+    @GetMapping(path = "/member")
+    public ResponseEntity<GenericResponse<GuildDto>> guildCharacterId(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam(name = "character_id") final Long characterId,
+            @RequestParam(name = "account_id") final Long accountId) {
+
+        GuildDto guild = guildPort.detail(accountId, characterId, transactionId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<GuildDto>(transactionId).ok(guild).build());
+    }
 
 }
