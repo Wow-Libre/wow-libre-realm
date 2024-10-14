@@ -9,7 +9,7 @@ public interface GuildPort {
 
     void attach(Long guildId, Long accountId, Long characterId, String transactionId);
 
-    void unInviteGuild(Long accountId, Long characterId, Long guildId, String transactionId);
+    void unInviteGuild(Long accountId, Long characterId, String transactionId);
 
     GuildDto detail(Long guildId, Long characterId, String transactionId);
 

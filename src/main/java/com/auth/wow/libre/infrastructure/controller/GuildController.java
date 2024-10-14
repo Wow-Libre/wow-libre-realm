@@ -66,10 +66,9 @@ public class GuildController {
     public ResponseEntity<GenericResponse<Void>> unInviteGuild(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestParam(name = "character_id") final Long characterId,
-            @RequestParam(name = "account_id") final Long accountId,
-            @RequestParam(name = "guild_id") final Long guildId) {
+            @RequestParam(name = "account_id") final Long accountId) {
 
-        guildPort.unInviteGuild(accountId, characterId, guildId, transactionId);
+        guildPort.unInviteGuild(accountId, characterId,  transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

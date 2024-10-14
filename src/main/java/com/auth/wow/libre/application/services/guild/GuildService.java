@@ -103,17 +103,24 @@ public class GuildService implements GuildPort {
     }
 
     @Override
-    public void unInviteGuild(Long accountId, Long characterId, Long guildId, String transactionId) {
-        Optional<GuildModel> getGuild = obtainGuild.getGuild(guildId).map(this::mapToModel);
+    public void unInviteGuild(Long accountId, Long characterId, String transactionId) {
 
-        if (getGuild.isEmpty()) {
-            throw new NotFoundException("The requested guild does not exist", transactionId);
-        }
 
         CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
 
         if (character == null) {
             throw new InternalException("The requested characters does not exist", transactionId);
+        }
+
+        GuildMemberModel guildMember =
+                guildMemberPort.guildMemberByCharacterId(character.id, transactionId);
+
+        if (guildMember == null) {
+            throw new NotFoundException("The requested guild does not exist", transactionId);
+        }
+
+        if (guildMember.rank() == 0) {
+            throw new InternalException("You cannot leave the guild without leaving a guild master.", transactionId);
         }
 
         try {
