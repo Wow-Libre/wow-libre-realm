@@ -11,4 +11,5 @@ public interface AccountPort {
     AccountDetailDto account(Long accountId, String transactionId);
 
     void changePassword(Long accountId, Long userId, String password, byte[] salt, String transactionId);
+
 }

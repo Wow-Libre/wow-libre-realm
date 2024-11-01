@@ -23,7 +23,6 @@ public class AccountService implements AccountPort {
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
     private final AccountBannedPort accountBannedPort;
-
     private final WowLibrePort wowLibrePort;
 
     public AccountService(ObtainAccountPort obtainAccountPort,
@@ -146,5 +145,6 @@ public class AccountService implements AccountPort {
 
 
     }
+
 
 }

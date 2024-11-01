@@ -36,4 +36,6 @@ public class CommandsService implements ExecuteCommandsPort {
     public void execute(String command, String transactionId) throws JAXBException {
         coreClient.executeCommand(command);
     }
+
+
 }

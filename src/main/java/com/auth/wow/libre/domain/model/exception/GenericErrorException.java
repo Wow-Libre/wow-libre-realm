@@ -7,7 +7,7 @@ public class GenericErrorException extends RuntimeException {
     public final Integer code;
     public final HttpStatus httpStatus;
 
-    public GenericErrorException(String transactionId, String message, Integer code, HttpStatus httpStatus) {
+    public GenericErrorException( String message, String transactionId, Integer code, HttpStatus httpStatus) {
         super(message);
         this.transactionId = transactionId;
         this.code = code;

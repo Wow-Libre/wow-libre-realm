@@ -16,7 +16,7 @@ public class CharacterModel {
     public final Integer gender;
     public final Integer level;
     public final Integer xp;
-    public final Long money;
+    public final Double money;
     public final Integer skin;
     public final Integer face;
     public final Integer hairStyle;

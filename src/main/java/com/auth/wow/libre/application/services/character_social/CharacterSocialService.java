@@ -144,8 +144,19 @@ public class CharacterSocialService implements CharacterSocialPort {
             executeCommandsPort.execute(command, transactionId);
             charactersPort.updateMoney(characterId, (long) (character.getMoney() - (goldSend + cost)),
                     transactionId);
-            characterTransactionPort.create(new CharacterTransactionModel(null, TransactionType.SEND_MONEY, characterId,
-                    cost, false, false, LocalDateTime.now(), command, accountId, userId, true), transactionId);
+
+            characterTransactionPort.create(CharacterTransactionModel.builder()
+                    .amount(cost)
+                    .transactionType(TransactionType.SEND_MONEY)
+                    .characterId(characterId)
+                    .indebtedness(false)
+                    .status(false)
+                    .transactionDate(LocalDateTime.now())
+                    .command(command)
+                    .accountId(accountId)
+                    .userId(userId)
+                    .successful(true)
+                    .build(), transactionId);
 
         } catch (JAXBException e) {
             LOGGER.error("I tried to send money by mail to my colleague but it was not possible. CharacterId{} " +
@@ -205,9 +216,18 @@ public class CharacterSocialService implements CharacterSocialPort {
             final String command = CommandsCore.sendLevel(friend.getName(), friend.getLevel() + level);
             executeCommandsPort.execute(command, transactionId);
 
-            characterTransactionPort.create(new CharacterTransactionModel(null, TransactionType.SEND_LEVEL,
-                    characterId,
-                    cost, false, false, LocalDateTime.now(), command, accountId, userId, true), transactionId);
+            characterTransactionPort.create(CharacterTransactionModel.builder()
+                    .amount(cost)
+                    .transactionType(TransactionType.SEND_LEVEL)
+                    .characterId(characterId)
+                    .indebtedness(false)
+                    .status(false)
+                    .transactionDate(LocalDateTime.now())
+                    .command(command)
+                    .accountId(accountId)
+                    .userId(userId)
+                    .successful(true)
+                    .build(), transactionId);
 
             charactersPort.updateMoney(characterId, (long) (character.getMoney() - cost), transactionId);
         } catch (JAXBException e) {

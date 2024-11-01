@@ -23,8 +23,11 @@ public class CharacterTransactionEntity {
     private boolean successful;
     @Column(name = "transaction_id")
     private String transactionId;
+    private String reference;
     private Boolean indebtedness;
     private Boolean status;
     @Column(name = "transaction_date")
     private LocalDateTime transactionDate;
+    @Column(name = "transaction_type")
+    private String transactionType;
 }

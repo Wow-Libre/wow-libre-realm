@@ -81,14 +81,16 @@ public class CharactersService implements CharactersPort {
         }
 
         CharactersEntity characterUpdate = character.get();
-        characterUpdate.setMoney(amount);
+        characterUpdate.setMoney(Double.valueOf(amount));
         saveCharacters.save(characterUpdate, transactionId);
     }
 
 
+
+
     private CharacterModel mapToModel(CharactersEntity characters) {
-        long gold = characters.getMoney() / 10000;
-        long copper = characters.getMoney() % 10000;
+        long gold = characters.getMoney().longValue() / 10000;
+        long copper = characters.getMoney().longValue() % 10000;
         WowRace characterRace = WowRace.getById(characters.getRace());
         int gender = characters.getGender();
         WowClass classCharacter = WowClass.getById(characters.getClassCharacters());

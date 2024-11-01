@@ -1,10 +1,11 @@
 package com.auth.wow.libre;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.scheduling.annotation.*;
 
-@SpringBootApplication(exclude={ SecurityAutoConfiguration.class})
+@EnableScheduling
+@SpringBootApplication
 public class CoreApplication {
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class, args);

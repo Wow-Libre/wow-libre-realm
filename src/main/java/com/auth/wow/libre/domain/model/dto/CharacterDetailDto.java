@@ -20,7 +20,7 @@ public class CharacterDetailDto {
     public Integer gender;
     public Integer level;
     public Integer xp;
-    public Long money;
+    public Double money;
     public Integer logoutTime;
     public Integer totalTime;
 

@@ -7,5 +7,7 @@ import java.util.*;
 public interface ObtainCharacterTransaction {
     List<CharacterTransactionEntity> getCharacterIdTransaction(Long characterId, String transactionId);
 
+    Optional<CharacterTransactionEntity> findByReference(String reference, String transactionId);
 
+    List<CharacterTransactionEntity> findByTransactionType(String transactionType, String transactionId);
 }

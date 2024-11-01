@@ -1,6 +1,6 @@
 package com.auth.wow.libre.domain.model.enums;
 
-import com.auth.wow.libre.domain.model.*;
+import com.auth.wow.libre.domain.model.dto.*;
 
 import java.util.*;
 
@@ -13,12 +13,12 @@ public class CommandsCore {
         return String.format(".guild uninvite %s ", playerName);
     }
 
-    public static String sendItems(String playerName, String subject, String body, List<ItemQuantityModel> items) {
+    public static String sendItems(String playerName, String subject, String body, List<ItemQuantityDto> items) {
         StringBuilder commandBuilder = new StringBuilder(".send items ");
         commandBuilder.append(playerName).append(" \"").append(subject).append("\" \"").append(body).append("\" ");
 
-        for (ItemQuantityModel item : items) {
-            commandBuilder.append(item.id()).append(":").append(item.quantity()).append(" ");
+        for (ItemQuantityDto item : items) {
+            commandBuilder.append(item.getId()).append(":").append(item.getQuantity()).append(" ");
         }
 
         return commandBuilder.toString().trim();

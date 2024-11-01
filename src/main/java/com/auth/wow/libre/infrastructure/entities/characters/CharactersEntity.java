@@ -23,7 +23,7 @@ public class CharactersEntity implements Serializable {
     private Integer gender;
     private Integer level;
     private Integer xp;
-    private Long money;
+    private Double money;
     private Integer skin;
     private Integer face;
     @Column(name = "hairstyle")

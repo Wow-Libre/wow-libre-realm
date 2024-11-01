@@ -24,4 +24,15 @@ public class JpaCharacterTransactionAdapter implements SaveCharacterTransaction,
         return characterTransactionRepository.findByCharacterIdAndStatusIsTrueAndIndebtednessIsTrue(characterId);
     }
 
+    @Override
+    public Optional<CharacterTransactionEntity> findByReference(String reference, String transactionId) {
+        return characterTransactionRepository.findByReference(reference);
+    }
+
+    @Override
+    public List<CharacterTransactionEntity> findByTransactionType(String transactionType, String transactionId) {
+        return characterTransactionRepository.findByTransactionTypeAndStatusIsTrue(transactionType);
+    }
+
+
 }
