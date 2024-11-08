@@ -50,6 +50,7 @@ public class AccountService implements AccountPort {
             boolean usernameExist = obtainAccountPort.findByUsername(username).isPresent();
 
             if (usernameExist) {
+                LOGGER.error("The username is not available {}", transactionId);
                 throw new InternalException("The username is not available", transactionId);
             }
 
@@ -71,12 +72,15 @@ public class AccountService implements AccountPort {
             account.setUserId(userId);
             return saveAccountPort.save(account).getId();
         } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("The server where your character is " + "currently located is not available {}",
+                    transactionId);
             throw new InternalException(
-                    transactionId, "The account could not be created, something has failed in the encryption");
+                    "The account could not be created, something has failed in the encryption  {}",
+                    transactionId);
         } catch (Exception e) {
-            LOGGER.error("An error occurred during processing: {}", e.getMessage(), e);
+            LOGGER.error("An error occurred during processing: {} {}", e.getMessage(), transactionId, e);
             throw new InternalException(
-                    transactionId, "It was not possible to create the client, please try later and contact support");
+                    "It was not possible to create the client, please try later and contact support", transactionId);
         }
 
 
@@ -109,8 +113,10 @@ public class AccountService implements AccountPort {
         final Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
 
         if (account.isEmpty()) {
-            throw new InternalException("The server where your character is currently located is not available",
+            LOGGER.error("The server where your character is " + "currently located is not available {}",
                     transactionId);
+            throw new InternalException("The server where your character is " +
+                    "currently located is not available", transactionId);
         }
 
         final String jwt = wowLibrePort.getJwt(transactionId);
@@ -135,10 +141,14 @@ public class AccountService implements AccountPort {
 
             saveAccountPort.save(accountUpdate);
         } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("[AccountService][changePassword] The account could not be created, something has " +
+                    "failed in the encryption {}", transactionId);
             throw new InternalException(
-                    transactionId, "The account could not be created, something has failed in the encryption");
+                    transactionId, "[AccountService][changePassword] The account could not be created, something has " +
+                    "failed in the encryption");
         } catch (Exception e) {
-            LOGGER.error("Could not update password: {}", e.getMessage(), e);
+            LOGGER.error("[AccountService][changePassword] Could not update password: {} {}", e.getMessage(),
+                    transactionId, e);
             throw new InternalException(
                     transactionId, "Could not update password");
         }

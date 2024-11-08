@@ -19,10 +19,12 @@ public class GuildModel {
 
     public final Long members;
     public final boolean publicAccess;
+    public final String discord;
+    public final Boolean multiFaction;
 
     public GuildModel(Long id, String name, String leaderName, Long emblemStyle, Long emblemColor,
                       Long borderStyle, Long borderColor, String info, String motd, Date createDate, Long bankMoney,
-                      Long members, Boolean publicAccess) {
+                      Long members, Boolean publicAccess, String discord, Boolean multiFaction) {
         this.id = id;
         this.name = name;
         this.leaderName = leaderName;
@@ -36,5 +38,7 @@ public class GuildModel {
         this.bankMoney = bankMoney;
         this.members = members;
         this.publicAccess = publicAccess != null && publicAccess;
+        this.discord = discord;
+        this.multiFaction = multiFaction != null && multiFaction;
     }
 }

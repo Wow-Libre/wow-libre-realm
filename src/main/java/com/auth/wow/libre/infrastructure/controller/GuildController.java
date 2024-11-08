@@ -3,6 +3,7 @@ package com.auth.wow.libre.infrastructure.controller;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.guild.*;
+import jakarta.validation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,7 +69,7 @@ public class GuildController {
             @RequestParam(name = "character_id") final Long characterId,
             @RequestParam(name = "account_id") final Long accountId) {
 
-        guildPort.unInviteGuild(accountId, characterId,  transactionId);
+        guildPort.unInviteGuild(accountId, characterId, transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -88,4 +89,16 @@ public class GuildController {
                 .body(new GenericResponseBuilder<GuildDto>(transactionId).ok(guild).build());
     }
 
+    @PutMapping(path = "/edit")
+    public ResponseEntity<GenericResponse<Void>> update(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid UpdateGuildDto request) {
+
+        guildPort.update(request.getAccountId(), request.getCharacterId(),
+                request.getDiscord(), request.isMultiFaction(), request.isPublic(), transactionId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
 }

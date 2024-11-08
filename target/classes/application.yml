@@ -25,19 +25,16 @@ application:
     command:
       username: 'admin'
       password: 'admin'
-  wow-libre:
-    username: wowlibre@support.com
-    password: '$2a$10$WE7IIhe.mhRW8AXuh1cj.OvBWI7PqyfaDi5qR/h8k4ahvSIdCbnwe'
   account:
     api-key: tt8wt17cx6nb0lb
     username: mschitiva68@gmail.com
-    password: 'sebas'
+    password: 'bcnewnogso3xe0f'
   urls:
     wow-libre-login: http://localhost:8090/api/auth/login
     wow-libre-server: http://localhost:8090/api/server/key
   security:
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 604800000 # a day
+      expiration: 604800000  # 7 day
       refresh-token:
-        expiration: 604800000 # 7 days
+        expiration: 1209600000 # 14 días

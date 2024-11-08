@@ -8,7 +8,7 @@ import org.springframework.stereotype.*;
 import java.util.*;
 
 @Repository
-public class JpaGuildAdapter implements ObtainGuild {
+public class JpaGuildAdapter implements ObtainGuild, SaveGuild {
 
     private final GuildRepository guildRepository;
 
@@ -34,4 +34,8 @@ public class JpaGuildAdapter implements ObtainGuild {
         return guildRepository.countAllGuilds();
     }
 
+    @Override
+    public void save(GuildEntity guildEntity, String transactionId) {
+        guildRepository.save(guildEntity);
+    }
 }

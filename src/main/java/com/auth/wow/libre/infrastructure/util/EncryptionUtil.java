@@ -7,9 +7,9 @@ import java.util.*;
 
 public class EncryptionUtil {
 
-    private static final String ALGORITHM = "AES/GCM/NoPadding";  // AES en modo GCM con No Padding
-    private static final int TAG_LENGTH_BIT = 128;  // Autenticación de 128 bits para GCM
-    private static final int IV_LENGTH_BYTE = 12;   // Longitud del IV para GCM (12 bytes recomendados)
+    private static final String ALGORITHM = "AES/GCM/NoPadding";
+    private static final int TAG_LENGTH_BIT = 128;
+    private static final int IV_LENGTH_BYTE = 12;
 
     // Cifrar el mensaje con AES-GCM
     public static String encrypt(String message, SecretKey secretKey) throws Exception {

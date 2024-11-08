@@ -1,6 +1,8 @@
 package com.auth.wow.libre.domain.model.security;
 
-import com.auth.wow.libre.infrastructure.conf.*;
+import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.ports.out.client.*;
+import com.auth.wow.libre.infrastructure.entities.auth.*;
 import org.springframework.security.core.*;
 import org.springframework.security.core.authority.*;
 import org.springframework.security.core.userdetails.*;
@@ -11,29 +13,38 @@ import java.util.*;
 @Component
 public class UserDetailsServiceCustom implements UserDetailsService {
 
-    private final Configurations configurations;
 
-    public UserDetailsServiceCustom(Configurations configurations) {
-        this.configurations = configurations;
+    private final ObtainClient obtainClient;
+
+    public UserDetailsServiceCustom(ObtainClient obtainClient) {
+        this.obtainClient = obtainClient;
     }
 
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new CustomUserDetails(assignRol(), configurations.getAuthPassWowLibre(),
-                configurations.getLoginUsername(),
+
+        Optional<ClientEntity> client = obtainClient.findByUsername(username);
+
+        if (client.isEmpty()) {
+            throw new UnauthorizedException("Unauthorized Username", "");
+        }
+
+        ClientEntity clientData = client.get();
+
+        return new CustomUserDetails(assignRol(clientData.getRol()), clientData.getPassword(),
+                clientData.getUsername(),
                 true,
                 true,
                 true,
-                true,
-                1L,
+                clientData.isStatus(),
+                clientData.getId(),
                 "",
                 "es"
         );
     }
 
-
-    private List<GrantedAuthority> assignRol() {
-        return Collections.singletonList(new SimpleGrantedAuthority("CLIENT"));
+    private List<GrantedAuthority> assignRol(String name) {
+        return Collections.singletonList(new SimpleGrantedAuthority(name.toUpperCase()));
     }
 
 

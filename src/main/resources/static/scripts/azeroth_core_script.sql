@@ -1,17 +1,31 @@
-CREATE TABLE acore_auth.rol
-(
-    id     bigint AUTO_INCREMENT NOT NULL,
-    name   varchar(50)           NOT NULL,
-    status boolean               NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT name_uq UNIQUE (name)
-);
-
-INSERT INTO acore_auth.rol (name, status)
-VALUES ('ADMIN', TRUE);
-
 ALTER TABLE acore_auth.account
     ADD COLUMN user_id bigint;
+
+ALTER TABLE acore_characters.guild
+    ADD COLUMN public_access boolean;
+
+ALTER TABLE acore_characters.guild
+    ADD COLUMN discord text;
+
+ALTER TABLE acore_characters.guild
+    ADD COLUMN multi_faction boolean;
+
+
+CREATE TABLE acore_auth.client
+(
+    id              bigint AUTO_INCREMENT NOT NULL,
+    username        varchar(50)           NOT NULL,
+    password        text                  NOT NULL,
+    status          boolean               NOT NULL,
+    rol             varchar(50)           NOT NULL,
+    jwt             text,
+    refresh_token   text,
+    expiration_date date,
+    PRIMARY KEY (id),
+    CONSTRAINT client_username_uq UNIQUE (username)
+);
+
+
 
 CREATE TABLE acore_characters.character_transaction
 (
@@ -33,6 +47,6 @@ CREATE TABLE acore_characters.character_transaction
 );
 
 
-
-ALTER TABLE acore_characters.guild
-    ADD COLUMN public_access boolean;
+INSERT INTO acore_auth.client
+(username, password, status, rol)
+VALUES ('Crypt0n!c_R3gulus9', '$2a$10$WE7IIhe.mhRW8AXuh1cj.OvBWI7PqyfaDi5qR/h8k4ahvSIdCbnwe', 1, 'CLIENT');

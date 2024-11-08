@@ -26,13 +26,16 @@ public class GuildService implements GuildPort {
     private static final int SILVER_VALUE = 100;
     private final ObtainGuild obtainGuild;
     private final GuildMemberPort guildMemberPort;
+    private final SaveGuild saveGuild;
     private final CharactersPort charactersPort;
     private final ExecuteCommandsPort executeCommandsPort;
 
-    public GuildService(ObtainGuild obtainGuild, GuildMemberPort guildMemberPort, CharactersPort charactersPort,
+    public GuildService(ObtainGuild obtainGuild, GuildMemberPort guildMemberPort, SaveGuild saveGuild,
+                        CharactersPort charactersPort,
                         ExecuteCommandsPort executeCommandsPort) {
         this.obtainGuild = obtainGuild;
         this.guildMemberPort = guildMemberPort;
+        this.saveGuild = saveGuild;
         this.charactersPort = charactersPort;
         this.executeCommandsPort = executeCommandsPort;
     }
@@ -57,12 +60,13 @@ public class GuildService implements GuildPort {
             throw new NotFoundException("The requested guild does not exist", transactionId);
         }
 
+
         final GuildModel guild = getGuild.get();
 
         return new GuildDto(guild.id, guild.name, guild.leaderName, guild.emblemStyle, guild.emblemColor,
                 guild.borderStyle, guild.borderColor, guild.info, guild.motd, guild.createDate, guild.bankMoney,
                 guild.members, null,
-                guild.publicAccess, calculateMoneyString(guild.bankMoney));
+                guild.publicAccess, calculateMoneyString(guild.bankMoney), false, guild.discord, guild.multiFaction);
     }
 
     @Override
@@ -156,7 +160,34 @@ public class GuildService implements GuildPort {
         return new GuildDto(guild.id, guild.name, guild.leaderName, guild.emblemStyle, guild.emblemColor,
                 guild.borderStyle, guild.borderColor, guild.info, guild.motd, guild.createDate, guild.bankMoney,
                 guild.members, null,
-                guild.publicAccess, calculateMoneyString(guild.bankMoney));
+                guild.publicAccess, calculateMoneyString(guild.bankMoney), guildMember.rank() == 0, guild.discord,
+                guild.multiFaction);
+    }
+
+    @Override
+    public void update(Long accountId,  Long characterId, String discord, boolean multiFaction,
+                       boolean isPublic, String transactionId) {
+        GuildMemberModel guildMember = guildMemberPort.guildMemberByCharacterId(characterId, transactionId);
+
+        if (guildMember == null) {
+            throw new NotFoundException("The requested guild does not exist", transactionId);
+        }
+
+        if (guildMember.rank() != 0) {
+            throw new NotFoundException("It is not possible to modify the information if you are not the guild master", transactionId);
+        }
+
+        Optional<GuildEntity> getGuild = obtainGuild.getGuild(guildMember.guildId());
+
+        if (getGuild.isEmpty()) {
+            throw new NotFoundException("The requested guild does not exist", transactionId);
+        }
+
+        GuildEntity guild = getGuild.get();
+        guild.setDiscord(discord);
+        guild.setMultiFaction(multiFaction);
+        guild.setPublicAccess(isPublic);
+        saveGuild.save(guild, transactionId);
     }
 
     private GuildModel mapToModel(GuildEntity guildEntity) {
@@ -167,7 +198,8 @@ public class GuildService implements GuildPort {
         return new GuildModel(guildEntity.getId(), guildEntity.getName(), character.getName(),
                 guildEntity.getEmblemStyle(), guildEntity.getEmblemColor(), guildEntity.getBorderStyle(),
                 guildEntity.getBorderColor(), guildEntity.getInfo(), guildEntity.getMotd(),
-                dateCreate, guildEntity.getBankMoney(), members, guildEntity.getPublicAccess());
+                dateCreate, guildEntity.getBankMoney(), members, guildEntity.getPublicAccess(),
+                guildEntity.getDiscord(), guildEntity.getMultiFaction());
     }
 
     public static String calculateMoneyString(long money) {

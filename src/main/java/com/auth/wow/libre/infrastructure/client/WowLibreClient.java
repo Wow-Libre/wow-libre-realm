@@ -82,12 +82,14 @@ public class WowLibreClient {
             }
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            LOGGER.error("Client/Server Error: {}. The request failed with a client or server error. " +
+            LOGGER.error("[WowLibreClient] [api-secret] Client/Server Error: {}. The request failed with a client or " +
+                            "server error. " +
                             "HTTP Status: {}, Response Body: {}",
                     e.getMessage(), e.getStatusCode(), e.getResponseBodyAsString());
             throw new InternalException("Transaction failed due to client or server error", transactionId);
         } catch (Exception e) {
-            LOGGER.error("Unexpected Error: {}. An unexpected error occurred during the transaction with ID: {}.",
+            LOGGER.error("[WowLibreClient] [api-secret] Unexpected Error: {}. An unexpected error occurred during the" +
+                            " transaction with ID: {}.",
                     e.getMessage(), transactionId, e);
             throw new InternalException("Unexpected transaction failure", transactionId);
         }
