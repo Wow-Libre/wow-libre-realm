@@ -1,6 +1,9 @@
 package com.auth.wow.libre.domain.ports.in.characters;
 
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.infrastructure.entities.characters.*;
+
+import java.util.*;
 
 
 public interface CharactersPort {
@@ -14,5 +17,7 @@ public interface CharactersPort {
     CharacterDetailDto getCharacter(Long characterId, String transactionId);
 
     void updateMoney(Long characterId, Long amount, String transactionId0);
+
+    List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId);
 
 }

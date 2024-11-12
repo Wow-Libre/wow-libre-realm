@@ -25,7 +25,7 @@ public class TransactionController {
             @RequestBody @Valid CreateTransactionItemsDto request) {
 
         transactionPort.sendItems(request.getUserId(), request.getAccountId(), request.getItems(),
-                request.getReference(), transactionId);
+                request.getReference(), request.getAmount(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());

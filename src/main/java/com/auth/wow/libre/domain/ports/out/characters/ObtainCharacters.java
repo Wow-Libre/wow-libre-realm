@@ -13,4 +13,5 @@ public interface ObtainCharacters {
 
     Optional<CharactersEntity> getCharacterId(Long characterId, String transactionId);
 
+    List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId);
 }

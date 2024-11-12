@@ -30,14 +30,8 @@ public class TransactionService implements TransactionPort {
     @Transactional
     @Override
     public void sendItems(Long userId, Long accountId, List<ItemQuantityDto> items, String reference,
-                          String transactionId) {
+                          Double amount, String transactionId) {
 
-        if (characterTransactionPort.existTransaction(reference, transactionId)) {
-            LOGGER.error("[TransactionService] [sendItems] The reference already exists, so at some point the item " +
-                            "must have been sent. Reference {}",
-                    reference);
-            return;
-        }
 
         CharactersDto characters = charactersPort.getCharacters(accountId, transactionId);
 
@@ -45,20 +39,33 @@ public class TransactionService implements TransactionPort {
             throw new InternalException("No cuenta con personajes para enviar items", transactionId);
         }
 
-        characters.getCharacters().forEach(character ->
+        characters.getCharacters().forEach(character -> {
 
-                characterTransactionPort.create(CharacterTransactionModel.builder()
-                                .command(CommandsCore.sendItems(character.name, "", "Thank you for your kind " +
-                                        "donation! Your support truly means a lot.", items))
-                                .accountId(accountId)
-                                .userId(userId)
-                                .amount(0d)
-                                .indebtedness(false)
-                                .transactionType(TransactionType.SEND_ITEMS)
-                                .successful(false)
-                                .status(true)
-                                .characterId(character.id).transactionDate(LocalDateTime.now()).build(),
-                        transactionId)
+                    String referenceId = character.id + reference;
+
+                    if (characterTransactionPort.existTransaction(referenceId, transactionId)) {
+                        LOGGER.error("[TransactionService] [sendItems] The reference already exists, so at some point" +
+                                        " the item " +
+                                        "must have been sent. Reference {}",
+                                reference);
+                        return;
+                    }
+
+                    characterTransactionPort.create(CharacterTransactionModel.builder()
+                                    .command(CommandsCore.sendItems(character.name, "", "Thank you for your kind " +
+                                            "donation! Your support truly means a lot.", items))
+                                    .accountId(accountId)
+                                    .userId(userId)
+                                    .reference(referenceId)
+                                    .amount(amount)
+                                    .indebtedness(amount != null && amount > 0)
+                                    .transactionType(TransactionType.SEND_ITEMS)
+                                    .successful(true)
+                                    .status(true)
+                                    .characterId(character.id).transactionDate(LocalDateTime.now()).build(),
+                            transactionId);
+
+                }
         );
 
     }

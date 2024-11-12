@@ -16,4 +16,5 @@ public class CreateTransactionItemsDto {
     @NotNull
     @NotEmpty
     private String reference;
+    private Double amount;
 }

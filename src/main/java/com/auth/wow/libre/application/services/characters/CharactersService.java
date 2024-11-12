@@ -85,7 +85,10 @@ public class CharactersService implements CharactersPort {
         saveCharacters.save(characterUpdate, transactionId);
     }
 
-
+    @Override
+    public List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId) {
+        return obtainCharacters.getCharactersAvailableMoney(accountId, money, transactionId);
+    }
 
 
     private CharacterModel mapToModel(CharactersEntity characters) {

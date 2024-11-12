@@ -35,6 +35,11 @@ public class JpaCharactersAdapter implements ObtainCharacters, SaveCharacters {
     }
 
     @Override
+    public List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId) {
+        return charactersRepository.findByCharacterAvailableMoney(money, accountId);
+    }
+
+    @Override
     public void save(CharactersEntity characters, String transactionId) {
         charactersRepository.save(characters);
     }
