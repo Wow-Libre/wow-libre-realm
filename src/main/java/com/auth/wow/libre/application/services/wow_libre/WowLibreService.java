@@ -44,7 +44,7 @@ public class WowLibreService implements WowLibrePort {
             return client.getJwt();
         }
 
-        LoginResponseDto jwtDto = wowLibreClient.login(transactionId);
+        LoginResponseDto jwtDto = login(transactionId);
 
         if (jwtDto == null) {
             LOGGER.error("[WowLibreService] [apiSecret]  The system could not do a successful authentication with " +
@@ -61,6 +61,23 @@ public class WowLibreService implements WowLibrePort {
         saveClient.save(client);
 
         return jwtDto.jwt;
+    }
+
+    @Override
+    public LoginResponseDto login(String transactionId) {
+
+        LoginResponseDto jwtDto = wowLibreClient.login(transactionId);
+
+        if (jwtDto == null) {
+            LOGGER.error("[WowLibreService] [apiSecret]  The system could not do a successful authentication with " +
+                    "free" +
+                    " wow so it was not possible to" +
+                    " carry out the transaction. {}", transactionId);
+            throw new InternalException("It was not possible to authenticate with the free wow central, please " +
+                    "contact support", transactionId);
+        }
+
+        return jwtDto;
     }
 
     @Override

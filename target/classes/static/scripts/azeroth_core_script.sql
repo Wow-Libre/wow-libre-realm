@@ -46,7 +46,3 @@ CREATE TABLE acore_characters.character_transaction
     CONSTRAINT character_transaction_reference_uq UNIQUE (reference)
 );
 
-
-INSERT INTO acore_auth.client
-(username, password, status, rol)
-VALUES ('Crypt0n!c_R3gulus9', '$2a$10$WE7IIhe.mhRW8AXuh1cj.OvBWI7PqyfaDi5qR/h8k4ahvSIdCbnwe', 1, 'CLIENT');

@@ -28,10 +28,10 @@ application:
   account:
     api-key: tt8wt17cx6nb0lb
     username: mschitiva68@gmail.com
-    password: 'bcnewnogso3xe0f'
+    password: 'aba1jzzhdwuhr7u'
   urls:
-    wow-libre-login: http://localhost:8090/api/auth/login
-    wow-libre-server: http://localhost:8090/api/server/key
+    wow-libre-login: http://localhost:8090/core/api/auth/login
+    wow-libre-server: http://localhost:8090/core/api/server/key
   security:
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
