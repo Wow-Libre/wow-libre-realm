@@ -32,6 +32,18 @@ public class CommandsCore {
         return String.format(".send money %s \"%s\" \"%s\" %s", playerName, subject, body, money);
     }
 
+    public static String characterCustomize(String playerName) {
+        return String.format(".character customize %s", playerName);
+    }
+
+    public static String characterChangeRace(String playerName) {
+        return String.format(".character changerace %s", playerName);
+    }
+
+    public static String characterChangeFaction(String playerName) {
+        return String.format(".character changefaction %s", playerName);
+    }
+
     public static String sendLevel(String playerName, int level) {
         return String.format(".char level %s %s", playerName, level);
     }
