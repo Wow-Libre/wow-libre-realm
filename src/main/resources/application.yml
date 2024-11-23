@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   jackson:
     property-naming-strategy: SNAKE_CASE
   main:
@@ -6,6 +8,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+---
+spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
     primary:
       url: jdbc:mysql://localhost:3306/acore_auth
@@ -19,7 +26,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8090
 application:
   credentials:
     command:
@@ -34,7 +41,44 @@ application:
     wow-libre-server: http://localhost:8090/core/api/server/key
   security:
     jwt:
-      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
+      expiration: 604800000  # 7 day
+      refresh-token:
+        expiration: 1209600000 # 14 días
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    primary:
+      url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_USERNAME}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_USERNAME}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  address: 0.0.0.0
+  port: 8090
+application:
+  credentials:
+    command:
+      username: ${EMULADOR_USERNAME}
+      password: ${EMULADOR_PASSWORD}
+  account:
+    api-key: ${WOW_LIBRE_API_KEY}
+    username: ${WOW_LIBRE_USERNAME}
+    password: ${WOW_LIBRE_PASSWORD}
+  urls:
+    wow-libre-login: ${WOW_LIBRE_HOST}/core/api/auth/login
+    wow-libre-server: ${WOW_LIBRE_HOST}/core/api/server/key
+  security:
+    jwt:
+      secret-key: D7A4C3F9E5D2A688B9D1F7C2E9D7A9F3C0E0F6B6F2C8A7D1E9F6D5A8B1F5D6E
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días

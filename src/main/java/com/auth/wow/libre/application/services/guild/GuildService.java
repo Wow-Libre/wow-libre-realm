@@ -13,6 +13,7 @@ import com.auth.wow.libre.infrastructure.entities.characters.*;
 import jakarta.xml.bind.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
+import org.springframework.ws.client.*;
 import org.springframework.ws.soap.client.*;
 
 import java.time.*;
@@ -103,6 +104,11 @@ public class GuildService implements GuildPort {
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("The request to join the brotherhood could not be made, please check if " +
                     "you  already belong to it", transactionId);
+        } catch (WebServiceIOException e) {
+            LOGGER.error("Could not communicate with the emulator. TransactionId [{}] - " +
+                            "LocalizedMessage [{}] - Message [{}]",
+                    transactionId, e.getLocalizedMessage(), e.getMessage());
+            throw new InternalException("Could not communicate with the emulator", transactionId);
         }
     }
 
@@ -165,7 +171,7 @@ public class GuildService implements GuildPort {
     }
 
     @Override
-    public void update(Long accountId,  Long characterId, String discord, boolean multiFaction,
+    public void update(Long accountId, Long characterId, String discord, boolean multiFaction,
                        boolean isPublic, String transactionId) {
         GuildMemberModel guildMember = guildMemberPort.guildMemberByCharacterId(characterId, transactionId);
 
@@ -174,7 +180,8 @@ public class GuildService implements GuildPort {
         }
 
         if (guildMember.rank() != 0) {
-            throw new NotFoundException("It is not possible to modify the information if you are not the guild master", transactionId);
+            throw new NotFoundException("It is not possible to modify the information if you are not the guild " +
+                    "master", transactionId);
         }
 
         Optional<GuildEntity> getGuild = obtainGuild.getGuild(guildMember.guildId());

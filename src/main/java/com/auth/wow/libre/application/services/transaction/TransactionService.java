@@ -105,4 +105,51 @@ public class TransactionService implements TransactionPort {
                     "the execution of the core azeroth/trinity", transactionId);
         }
     }
+
+    @Override
+    public void sendPromotion(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items, String type,
+                              Double amount, String transactionId) {
+
+        CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
+
+        String characterName = characterDetailDto.name;
+        PromotionType benefitTypeEnum = PromotionType.findByName(type);
+
+        final String command = switch (benefitTypeEnum) {
+            case ITEM -> CommandsCore.sendItems(characterName, "", "", items);
+            case LEVEL -> CommandsCore.sendLevel(characterName, 80);
+            case MONEY -> CommandsCore.sendMoney(characterName, "", "", amount != null ? amount.toString() : "0");
+        };
+
+        try {
+            executeCommandsPort.execute(command, transactionId);
+        } catch (JAXBException e) {
+            LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
+                    "                    \"the execution of the core azeroth/trinity {}", transactionId);
+            throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
+                    "the execution of the core azeroth/trinity", transactionId);
+        }
+    }
+
+    @Override
+    public void sendBenefitsGuild(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items,
+                                 String transactionId) {
+
+        CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
+
+        if (characterDetailDto == null) {
+            throw new InternalException("Could not get character data", transactionId);
+        }
+
+        String characterName = characterDetailDto.name;
+
+        try {
+            executeCommandsPort.execute(CommandsCore.sendItems(characterName, "", "", items), transactionId);
+        } catch (JAXBException e) {
+            LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
+                    "                    \"the execution of the core azeroth/trinity {}", transactionId);
+            throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
+                    "the execution of the core azeroth/trinity", transactionId);
+        }
+    }
 }

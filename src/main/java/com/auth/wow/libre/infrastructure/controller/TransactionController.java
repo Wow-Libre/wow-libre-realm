@@ -43,4 +43,30 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
+
+    @PostMapping("/claim-promotions")
+    public ResponseEntity<GenericResponse<Void>> claimPromotions(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid PromotionsDto request) {
+
+        transactionPort.sendPromotion(request.getUserId(), request.getAccountId(),
+                request.getCharacterId(), request.getItems(),
+                request.getType(), request.getAmount(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+    }
+
+    @PostMapping("/claim-guild-benefits")
+    public ResponseEntity<GenericResponse<Void>> claimGuildBenefits(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid BenefitsGuildDto request) {
+
+        transactionPort.sendBenefitsGuild(request.getUserId(), request.getAccountId(),
+                request.getCharacterId(), request.getItems(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+    }
+
 }
