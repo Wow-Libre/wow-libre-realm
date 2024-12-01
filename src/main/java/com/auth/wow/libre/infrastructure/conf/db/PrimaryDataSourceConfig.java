@@ -18,14 +18,24 @@ import javax.sql.*;
         transactionManagerRef = "primaryTransactionManager"
 )
 public class PrimaryDataSourceConfig {
+
+    @Value("${spring.datasource.primary.url}")
+    private String dbPrimaryHost;
+    @Value("${spring.datasource.primary.username}")
+    private String dbPrimaryUsername;
+    @Value("${spring.datasource.primary.password}")
+    private String dbPrimaryPassword;
+    @Value("${spring.datasource.primary.driver-class-name}")
+    private String dbDriverPrimary;
+
     @Primary
     @Bean(name = "primaryDataSource")
     public DataSource primaryDataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:mysql://localhost:3306/acore_auth")
-                .username("root")
-                .password("Loquendo96@")
-                .driverClassName("com.mysql.cj.jdbc.Driver")
+                .url(dbPrimaryHost)
+                .username(dbPrimaryUsername)
+                .password(dbPrimaryPassword)
+                .driverClassName(dbDriverPrimary)
                 .build();
     }
 
@@ -36,7 +46,7 @@ public class PrimaryDataSourceConfig {
             @Qualifier("primaryDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.auth.wow.libre.infrastructure.entities.auth") // Cambia esto por el paquete de tus entidades
+                .packages("com.auth.wow.libre.infrastructure.entities.auth")
                 .persistenceUnit("primary")
                 .build();
     }

@@ -17,4 +17,6 @@ public class Configurations {
     private String loginPassword;
     @Value("${application.account.api-key}")
     private String serverApiKey;
+
+
 }

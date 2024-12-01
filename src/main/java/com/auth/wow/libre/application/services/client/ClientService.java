@@ -16,9 +16,8 @@ import java.util.*;
 
 @Service
 public class ClientService implements ClientPort {
-    private static final Logger LOGGER =
-            LoggerFactory.getLogger(ClientService.class);
-    public static final String ROL_DEFAULT = "CLIENT";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientService.class);
+    private static final String ROL_DEFAULT = "CLIENT";
     private final ObtainClient obtainClient;
     private final SaveClient saveClient;
     private final PasswordEncoder passwordEncoder;
@@ -34,12 +33,15 @@ public class ClientService implements ClientPort {
 
     @Override
     public void create(String username, String password, byte[] salt, String transactionId) {
+        LOGGER.info("Free wow client creation request Date: {}", new Date());
 
         Optional<ClientEntity> findUsername = obtainClient.getClientStatusIsTrue();
 
         if (findUsername.isPresent()) {
+            LOGGER.error("There is already a client registered in this integration, please contact support");
             throw new InternalException("It is not possible to create more than one client", transactionId);
         }
+
         try {
             final String jwt = wowLibrePort.login(transactionId).jwt;
             final ServerModel apiSecret = wowLibrePort.apiSecret(jwt, transactionId);
@@ -54,7 +56,8 @@ public class ClientService implements ClientPort {
             client.setPassword(passwordEncode);
             saveClient.save(client);
         } catch (Exception e) {
-            LOGGER.error("[ClientService][create] Could not create client {} {}", e.getCause(), e.getMessage());
+            LOGGER.error("[ClientService][create] Could not create client {} {} {}", e.getLocalizedMessage(),
+                    e.getCause(), e.getMessage());
             throw new InternalException("Could not create client", transactionId);
         }
     }

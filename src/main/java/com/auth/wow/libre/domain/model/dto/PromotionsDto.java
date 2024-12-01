@@ -1,5 +1,6 @@
 package com.auth.wow.libre.domain.model.dto;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -19,4 +20,8 @@ public class PromotionsDto {
     @NotEmpty
     private String type;
     private Double amount;
+    @JsonProperty("min_lvl")
+    private Integer minLvl;
+    @JsonProperty("max_lvl")
+    private Integer maxLvl;
 }

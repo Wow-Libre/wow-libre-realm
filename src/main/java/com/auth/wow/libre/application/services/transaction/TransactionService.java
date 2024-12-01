@@ -108,9 +108,13 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public void sendPromotion(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items, String type,
-                              Double amount, String transactionId) {
+                              Double amount, Integer minLvl, Integer maxLvl, String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
+
+        if (characterDetailDto.getLevel() < minLvl || characterDetailDto.getLevel() > maxLvl) {
+            throw new InternalException("You do not meet the required level", transactionId);
+        }
 
         String characterName = characterDetailDto.name;
         PromotionType benefitTypeEnum = PromotionType.findByName(type);
@@ -133,7 +137,7 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public void sendBenefitsGuild(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items,
-                                 String transactionId) {
+                                  String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
 

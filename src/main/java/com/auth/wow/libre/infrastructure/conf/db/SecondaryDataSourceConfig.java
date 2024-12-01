@@ -17,13 +17,23 @@ import javax.sql.*;
         transactionManagerRef = "secondaryTransactionManager"
 )
 public class SecondaryDataSourceConfig {
+
+    @Value("${spring.datasource.secondary.url}")
+    private String dbSecondaryHost;
+    @Value("${spring.datasource.secondary.username}")
+    private String dbSecondaryUsername;
+    @Value("${spring.datasource.secondary.password}")
+    private String dbSecondaryPassword;
+    @Value("${spring.datasource.secondary.driver-class-name}")
+    private String dbSecondaryDriverPrimary;
+
     @Bean(name = "secondaryDataSource")
     public DataSource secondaryDataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:mysql://localhost:3306/acore_characters")
-                .username("root")
-                .password("Loquendo96@")
-                .driverClassName("com.mysql.cj.jdbc.Driver")
+                .url(dbSecondaryHost)
+                .username(dbSecondaryUsername)
+                .password(dbSecondaryPassword)
+                .driverClassName(dbSecondaryDriverPrimary)
                 .build();
     }
 

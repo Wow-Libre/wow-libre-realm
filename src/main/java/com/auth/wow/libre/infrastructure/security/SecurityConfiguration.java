@@ -47,7 +47,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
-                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001"));
+                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001","https://api.wowlibre.com"));
         corsConfiguration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -80,6 +80,7 @@ public class SecurityConfiguration {
                         request.requestMatchers(
                                         //INTERNAL API
                                         "/api/client",
+                                        "/api/account/create",
                                         //SWAGGER
                                         "/v2/api-docs", "/swagger-resources",
                                         "/swagger-resources/**", "/configuration/ui",

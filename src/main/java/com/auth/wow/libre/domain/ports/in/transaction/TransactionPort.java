@@ -13,7 +13,7 @@ public interface TransactionPort {
                                   String transactionId);
 
     void sendPromotion(Long userId, Long accountId, Long characterId,
-                       List<ItemQuantityDto> items, String type, Double amount,
+                       List<ItemQuantityDto> items, String type, Double amount, Integer minLvl, Integer maxLvl,
                        String transactionId);
 
     void sendBenefitsGuild(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items,
