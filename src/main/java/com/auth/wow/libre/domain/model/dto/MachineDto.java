@@ -1,16 +1,12 @@
 package com.auth.wow.libre.domain.model.dto;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
-public class UpdateGuildDto {
-
-    private String discord;
-    @JsonProperty("is_public")
-    private boolean isPublic;
-    private boolean multiFaction;
+public class MachineDto {
+    @NotNull
+    private String type;
     @NotNull
     private Long accountId;
     @NotNull

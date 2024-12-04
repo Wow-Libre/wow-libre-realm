@@ -28,7 +28,7 @@ public class TransactionController {
                 request.getReference(), request.getAmount(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
 
     @PostMapping("/subscription-benefits")
@@ -41,7 +41,7 @@ public class TransactionController {
                 request.getBenefitType(), request.getAmount(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
 
     @PostMapping("/claim-promotions")
@@ -54,7 +54,7 @@ public class TransactionController {
                 request.getType(), request.getAmount(), request.getMinLvl(), request.getMaxLvl(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
 
     @PostMapping("/claim-guild-benefits")
@@ -66,7 +66,20 @@ public class TransactionController {
                 request.getCharacterId(), request.getItems(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
+
+    @PostMapping("/claim-machine")
+    public ResponseEntity<GenericResponse<MachineClaimDto>> claimGuildBenefits(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid MachineDto request) {
+
+        MachineClaimDto claimSuccess = transactionPort.sendMachine(request.getAccountId(),
+                request.getCharacterId(), request.getType(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<>(claimSuccess, transactionId).ok().build());
+    }
+
 
 }

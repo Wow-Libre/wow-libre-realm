@@ -51,6 +51,8 @@ C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\ItemQuantityDto.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\LoginDto.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\LoginResponseDto.java
+C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\MachineClaimDto.java
+C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\MachineDto.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\MailsDto.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\PromotionsDto.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\dto\SendLevelDto.java
@@ -63,6 +65,9 @@ C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\CommandsCore.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\EmailTemplate.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\Expansion.java
+C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\ItemsMachineType.java
+C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\MachineType.java
+C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\MineType.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\ProfessionsWow.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\PromotionType.java
 C:\Users\usuario\Documents\worskpace\wow-libre-client\src\main\java\com\auth\wow\libre\domain\model\enums\TransactionType.java

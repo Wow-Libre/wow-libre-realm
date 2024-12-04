@@ -19,6 +19,10 @@ import java.util.*;
 @Service
 public class TransactionService implements TransactionPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionService.class);
+    public static final String URL_GOLD_IMG_WIX = "https://static.wixstatic" +
+            ".com/media/5dd8a0_effdc521b002493682c947c5e2aa283d~mv2.webp";
+    public static final String URL_LEVEL_WIX = "https://static.wixstatic" +
+            ".com/media/5dd8a0_67020ed5ab7c46e4be8085fb20563eb7~mv2.webp";
 
     private final CharactersPort charactersPort;
     private final CharacterTransactionPort characterTransactionPort;
@@ -154,6 +158,77 @@ public class TransactionService implements TransactionPort {
                     "                    \"the execution of the core azeroth/trinity {}", transactionId);
             throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
                     "the execution of the core azeroth/trinity", transactionId);
+        }
+    }
+
+    @Override
+    public MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String transactionId) {
+        MachineType machineType = MachineType.getName(type);
+
+        CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
+
+        if (characterDetailDto == null) {
+            throw new InternalException("Could not get character data", transactionId);
+        }
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(10) + 1;
+        String command;
+        ItemQuantityDto itemQuantityDto = new ItemQuantityDto();
+        String name = null;
+        String logo = null;
+
+        switch (machineType) {
+            case ITEMS:
+                ItemsMachineType itemsRandom =
+                        ItemsMachineType.values()[random.nextInt(ItemsMachineType.values().length)];
+                itemQuantityDto.setId(itemsRandom.getCode());
+                itemQuantityDto.setQuantity(itemsRandom.isLimit() ? 1 : randomNumber);
+                name = itemsRandom.getName();
+                logo = itemsRandom.getLogo();
+                command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
+                break;
+            case LEVEL:
+                int levelMax = 80;
+                int level = characterDetailDto.level + randomNumber;
+                name = String.format("Level: %s", level);
+                logo = URL_LEVEL_WIX;
+                command = CommandsCore.sendLevel(characterDetailDto.name, Math.min(level, levelMax));
+                break;
+            case MENAS:
+                MineType randomMine = MineType.values()[random.nextInt(MineType.values().length)];
+                name = randomMine.getName();
+                logo = randomMine.getLogo();
+
+                itemQuantityDto.setId(randomMine.getCode());
+                itemQuantityDto.setQuantity(randomNumber);
+                command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
+                break;
+            case GOLD:
+
+                int minGold = 10;
+                int maxGold = minGold * 20;
+                int minCopper = minGold * 100_000;
+                int maxCopper = maxGold * 100_000;
+
+                int randomCopper = random.nextInt(maxCopper - minCopper + 1) + minCopper;
+                int gold = randomCopper / 10_000;
+
+                name = String.format("Send %s Gold", gold);
+                logo = URL_GOLD_IMG_WIX;
+                command = CommandsCore.sendMoney(characterDetailDto.name, "", "", String.valueOf(randomCopper));
+                break;
+            default:
+                return new MachineClaimDto(false);
+
+        }
+
+        try {
+            executeCommandsPort.execute(command, transactionId);
+            return new MachineClaimDto(logo, name, true);
+        } catch (Exception e) {
+            LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
+            return new MachineClaimDto(false);
         }
     }
 }

@@ -30,4 +30,6 @@ public class CommandsController {
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
 
+
+
 }

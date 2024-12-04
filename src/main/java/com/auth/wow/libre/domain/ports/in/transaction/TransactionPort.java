@@ -18,4 +18,6 @@ public interface TransactionPort {
 
     void sendBenefitsGuild(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items,
                            String transactionId);
+
+    MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String transactionId);
 }
