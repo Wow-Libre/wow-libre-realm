@@ -190,10 +190,8 @@ public class TransactionService implements TransactionPort {
                 break;
             case LEVEL:
                 int levelMax = 80;
-                int level = characterDetailDto.level + randomNumber;
-                name = String.format("Level: %s", level);
-                logo = URL_LEVEL_WIX;
-                command = CommandsCore.sendLevel(characterDetailDto.name, Math.min(level, levelMax));
+                name = String.format("Level: %s", levelMax);
+                command = CommandsCore.sendLevel(characterDetailDto.name, 80);
                 break;
             case MENAS:
                 MineType randomMine = MineType.values()[random.nextInt(MineType.values().length)];
@@ -201,7 +199,7 @@ public class TransactionService implements TransactionPort {
                 logo = randomMine.getLogo();
 
                 itemQuantityDto.setId(randomMine.getCode());
-                itemQuantityDto.setQuantity(randomNumber);
+                itemQuantityDto.setQuantity(randomNumber * 5);
                 command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
                 break;
             case GOLD:

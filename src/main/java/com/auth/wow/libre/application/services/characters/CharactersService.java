@@ -138,7 +138,7 @@ public class CharactersService implements CharactersPort {
                 .transY(characters.getTransY()).transZ(characters.getTransZ()).transO(characters.getTransO())
                 .extraFlags(characters.getExtraFlags()).atLogin(characters.getAtLogin())
                 .zone(characters.getZone()).deathExpireTime(characters.getDeathExpireTime())
-                .taxiPath(characters.getTaxiPath()).arenaPoints(characters.getArenaPoints())
+                .taxiPath(0).arenaPoints(characters.getArenaPoints())
                 .totalHonorPoints(characters.getTotalHonorPoints())
                 .todayHonorPoints(characters.getTodayHonorPoints())
                 .yesterdayKills(characters.getYesterdayKills())
