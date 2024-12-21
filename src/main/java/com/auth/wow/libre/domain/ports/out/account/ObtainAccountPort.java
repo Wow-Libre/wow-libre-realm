@@ -14,4 +14,7 @@ public interface ObtainAccountPort {
 
     Optional<AccountEntity> findByIdAndUserId(Long id, Long userId);
 
+    List<AccountEntity> findByAll(int size, int page, String filter);
+
+    Long count();
 }

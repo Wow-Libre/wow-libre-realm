@@ -156,5 +156,16 @@ public class AccountService implements AccountPort {
 
     }
 
+    @Override
+    public AccountsDto accounts(int size, int page, String filter, String transactionId) {
+        return new AccountsDto(obtainAccountPort.findByAll(size, page, filter).stream().map(account ->
+                new AccountsServerDto(account.getId(), account.getUsername(), account.getEmail(),
+                        account.getExpansion(), account.isOnline(), account.getFailedLogins(),
+                        account.getJoinDate(),
+                        account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
+                        account.getMuteTime() != null && account.getMuteTime() > 0,
+                        account.getLastLogin(), account.getOs())).toList(), obtainAccountPort.count());
+    }
+
 
 }

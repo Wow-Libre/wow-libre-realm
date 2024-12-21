@@ -61,4 +61,23 @@ public class AccountController {
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
 
+
+    @GetMapping(path = "/all")
+    public ResponseEntity<GenericResponse<AccountsDto>> accounts(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam final int size,
+            @RequestParam final int page,
+            @RequestParam final String filter) {
+
+        final AccountsDto accounts = accountPort.accounts(size, page, filter, transactionId);
+
+        if (accounts != null) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new GenericResponseBuilder<AccountsDto>(transactionId).ok(accounts).build());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
