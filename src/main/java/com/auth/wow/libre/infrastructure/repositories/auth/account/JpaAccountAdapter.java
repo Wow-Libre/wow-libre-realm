@@ -55,5 +55,15 @@ public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
         return accountRepository.count();
     }
 
+    @Override
+    public Long countOnline(String transactionId) {
+        return accountRepository.countByOnlineTrue();
+    }
+
+    @Override
+    public MetricsProjection metrics(String transactionId) {
+        return accountRepository.fetchMetrics();
+    }
+
 
 }

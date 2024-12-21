@@ -40,6 +40,11 @@ public class JpaCharactersAdapter implements ObtainCharacters, SaveCharacters {
     }
 
     @Override
+    public Long count() {
+        return charactersRepository.count();
+    }
+
+    @Override
     public void save(CharactersEntity characters, String transactionId) {
         charactersRepository.save(characters);
     }

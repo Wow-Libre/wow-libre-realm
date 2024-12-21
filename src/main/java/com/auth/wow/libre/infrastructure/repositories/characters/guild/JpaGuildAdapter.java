@@ -35,6 +35,11 @@ public class JpaGuildAdapter implements ObtainGuild, SaveGuild {
     }
 
     @Override
+    public Long count(String transactionId) {
+        return guildRepository.count();
+    }
+
+    @Override
     public void save(GuildEntity guildEntity, String transactionId) {
         guildRepository.save(guildEntity);
     }

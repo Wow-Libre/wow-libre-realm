@@ -20,4 +20,6 @@ public interface CharactersPort {
 
     List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId);
 
+    Long count(String transactionId);
+
 }

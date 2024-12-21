@@ -197,6 +197,11 @@ public class GuildService implements GuildPort {
         saveGuild.save(guild, transactionId);
     }
 
+    @Override
+    public Long count(String transactionId) {
+        return obtainGuild.count(transactionId);
+    }
+
     private GuildModel mapToModel(GuildEntity guildEntity) {
         Date dateCreate = Date.from(Instant.ofEpochMilli(guildEntity.getCreateDate() * 1000));
         long members = guildMemberPort.accountMemberGuildId(guildEntity.getId());
