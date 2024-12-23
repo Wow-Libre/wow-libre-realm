@@ -112,7 +112,7 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public void sendPromotion(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items, String type,
-                              Double amount, Integer minLvl, Integer maxLvl, String transactionId) {
+                              Double amount, Integer minLvl, Integer maxLvl, Integer level, String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
 
@@ -125,8 +125,10 @@ public class TransactionService implements TransactionPort {
 
         final String command = switch (benefitTypeEnum) {
             case ITEM -> CommandsCore.sendItems(characterName, "", "", items);
-            case LEVEL -> CommandsCore.sendLevel(characterName, 80);
-            case MONEY -> CommandsCore.sendMoney(characterName, "", "", amount != null ? amount.toString() : "0");
+            case LEVEL -> CommandsCore.sendLevel(characterName, level);
+            case MONEY ->
+                    CommandsCore.sendMoney(characterName, "", "", amount != null ? String.valueOf(amount.intValue())
+                            : "0");
         };
 
         try {

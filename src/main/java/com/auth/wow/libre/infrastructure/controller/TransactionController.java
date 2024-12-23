@@ -51,7 +51,8 @@ public class TransactionController {
 
         transactionPort.sendPromotion(request.getUserId(), request.getAccountId(),
                 request.getCharacterId(), request.getItems(),
-                request.getType(), request.getAmount(), request.getMinLvl(), request.getMaxLvl(), transactionId);
+                request.getType(), request.getAmount(), request.getMinLvl(), request.getMaxLvl(), request.getLevel(),
+                transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());

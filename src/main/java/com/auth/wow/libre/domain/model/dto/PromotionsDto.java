@@ -20,6 +20,7 @@ public class PromotionsDto {
     @NotEmpty
     private String type;
     private Double amount;
+    private Integer level;
     @JsonProperty("min_lvl")
     private Integer minLvl;
     @JsonProperty("max_lvl")
