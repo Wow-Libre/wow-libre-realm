@@ -23,6 +23,7 @@ public class TransactionService implements TransactionPort {
             ".com/media/5dd8a0_effdc521b002493682c947c5e2aa283d~mv2.webp";
     public static final String URL_LEVEL_WIX = "https://static.wixstatic" +
             ".com/media/5dd8a0_67020ed5ab7c46e4be8085fb20563eb7~mv2.webp";
+    public static final String IMG_URL_UPGRADE_LEVEL_SLOT = "https://static.wixstatic.com/media/5dd8a0_d081e7ab00364860b9dceca9f5711e85~mv2.webp";
 
     private final CharactersPort charactersPort;
     private final CharacterTransactionPort characterTransactionPort;
@@ -193,15 +194,16 @@ public class TransactionService implements TransactionPort {
             case LEVEL:
                 int levelMax = 80;
                 name = String.format("Level: %s", levelMax);
+                logo = IMG_URL_UPGRADE_LEVEL_SLOT;
                 command = CommandsCore.sendLevel(characterDetailDto.name, 80);
                 break;
-            case MENAS:
-                MineType randomMine = MineType.values()[random.nextInt(MineType.values().length)];
-                name = randomMine.getName();
-                logo = randomMine.getLogo();
+            case MOUNT:
+                MountType mountType = MountType.values()[random.nextInt(MountType.values().length)];
+                name = mountType.getName();
+                logo = mountType.getLogo();
 
-                itemQuantityDto.setId(randomMine.getCode());
-                itemQuantityDto.setQuantity(randomNumber * 5);
+                itemQuantityDto.setId(mountType.getCode());
+                itemQuantityDto.setQuantity(1);
                 command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
                 break;
             case GOLD:

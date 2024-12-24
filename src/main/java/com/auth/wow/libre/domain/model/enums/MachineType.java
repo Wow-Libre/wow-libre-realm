@@ -8,7 +8,7 @@ import java.util.*;
 public enum MachineType {
     ITEMS("Item"),
     LEVEL("Level"),
-    MENAS("Menas"),
+    MOUNT("Mount"),
     GOLD("Gold");
 
     private final String name;
