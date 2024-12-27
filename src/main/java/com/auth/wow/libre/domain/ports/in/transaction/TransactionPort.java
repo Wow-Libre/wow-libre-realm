@@ -14,6 +14,7 @@ public interface TransactionPort {
 
     void sendPromotion(Long userId, Long accountId, Long characterId,
                        List<ItemQuantityDto> items, String type, Double amount, Integer minLvl, Integer maxLvl,
+                       Integer level,
                        String transactionId);
 
     void sendBenefitsGuild(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items,

@@ -9,6 +9,7 @@ import com.auth.wow.libre.domain.ports.in.account_banned.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
+import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
@@ -154,6 +155,37 @@ public class AccountService implements AccountPort {
         }
 
 
+    }
+
+    @Override
+    public AccountsDto accounts(int size, int page, String filter, String transactionId) {
+        return new AccountsDto(obtainAccountPort.findByAll(size, page, filter).stream().map(account ->
+                new AccountsServerDto(account.getId(), account.getUsername(), account.getEmail(),
+                        account.getExpansion(), account.isOnline(), account.getFailedLogins(),
+                        account.getJoinDate(),
+                        account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
+                        account.getMuteTime() != null && account.getMuteTime() > 0,
+                        account.getLastLogin(), account.getOs())).toList(), obtainAccountPort.count());
+    }
+
+    @Override
+    public Long count(String transactionId) {
+        return obtainAccountPort.count();
+    }
+
+    @Override
+    public Long online(String transactionId) {
+        return obtainAccountPort.countOnline(transactionId);
+    }
+
+    @Override
+    public Long countUserId(String transactionId) {
+        return null;
+    }
+
+    @Override
+    public MetricsProjection metrics(String transactionId) {
+        return obtainAccountPort.metrics(transactionId);
     }
 
 

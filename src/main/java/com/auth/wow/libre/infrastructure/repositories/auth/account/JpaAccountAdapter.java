@@ -4,6 +4,7 @@ import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.SaveAccountPort;
 import com.auth.wow.libre.infrastructure.entities.auth.AccountEntity;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +43,26 @@ public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
     @Override
     public Optional<AccountEntity> findByIdAndUserId(Long id, Long userId) {
         return accountRepository.findByIdAndUserId(id, userId);
+    }
+
+    @Override
+    public List<AccountEntity> findByAll(int size, int page, String filter) {
+        return accountRepository.findAllByEmailContainingIgnoreCase(filter, PageRequest.of(page, size)).stream().toList();
+    }
+
+    @Override
+    public Long count() {
+        return accountRepository.count();
+    }
+
+    @Override
+    public Long countOnline(String transactionId) {
+        return accountRepository.countByOnlineTrue();
+    }
+
+    @Override
+    public MetricsProjection metrics(String transactionId) {
+        return accountRepository.fetchMetrics();
     }
 
 

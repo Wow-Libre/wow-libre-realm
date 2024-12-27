@@ -23,6 +23,7 @@ public class TransactionService implements TransactionPort {
             ".com/media/5dd8a0_effdc521b002493682c947c5e2aa283d~mv2.webp";
     public static final String URL_LEVEL_WIX = "https://static.wixstatic" +
             ".com/media/5dd8a0_67020ed5ab7c46e4be8085fb20563eb7~mv2.webp";
+    public static final String IMG_URL_UPGRADE_LEVEL_SLOT = "https://static.wixstatic.com/media/5dd8a0_d081e7ab00364860b9dceca9f5711e85~mv2.webp";
 
     private final CharactersPort charactersPort;
     private final CharacterTransactionPort characterTransactionPort;
@@ -112,7 +113,7 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public void sendPromotion(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items, String type,
-                              Double amount, Integer minLvl, Integer maxLvl, String transactionId) {
+                              Double amount, Integer minLvl, Integer maxLvl, Integer level, String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
 
@@ -125,8 +126,10 @@ public class TransactionService implements TransactionPort {
 
         final String command = switch (benefitTypeEnum) {
             case ITEM -> CommandsCore.sendItems(characterName, "", "", items);
-            case LEVEL -> CommandsCore.sendLevel(characterName, 80);
-            case MONEY -> CommandsCore.sendMoney(characterName, "", "", amount != null ? amount.toString() : "0");
+            case LEVEL -> CommandsCore.sendLevel(characterName, level);
+            case MONEY ->
+                    CommandsCore.sendMoney(characterName, "", "", amount != null ? String.valueOf(amount.intValue())
+                            : "0");
         };
 
         try {
@@ -190,18 +193,17 @@ public class TransactionService implements TransactionPort {
                 break;
             case LEVEL:
                 int levelMax = 80;
-                int level = characterDetailDto.level + randomNumber;
-                name = String.format("Level: %s", level);
-                logo = URL_LEVEL_WIX;
-                command = CommandsCore.sendLevel(characterDetailDto.name, Math.min(level, levelMax));
+                name = String.format("Level: %s", levelMax);
+                logo = IMG_URL_UPGRADE_LEVEL_SLOT;
+                command = CommandsCore.sendLevel(characterDetailDto.name, 80);
                 break;
-            case MENAS:
-                MineType randomMine = MineType.values()[random.nextInt(MineType.values().length)];
-                name = randomMine.getName();
-                logo = randomMine.getLogo();
+            case MOUNT:
+                MountType mountType = MountType.values()[random.nextInt(MountType.values().length)];
+                name = mountType.getName();
+                logo = mountType.getLogo();
 
-                itemQuantityDto.setId(randomMine.getCode());
-                itemQuantityDto.setQuantity(randomNumber);
+                itemQuantityDto.setId(mountType.getCode());
+                itemQuantityDto.setQuantity(1);
                 command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
                 break;
             case GOLD:

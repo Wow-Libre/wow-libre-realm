@@ -90,6 +90,11 @@ public class CharactersService implements CharactersPort {
         return obtainCharacters.getCharactersAvailableMoney(accountId, money, transactionId);
     }
 
+    @Override
+    public Long count(String transactionId) {
+        return obtainCharacters.count();
+    }
+
 
     private CharacterModel mapToModel(CharactersEntity characters) {
         long gold = characters.getMoney().longValue() / 10000;
@@ -138,7 +143,7 @@ public class CharactersService implements CharactersPort {
                 .transY(characters.getTransY()).transZ(characters.getTransZ()).transO(characters.getTransO())
                 .extraFlags(characters.getExtraFlags()).atLogin(characters.getAtLogin())
                 .zone(characters.getZone()).deathExpireTime(characters.getDeathExpireTime())
-                .taxiPath(characters.getTaxiPath()).arenaPoints(characters.getArenaPoints())
+                .taxiPath(0).arenaPoints(characters.getArenaPoints())
                 .totalHonorPoints(characters.getTotalHonorPoints())
                 .todayHonorPoints(characters.getTodayHonorPoints())
                 .yesterdayKills(characters.getYesterdayKills())

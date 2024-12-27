@@ -86,8 +86,6 @@ public class CharactersEntity implements Serializable {
     private Integer zone;
     @Column(name = "death_expire_time")
     private Integer deathExpireTime;
-    @Column(name = "taxi_path")
-    private Integer taxiPath;
     @Column(name = "arenapoints")
     private Integer arenaPoints;
     @Column(name = "totalhonorpoints")

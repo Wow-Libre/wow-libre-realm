@@ -12,4 +12,5 @@ public interface ObtainGuild {
 
     Long getGuildCount(String transactionId);
 
+    Long count(String transactionId);
 }

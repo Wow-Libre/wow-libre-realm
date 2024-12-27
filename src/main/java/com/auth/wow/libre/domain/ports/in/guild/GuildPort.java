@@ -13,6 +13,8 @@ public interface GuildPort {
 
     GuildDto detail(Long guildId, Long characterId, String transactionId);
 
-    void update(Long accountId,  Long characterId, String discord, boolean multiFaction,
+    void update(Long accountId, Long characterId, String discord, boolean multiFaction,
                 boolean isPublic, String transactionId);
+
+    Long count(String transactionId);
 }
