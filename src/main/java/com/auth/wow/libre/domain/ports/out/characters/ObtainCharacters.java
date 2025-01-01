@@ -1,5 +1,6 @@
 package com.auth.wow.libre.domain.ports.out.characters;
 
+import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
 
 import java.util.*;
@@ -16,4 +17,6 @@ public interface ObtainCharacters {
     List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId);
 
     Long count();
+
+    FactionsDto factions(String transactionId);
 }

@@ -9,4 +9,6 @@ public class DashboardMetricsDto {
     private Long totalGuilds;
     private Long externalRegistrations;
     private Long characterCount;
+    private Long hordas;
+    private Long alianzas;
 }
