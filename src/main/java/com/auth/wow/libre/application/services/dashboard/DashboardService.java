@@ -35,7 +35,7 @@ public class DashboardService implements DashboardPort {
         data.setTotalGuilds(guildPort.count(transactionId));
         data.setHordas(factionsDto.getHorda());
         data.setAlianzas(factionsDto.getAlianza());
-
+        data.setRangeLevel(charactersPort.findUserCountsByLevelRange(transactionId));
         return data;
     }
 }

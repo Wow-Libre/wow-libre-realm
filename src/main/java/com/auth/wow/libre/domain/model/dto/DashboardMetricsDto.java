@@ -2,6 +2,8 @@ package com.auth.wow.libre.domain.model.dto;
 
 import lombok.*;
 
+import java.util.*;
+
 @Data
 public class DashboardMetricsDto {
     private Long totalUsers;
@@ -11,4 +13,5 @@ public class DashboardMetricsDto {
     private Long characterCount;
     private Long hordas;
     private Long alianzas;
+    private List<LevelRangeDTO> rangeLevel;
 }

@@ -1,6 +1,7 @@
 package com.auth.wow.libre.infrastructure.repositories.characters.character;
 
 import com.auth.wow.libre.domain.model.*;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.ports.out.characters.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
 import org.springframework.stereotype.*;
@@ -48,6 +49,11 @@ public class JpaCharactersAdapter implements ObtainCharacters, SaveCharacters {
     @Override
     public FactionsDto factions(String transactionId) {
         return charactersRepository.characterCountFactions();
+    }
+
+    @Override
+    public List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId) {
+        return charactersRepository.findUserCountsByLevelRange();
     }
 
     @Override

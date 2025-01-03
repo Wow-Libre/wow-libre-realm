@@ -25,4 +25,6 @@ public interface CharactersPort {
 
     FactionsDto factions(String transactionId);
 
+    List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId);
+
 }
