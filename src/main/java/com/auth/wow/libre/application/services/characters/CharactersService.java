@@ -95,6 +95,16 @@ public class CharactersService implements CharactersPort {
         return obtainCharacters.count();
     }
 
+    @Override
+    public FactionsDto factions(String transactionId) {
+        return obtainCharacters.factions(transactionId);
+    }
+
+    @Override
+    public List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId) {
+        return obtainCharacters.findUserCountsByLevelRange(transactionId);
+    }
+
 
     private CharacterModel mapToModel(CharactersEntity characters) {
         long gold = characters.getMoney().longValue() / 10000;

@@ -1,5 +1,6 @@
 package com.auth.wow.libre.application.services.dashboard;
 
+import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
@@ -24,12 +25,22 @@ public class DashboardService implements DashboardPort {
     @Override
     public DashboardMetricsDto metricsCount(String transactionId) {
         MetricsProjection metricsAccount = accountPort.metrics(transactionId);
+        FactionsDto factionsDto = charactersPort.factions(transactionId);
+
         DashboardMetricsDto data = new DashboardMetricsDto();
         data.setTotalUsers(metricsAccount.getTotalUsers());
         data.setOnlineUsers(metricsAccount.getOnlineUsers());
         data.setExternalRegistrations(metricsAccount.getTotalUsersExternal());
-        data.setCharacterCount(charactersPort.count(transactionId));
+        data.setCharacterCount(factionsDto.getCharacters());
         data.setTotalGuilds(guildPort.count(transactionId));
+        data.setHordas(factionsDto.getHorda());
+        data.setAlianzas(factionsDto.getAlianza());
+        data.setRangeLevel(charactersPort.findUserCountsByLevelRange(transactionId));
         return data;
+    }
+
+    @Override
+    public void updateMailAccount(String username, String updateMail, String transactionId) {
+        accountPort.updateMail(username, updateMail, transactionId);
     }
 }

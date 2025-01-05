@@ -1,5 +1,6 @@
 package com.auth.wow.libre.domain.ports.in.characters;
 
+import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
 
@@ -21,5 +22,9 @@ public interface CharactersPort {
     List<CharactersEntity> getCharactersAvailableMoney(Long accountId, Double money, String transactionId);
 
     Long count(String transactionId);
+
+    FactionsDto factions(String transactionId);
+
+    List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId);
 
 }

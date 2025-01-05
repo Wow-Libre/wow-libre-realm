@@ -22,4 +22,7 @@ public interface AccountPort {
     Long countUserId(String transactionId);
 
     MetricsProjection metrics(String transactionId);
+
+    void  updateMail(String username, String updateMail, String transactionId);
+
 }
