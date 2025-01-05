@@ -188,5 +188,15 @@ public class AccountService implements AccountPort {
         return obtainAccountPort.metrics(transactionId);
     }
 
+    @Override
+    public void updateMail(String username, String updateMail, String transactionId) {
+        obtainAccountPort.findByUsername(username).map(user -> {
+            user.setEmail(updateMail);
+            saveAccountPort.save(user);
+            return user;
+        }).orElseThrow(() -> new InternalException("Cannot find a user" +
+                " with that username", transactionId));
+    }
+
 
 }

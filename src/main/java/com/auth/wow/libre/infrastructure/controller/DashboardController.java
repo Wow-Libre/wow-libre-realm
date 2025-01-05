@@ -3,6 +3,7 @@ package com.auth.wow.libre.infrastructure.controller;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.dashboard.*;
+import jakarta.validation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,5 +27,18 @@ public class DashboardController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<DashboardMetricsDto>(transactionId).ok(metricsCount).build());
+    }
+
+    @PutMapping("/account/email")
+    public ResponseEntity<GenericResponse<Void>> updateMailAccount(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid AccountUpdateMailDto request) {
+
+        dashboardPort.updateMailAccount(request.getUsername(),
+                request.getMail(), transactionId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
 }

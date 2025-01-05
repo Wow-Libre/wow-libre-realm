@@ -38,4 +38,9 @@ public class DashboardService implements DashboardPort {
         data.setRangeLevel(charactersPort.findUserCountsByLevelRange(transactionId));
         return data;
     }
+
+    @Override
+    public void updateMailAccount(String username, String updateMail, String transactionId) {
+        accountPort.updateMail(username, updateMail, transactionId);
+    }
 }
