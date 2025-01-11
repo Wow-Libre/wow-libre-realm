@@ -70,9 +70,9 @@ application:
       username: "machitiva"
       password: "wowlibre"
   account:
-    api-key: "okdasodiasjdi"
-    username: "mschitiva68@gmail.com"
-    password: "sebas"
+    api-key: ${API_KEY_WOW_LIBRE}
+    username: ${USERNAME_WOW_LIBRE}
+    password: ${PASSWORD_WOW_LIBRE}
   urls:
     wow-libre-login: https://api.wowlibre.com/core/api/auth/login
     wow-libre-server: https://api.wowlibre.com/core/api/server/key
