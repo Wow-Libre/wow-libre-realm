@@ -185,54 +185,57 @@ public class TransactionService implements TransactionPort {
         String name = null;
         String logo = null;
 
+        switch (machineType) {
+            case ITEMS:
+                ItemsMachineType itemsRandom =
+                        ItemsMachineType.values()[random.nextInt(ItemsMachineType.values().length)];
+                itemQuantityDto.setId(itemsRandom.getCode());
+                itemQuantityDto.setQuantity(itemsRandom.isLimit() ? 1 : randomNumber);
+                name = itemsRandom.getName();
+                logo = itemsRandom.getLogo();
+                // Asigna el comando para ITEMS
+                command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
+                break;
+            case LEVEL:
+                int levelMax = 80;
+                name = String.format("Level: %s", levelMax);
+                logo = IMG_URL_UPGRADE_LEVEL_SLOT;
+                // Asigna el comando para LEVEL
+                command = CommandsCore.sendLevel(null, levelMax);
+                break;
+            case MOUNT:
+                MountType mountType = MountType.values()[random.nextInt(MountType.values().length)];
+                name = mountType.getName();
+                logo = mountType.getLogo();
+
+                itemQuantityDto.setId(mountType.getCode());
+                itemQuantityDto.setQuantity(1);
+                // Asigna el comando para MOUNT
+                command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
+                break;
+            case GOLD:
+                int minGold = 10;
+                int maxGold = minGold * 20;
+                int minCopper = minGold * 100_000;
+                int maxCopper = maxGold * 100_000;
+
+                int randomCopper = random.nextInt(maxCopper - minCopper + 1) + minCopper;
+                int gold = randomCopper / 10_000;
+
+                name = String.format("Send %s Gold", gold);
+                logo = URL_GOLD_IMG_WIX;
+                // Asigna el comando para GOLD
+                command = CommandsCore.sendMoney(null, "", "", String.valueOf(randomCopper));
+                break;
+            default:
+                return new MachineClaimDto(false);
+        }
+
         for (CharacterDetailDto character : characters) {
-
-            switch (machineType) {
-                case ITEMS:
-                    ItemsMachineType itemsRandom =
-                            ItemsMachineType.values()[random.nextInt(ItemsMachineType.values().length)];
-                    itemQuantityDto.setId(itemsRandom.getCode());
-                    itemQuantityDto.setQuantity(itemsRandom.isLimit() ? 1 : randomNumber);
-                    name = itemsRandom.getName();
-                    logo = itemsRandom.getLogo();
-                    command = CommandsCore.sendItems(character.name, "", "", List.of(itemQuantityDto));
-                    break;
-                case LEVEL:
-                    int levelMax = 80;
-                    name = String.format("Level: %s", levelMax);
-                    logo = IMG_URL_UPGRADE_LEVEL_SLOT;
-                    command = CommandsCore.sendLevel(character.name, 80);
-                    break;
-                case MOUNT:
-                    MountType mountType = MountType.values()[random.nextInt(MountType.values().length)];
-                    name = mountType.getName();
-                    logo = mountType.getLogo();
-
-                    itemQuantityDto.setId(mountType.getCode());
-                    itemQuantityDto.setQuantity(1);
-                    command = CommandsCore.sendItems(character.name, "", "", List.of(itemQuantityDto));
-                    break;
-                case GOLD:
-
-                    int minGold = 10;
-                    int maxGold = minGold * 20;
-                    int minCopper = minGold * 100_000;
-                    int maxCopper = maxGold * 100_000;
-
-                    int randomCopper = random.nextInt(maxCopper - minCopper + 1) + minCopper;
-                    int gold = randomCopper / 10_000;
-
-                    name = String.format("Send %s Gold", gold);
-                    logo = URL_GOLD_IMG_WIX;
-                    command = CommandsCore.sendMoney(character.name, "", "", String.valueOf(randomCopper));
-                    break;
-                default:
-                    return new MachineClaimDto(false);
-
-            }
-
             try {
-                executeCommandsPort.execute(command, transactionId);
+                // Reemplaza el nombre del personaje en el comando generado
+                String personalizedCommand = command.replaceFirst("null", character.name);
+                executeCommandsPort.execute(personalizedCommand, transactionId);
             } catch (Exception e) {
                 LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
                 return new MachineClaimDto(false);

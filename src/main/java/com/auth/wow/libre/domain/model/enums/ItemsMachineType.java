@@ -163,6 +163,33 @@ public enum ItemsMachineType {
     ID_51519("51519","Wrathful Gladiator's Pummeler","https://wow.zamimg.com/images/wow/icons/large/inv_mace_120.jpg",true),
     ID_51412("51412","Wrathful Gladiator's Repeater","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_crossbow_38.jpg",true),
     ID_51443("51443","Wrathful Gladiator's Left Ripper","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
+    ID_51541 ("51541","Wrathful Gladiator's Plate Chestpiece","https://wow.zamimg.com/images/wow/icons/large/inv_chest_leather_24.jpg",true),
+    ID_51542 ("51542","Wrathful Gladiator's Plate Gauntlets","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_62.jpg",true),
+    ID_51543 ("51543","Wrathful Gladiator's Plate Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_98.jpg",true),
+    ID_51544 ("51544","Wrathful Gladiator's Plate Legguards","https://wow.zamimg.com/images/wow/icons/large/inv_pants_plate_27.jpg",true),
+    ID_51545 ("51545","Wrathful Gladiator's Plate Shoulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_132.jpg",true),
+    ID_51474 ("51474","Wrathful Gladiator's Scaled Chestpiece","https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate26.jpg",true),
+    ID_51475 ("51475","Wrathful Gladiator's Scaled Gauntlets","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_91.jpg",true),
+    ID_51476 ("51476","Wrathful Gladiator's Scaled Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_164.jpg",true),
+    ID_51477 ("51477","Wrathful Gladiator's Scaled Legguards","https://wow.zamimg.com/images/wow/icons/large/inv_pants_plate_37.jpg",true),
+    ID_51479 ("51479","Wrathful Gladiator's Scaled Shoulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_126.jpg",true),
+    ID_51468 ("51468","Wrathful Gladiator's Ornamented Chestguard","https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate26.jpg",true),
+    ID_51469 ("51469","Wrathful Gladiator's Ornamented Gloves","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_91.jpg",true),
+    ID_51470 ("51470","Wrathful Gladiator's Ornamented Headcover","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_164.jpg",true),
+    ID_51471 ("51471","Wrathful Gladiator's Ornamented Legplates","https://wow.zamimg.com/images/wow/icons/large/inv_pants_plate_37.jpg",true),
+    ID_51473 ("51473","Wrathful Gladiator's Ornamented Spaulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_126.jpg",true),
+    ID_51413 ("51413","Wrathful Gladiator's Dreadplate Chestpiece","https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate_25.jpg",true),
+    ID_51414 ("51414","Wrathful Gladiator's Dreadplate Gauntlets","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_75.jpg",true),
+    ID_51415 ("51415","Wrathful Gladiator's Dreadplate Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_158.jpg",true),
+    ID_51418 ("51418","Wrathful Gladiator's Dreadplate Shoulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_99.jpg",true),
+    ID_51493 ("51493","Wrathful Gladiator's Leather Gloves","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_97.jpg",true),
+    ID_51494 ("51494","Wrathful Gladiator's Leather Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_161.jpg",true),
+    ID_51495 ("51495","Wrathful Gladiator's Leather Legguards","https://wow.zamimg.com/images/wow/icons/large/inv_pants_leather_36.jpg",true),
+    ID_51496 ("51496","Wrathful Gladiator's Leather Spaulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_120.jpg",true),
+    ID_51492 ("51492","Wrathful Gladiator's Leather Tunic","https://wow.zamimg.com/images/wow/icons/large/inv_chest_leather_24.jpg",true),
+
+
+
     ID_51530("51530","Wrathful Gladiator's Left Render","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true);
 
     private final String code;
