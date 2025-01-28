@@ -27,6 +27,6 @@ public class JpaCharacterInventoryAdapter implements ObtainCharacterInventory, D
 
     @Override
     public List<CharacterInventoryModel> findByGuid(Long guid, String transactionId) {
-        return  null;
+        return characterInventoryRepository.findByAllInventory(guid);
     }
 }

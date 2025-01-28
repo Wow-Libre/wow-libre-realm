@@ -12,9 +12,9 @@ public interface CharacterInventoryRepository extends CrudRepository<CharacterIn
     Optional<CharacterInventoryEntity> findByGuidAndItem(Long guid, Long item);
 
     @Query("SELECT new com.auth.wow.libre.domain.model.CharacterInventoryModel( " +
-            "chi.guid, chi.bag, chi.slot, chi.item, it.itemEntry, it.guid) " +
+            "chi.guid, chi.bag, chi.slot, chi.item, it.itemEntry, it.id) " +
             "FROM CharacterInventoryEntity chi " +
-            "INNER JOIN ItemInstanceEntity it ON chi.item = it.guid " +
+            "INNER JOIN ItemInstanceEntity it ON chi.item = it.id " +
             "WHERE chi.guid = :guid")
     List<CharacterInventoryModel> findByAllInventory(@Param("guid") Long guid);
 }

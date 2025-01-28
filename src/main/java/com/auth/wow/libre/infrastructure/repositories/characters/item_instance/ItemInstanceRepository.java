@@ -6,5 +6,6 @@ import org.springframework.data.repository.*;
 import java.util.*;
 
 public interface ItemInstanceRepository extends CrudRepository<ItemInstanceEntity, Long> {
-    Optional<ItemInstanceEntity> findByGuid(Long guid);
+
+    Optional<ItemInstanceEntity> findById(Long id);
 }
