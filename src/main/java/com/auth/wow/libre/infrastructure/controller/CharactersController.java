@@ -1,10 +1,13 @@
 package com.auth.wow.libre.infrastructure.controller;
 
+import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
@@ -65,6 +68,19 @@ public class CharactersController {
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/{character_id}/inventory")
+    public ResponseEntity<GenericResponse<List<CharacterInventoryModel>>> inventory(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestParam(name = PARAM_ACCOUNT_ID) final Long accountId,
+            @PathVariable(name = "character_id") final Long characterId) {
+
+        List<CharacterInventoryModel> inventory = charactersPort.inventory(characterId, accountId, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<List<CharacterInventoryModel>>(transactionId)
+                .ok(inventory).build());
     }
 
 }

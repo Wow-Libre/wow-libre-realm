@@ -22,4 +22,7 @@ public interface ObtainCharacters {
     FactionsDto factions(String transactionId);
 
     List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId);
+
+    List<CharactersEntity> findByCharactersByLevel(int level, String transactionId);
+
 }

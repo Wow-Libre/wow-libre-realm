@@ -59,4 +59,10 @@ public interface CharactersRepository extends CrudRepository<CharactersEntity, L
             "END " +
             "ORDER BY 1")
     List<LevelRangeDTO> findUserCountsByLevelRange();
+
+
+    @Query("SELECT c FROM CharactersEntity c WHERE c.level >= :level AND c.online=1")
+    List<CharactersEntity> findByCharacterOnlineByLevel(@Param("level") Integer level);
+
+
 }

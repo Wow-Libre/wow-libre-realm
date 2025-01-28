@@ -4,6 +4,7 @@ import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.ports.in.character_inventory.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.out.characters.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
@@ -16,10 +17,13 @@ public class CharactersService implements CharactersPort {
 
     private final ObtainCharacters obtainCharacters;
     private final SaveCharacters saveCharacters;
+    private final CharacterInventoryPort characterInventoryPort;
 
-    public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters) {
+    public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
+                             CharacterInventoryPort characterInventoryPort) {
         this.obtainCharacters = obtainCharacters;
         this.saveCharacters = saveCharacters;
+        this.characterInventoryPort = characterInventoryPort;
     }
 
 
@@ -103,6 +107,23 @@ public class CharactersService implements CharactersPort {
     @Override
     public List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId) {
         return obtainCharacters.findUserCountsByLevelRange(transactionId);
+    }
+
+    @Override
+    public List<CharactersEntity> getCharactersIsLevelMax(Integer level, String transactionId) {
+        return obtainCharacters.findByCharactersByLevel(level, transactionId);
+    }
+
+    @Override
+    public List<CharacterInventoryModel> inventory(Long characterId, Long accountId, String transactionId) {
+
+        CharacterDetailDto characterDetailDto = getCharacter(characterId, accountId, transactionId);
+
+        if (characterDetailDto == null) {
+            throw new InternalException("Character Not Found", transactionId);
+        }
+
+        return characterInventoryPort.findByInventory(characterDetailDto.id, transactionId);
     }
 
 
