@@ -78,6 +78,8 @@ public class AccountService implements AccountPort {
             throw new InternalException(
                     "The account could not be created, something has failed in the encryption  {}",
                     transactionId);
+        } catch (InternalException e) {
+            throw new InternalException(e.getMessage(), transactionId);
         } catch (Exception e) {
             LOGGER.error("An error occurred during processing: {} {}", e.getMessage(), transactionId, e);
             throw new InternalException(

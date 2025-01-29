@@ -3,10 +3,13 @@ package com.auth.wow.libre.infrastructure.entities.characters;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.*;
+
 @Data
 @Entity
 @Table(name = "item_instance")
-public class ItemInstanceEntity {
+public class ItemInstanceEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "guid")

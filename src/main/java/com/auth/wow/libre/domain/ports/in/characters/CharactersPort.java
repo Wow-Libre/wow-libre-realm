@@ -27,4 +27,10 @@ public interface CharactersPort {
 
     List<LevelRangeDTO> findUserCountsByLevelRange(String transactionId);
 
+    List<CharactersEntity> getCharactersIsLevelMax(Integer level, String transactionId);
+
+    List<CharacterInventoryModel> inventory(Long characterId, Long accountId, String transactionId);
+
+    void transferInventoryItem(Long characterId, Long accountId, Long friendId, Long itemId, Integer count,
+                               String transactionId);
 }

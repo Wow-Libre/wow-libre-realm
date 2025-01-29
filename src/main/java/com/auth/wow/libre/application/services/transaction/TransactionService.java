@@ -23,7 +23,8 @@ public class TransactionService implements TransactionPort {
             ".com/media/5dd8a0_effdc521b002493682c947c5e2aa283d~mv2.webp";
     public static final String URL_LEVEL_WIX = "https://static.wixstatic" +
             ".com/media/5dd8a0_67020ed5ab7c46e4be8085fb20563eb7~mv2.webp";
-    public static final String IMG_URL_UPGRADE_LEVEL_SLOT = "https://static.wixstatic.com/media/5dd8a0_d081e7ab00364860b9dceca9f5711e85~mv2.webp";
+    public static final String IMG_URL_UPGRADE_LEVEL_SLOT = "https://static.wixstatic" +
+            ".com/media/5dd8a0_d081e7ab00364860b9dceca9f5711e85~mv2.webp";
 
     private final CharactersPort charactersPort;
     private final CharacterTransactionPort characterTransactionPort;
@@ -168,15 +169,18 @@ public class TransactionService implements TransactionPort {
     public MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String transactionId) {
         MachineType machineType = MachineType.getName(type);
 
-        CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
+        CharactersDto characterDetailDto = charactersPort.getCharacters(accountId, transactionId);
 
-        if (characterDetailDto == null) {
+        if (characterDetailDto == null || characterDetailDto.getCharacters() == null) {
             throw new InternalException("Could not get character data", transactionId);
         }
+
+        List<CharacterDetailDto> characters = characterDetailDto.getCharacters();
 
         Random random = new Random();
         int randomNumber = random.nextInt(10) + 1;
         String command;
+
         ItemQuantityDto itemQuantityDto = new ItemQuantityDto();
         String name = null;
         String logo = null;
@@ -189,13 +193,15 @@ public class TransactionService implements TransactionPort {
                 itemQuantityDto.setQuantity(itemsRandom.isLimit() ? 1 : randomNumber);
                 name = itemsRandom.getName();
                 logo = itemsRandom.getLogo();
-                command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
+                // Asigna el comando para ITEMS
+                command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
                 break;
             case LEVEL:
                 int levelMax = 80;
                 name = String.format("Level: %s", levelMax);
                 logo = IMG_URL_UPGRADE_LEVEL_SLOT;
-                command = CommandsCore.sendLevel(characterDetailDto.name, 80);
+                // Asigna el comando para LEVEL
+                command = CommandsCore.sendLevel(null, levelMax);
                 break;
             case MOUNT:
                 MountType mountType = MountType.values()[random.nextInt(MountType.values().length)];
@@ -204,10 +210,10 @@ public class TransactionService implements TransactionPort {
 
                 itemQuantityDto.setId(mountType.getCode());
                 itemQuantityDto.setQuantity(1);
-                command = CommandsCore.sendItems(characterDetailDto.name, "", "", List.of(itemQuantityDto));
+                // Asigna el comando para MOUNT
+                command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
                 break;
             case GOLD:
-
                 int minGold = 10;
                 int maxGold = minGold * 20;
                 int minCopper = minGold * 100_000;
@@ -218,19 +224,24 @@ public class TransactionService implements TransactionPort {
 
                 name = String.format("Send %s Gold", gold);
                 logo = URL_GOLD_IMG_WIX;
-                command = CommandsCore.sendMoney(characterDetailDto.name, "", "", String.valueOf(randomCopper));
+                // Asigna el comando para GOLD
+                command = CommandsCore.sendMoney(null, "", "", String.valueOf(randomCopper));
                 break;
             default:
                 return new MachineClaimDto(false);
-
         }
 
-        try {
-            executeCommandsPort.execute(command, transactionId);
-            return new MachineClaimDto(logo, name, true);
-        } catch (Exception e) {
-            LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
-            return new MachineClaimDto(false);
+        for (CharacterDetailDto character : characters) {
+            try {
+                // Reemplaza el nombre del personaje en el comando generado
+                String personalizedCommand = command.replaceFirst("null", character.name);
+                executeCommandsPort.execute(personalizedCommand, transactionId);
+            } catch (Exception e) {
+                LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
+                return new MachineClaimDto(false);
+            }
         }
+
+        return new MachineClaimDto(logo, name, true);
     }
 }
