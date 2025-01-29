@@ -21,6 +21,6 @@ public class JpaItemInstanceAdapter implements DeleteItemInstance, ObtainItemIns
 
     @Override
     public Optional<ItemInstanceEntity> findByGuidAndOwnerGuid(Long guid, Long ownerGuid, String transactionId) {
-        return Optional.empty();
+        return itemInstanceRepository.findByIdAndOwnerGuid(guid, ownerGuid);
     }
 }

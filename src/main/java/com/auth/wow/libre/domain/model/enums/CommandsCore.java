@@ -24,6 +24,10 @@ public class CommandsCore {
         return commandBuilder.toString().trim();
     }
 
+    public static String sendItem(String playerName, String subject, String body, Long item, Integer quantity) {
+        return String.format(".send items %s \"%s\" \"%s\" %s:%s", playerName, subject, body, item, quantity);
+    }
+
     public static String sendMail(String playerName, String subject, String body) {
         return String.format(".send mail %s \"%s\" \"%s\"", playerName, subject, body);
     }

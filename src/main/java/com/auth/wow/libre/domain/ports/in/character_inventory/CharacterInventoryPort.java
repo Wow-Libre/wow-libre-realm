@@ -6,7 +6,9 @@ import java.util.*;
 
 public interface CharacterInventoryPort {
 
-    List<CharacterInventoryModel> findByInventory(Long characterId, String transactionId);
+    List<CharacterInventoryModel> findByAllInventory(Long characterId, String transactionId);
 
     void delete(Long characterId, Long itemId, String transactionId);
+
+    Optional<CharacterInventoryModel> findByGuidAndItem(Long characterId, Long itemId, String transactionId);
 }

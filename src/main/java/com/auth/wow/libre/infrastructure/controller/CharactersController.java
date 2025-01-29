@@ -4,6 +4,7 @@ import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
+import jakarta.validation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,7 +81,20 @@ public class CharactersController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<List<CharacterInventoryModel>>(transactionId)
-                .ok(inventory).build());
+                        .ok(inventory).build());
     }
 
+    @PostMapping("/inventory/transfer")
+    public ResponseEntity<GenericResponse<Void>> transferInventoryItem(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid TransferItemRequest request) {
+
+        charactersPort.transferInventoryItem(request.getCharacterId(),
+                request.getAccountId(), request.getFriendId(), request.getItemId(), request.getQuantity(),
+                transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId)
+                        .ok().build());
+    }
 }

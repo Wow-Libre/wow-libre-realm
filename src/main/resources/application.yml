@@ -24,6 +24,11 @@ spring:
       username: root
       password: Loquendo96@
       driver-class-name: com.mysql.cj.jdbc.Driver
+    three:
+      url: jdbc:mysql://localhost:3306/acore_world
+      username: root
+      password: Loquendo96@
+      driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   address: 0.0.0.0
   port: 8090
@@ -58,6 +63,11 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
     secondary:
       url: jdbc:mysql://localhost:3306/acore_characters
+      username: ${DB_WOW_LIBRE_USERNAME}
+      password: ${DB_WOW_LIBRE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    three:
+      url: jdbc:mysql://localhost:3306/acore_world
       username: ${DB_WOW_LIBRE_USERNAME}
       password: ${DB_WOW_LIBRE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver

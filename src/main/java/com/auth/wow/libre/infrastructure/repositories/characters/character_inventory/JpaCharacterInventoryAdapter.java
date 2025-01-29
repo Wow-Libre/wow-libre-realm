@@ -21,12 +21,17 @@ public class JpaCharacterInventoryAdapter implements ObtainCharacterInventory, D
     }
 
     @Override
-    public Optional<CharacterInventoryEntity> findByGuid(Long guid, Long item, String transactionId) {
-        return characterInventoryRepository.findByGuidAndItem(guid, item);
+    public Optional<CharacterInventoryModel> findByGuidModel(Long guid, Long itemId, String transactionId) {
+        return characterInventoryRepository.findByGuidAndItemModel(guid, itemId);
     }
 
     @Override
-    public List<CharacterInventoryModel> findByGuid(Long guid, String transactionId) {
+    public Optional<CharacterInventoryEntity> findByGuid(Long characterId, Long itemId, String transactionId) {
+        return characterInventoryRepository.findByGuidAndItem(characterId, itemId);
+    }
+
+    @Override
+    public List<CharacterInventoryModel> findByAllInventory(Long guid, String transactionId) {
         return characterInventoryRepository.findByAllInventory(guid);
     }
 }

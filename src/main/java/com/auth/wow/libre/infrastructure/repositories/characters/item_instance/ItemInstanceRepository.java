@@ -8,4 +8,6 @@ import java.util.*;
 public interface ItemInstanceRepository extends CrudRepository<ItemInstanceEntity, Long> {
 
     Optional<ItemInstanceEntity> findById(Long id);
+
+    Optional<ItemInstanceEntity> findByIdAndOwnerGuid(Long id, Long ownerGuid);
 }
