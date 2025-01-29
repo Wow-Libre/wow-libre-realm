@@ -50,6 +50,10 @@ application:
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
+events:
+  twinks:
+     enable: false
+
 ---
 spring:
   config:
@@ -92,3 +96,6 @@ application:
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
+events:
+  twinks:
+    enable: ${EVENTS_TWINKS_ENABLE}

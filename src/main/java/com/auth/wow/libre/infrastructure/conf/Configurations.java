@@ -18,5 +18,6 @@ public class Configurations {
     @Value("${application.account.api-key}")
     private String serverApiKey;
 
-
+    @Value("${events.twinks.enable}")
+    private boolean eventTwink;
 }
