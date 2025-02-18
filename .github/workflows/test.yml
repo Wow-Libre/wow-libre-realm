@@ -1,4 +1,4 @@
-name: Java CI - Test
+name: Java CI - Test & Coverage
 
 on:
   push:
@@ -22,12 +22,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Cache de dependencias de Maven
+      - name: Cache de dependencias Maven
         uses: actions/cache@v3
         with:
           path: ~/.m2
           key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-${{ runner.os }}-
 
-      - name: Ejecutar pruebas con Maven
-        run: mvn test
+      - name: Ejecutar pruebas y generar reporte JaCoCo
+        run: mvn clean verify
+
+      - name: Publicar cobertura en GitHub
+        uses: codecov/codecov-action@v4
+        with:
+          files: target/site/jacoco/jacoco.xml
