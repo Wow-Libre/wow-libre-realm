@@ -256,6 +256,9 @@ http://localhost:8090/
 
 ## 🌟 Únete a Nuestra Comunidad 🌟
 
+![fgasdasd](https://github.com/user-attachments/assets/6a4dd599-86ec-4e16-ace0-a9b9f7bdd510)
+
+
 ¡Sumérgete en el universo de World of Warcraft como nunca antes! Síguenos en nuestras redes sociales y sé parte de una comunidad apasionada, donde compartimos la emoción, las aventuras y los secretos del juego que nos une.
 
 Conéctate con otros jugadores, recibe las últimas novedades, y disfruta de contenido exclusivo que te llevará al siguiente nivel. ¡No te pierdas nada!
