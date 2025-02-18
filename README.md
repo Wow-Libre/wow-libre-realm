@@ -143,17 +143,18 @@ CREATE TABLE acore_auth.server_publications
 ```
 
 ## Variables de entorno 
+Para el correcto funcionamiento del sistema, es necesario configurar las siguientes variables de entorno:
 
-- Opcionales = Las siguientes variables de entorno están marcadas como opcionales, lo que significa que deben ser creadas y definidas, pero su valor puede ser cualquier atributo.
+- **Opcionales:** Las siguientes variables de entorno están marcadas como opcionales, lo que significa que deben ser creadas y definidas, pero su valor puede ser cualquier atributo.
         Estas variables permiten la integración con la central de WoW Libre. Si no deseas o no estás interesado en conectarte con WoW Libre, puedes asignarles cualquier valor sin afectar el funcionamiento interno del sistema. ✅
+  
+  Encuentra mas informacion de las variables de integracion en www.wowlibre.com/integrations 
+   
    - Ejemplo
       -  ![image](https://github.com/user-attachments/assets/a14a1af0-4b60-4d35-8ddd-617716edc31f)
 
-- Requerido = Las siguientes variables de entorno son obligatorias para la correcta configuración y funcionamiento del sistema web. Sin ellas, el sistema no podrá iniciarse correctamente. Asegúrate de definirlas con los valores adecuados antes de ejecutar la aplicación. 
+- **Requeridas:**  Las siguientes variables de entorno son obligatorias para la correcta configuración y funcionamiento del sistema web. Sin ellas, el sistema no podrá iniciarse correctamente. Asegúrate de definirlas con los valores adecuados antes de ejecutar la aplicación. 
 
-
-Variables de Entorno
-Para el correcto funcionamiento del sistema, es necesario configurar las siguientes variables de entorno:
 
 ### 1. Configuración de la Base de Datos (Requerido)❤️
 
@@ -209,7 +210,8 @@ Define el nombre del servidor web en el entorno de ejecución.
     git clone https://github.com/ManuChitiva/wow-libre-client.git
     ```
 
-  - Compilarlo maven
+  - Compilar proyecto - Maven 
+    
       Ingresar a la carpeta donde clono el repositorio:
 
       Ejemplo C:\Users\usuario\Documents\worskpace\wow-libre-client Ejecutar un powershell 
