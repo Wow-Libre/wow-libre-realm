@@ -1,4 +1,4 @@
-# World of Warcraft Community Wow Libre 
+# World of Warcraft Community Wow Libre
 
 <br>
 
@@ -19,37 +19,38 @@ Es por esto que hemos creado esta aplicación web con Spring Boot, diseñada par
 # ¡Requisitos!
 
 - Debes tener instalado JDK de java 17 o superior
+
   - Guía: [Instalación de Java](https://www.youtube.com/watch?v=TRsCMJrKglw)
   - Descargar : [Java 17](https://www.oracle.com/co/java/technologies/downloads/#java17)
-    
+
   ```sh
    java --version
-   ```
-  
+  ```
+
   - ![image](https://github.com/user-attachments/assets/c0dd8669-ca59-4929-a45b-3ee879f9682f)
 
-## Instalación de Maven en Windows  
-1. Descarga Maven desde el sitio oficial:  
+## Instalación de Maven en Windows
+
+1. Descarga Maven desde el sitio oficial:
+
    - [Apache Maven](https://maven.apache.org/download.cgi)  
      ![image](https://github.com/user-attachments/assets/46306253-45da-40ad-80bb-556f6c004362)
 
-
 2. Extrae el archivo en una ubicación de tu elección (ejemplo: `C:\Program Files\Apache\Maven`)
-    ![image](https://github.com/user-attachments/assets/31019dcc-def1-4ded-a5ea-13c6f38052c3)
+   ![image](https://github.com/user-attachments/assets/31019dcc-def1-4ded-a5ea-13c6f38052c3)
 
+3. Configura las variables de entorno:
 
-4. Configura las variables de entorno:  
    - Añade Maven a la variable `Path`  
      ![image](https://github.com/user-attachments/assets/861cb9c4-4806-4fbd-9774-a9f74236d9c9)
 
-5. Verifica la instalación ejecutando en un CMD o powershell:  
+4. Verifica la instalación ejecutando en un CMD o powershell:
    ```sh
    mvn -version
    ```
-    ![image](https://github.com/user-attachments/assets/ec779e69-cf71-4226-883c-021550269937)
+   ![image](https://github.com/user-attachments/assets/ec779e69-cf71-4226-883c-021550269937)
 
-
-##  Mysql 
+## Mysql
 
 Es necesario contar con MySQL instalado y configurado correctamente.
 
@@ -62,9 +63,9 @@ Es necesario contar con MySQL instalado y configurado correctamente.
 
 Después de instalar MySQL, asegúrate de que el servicio esté en ejecución con el siguiente comando:
 
- ```sh
-   mysql --version
-   ```
+```sh
+  mysql --version
+```
 
 El emulador AzerothCore utiliza las siguientes bases de datos en MySQL, y la aplicación web está diseñada para integrarse con este emulador:
 
@@ -79,11 +80,11 @@ Es fundamental que estas bases de datos estén correctamente configuradas para g
 ## Ejecución de Scripts
 
 Para ejecutar los scripts necesarios para el proyecto.
- 
- ```sql
+
+```sql
 ALTER TABLE acore_auth.account
-    ADD COLUMN user_id bigint;
- ```
+   ADD COLUMN user_id bigint;
+```
 
 ```sql
 CREATE TABLE acore_auth.client
@@ -101,15 +102,12 @@ CREATE TABLE acore_auth.client
 );
 ```
 
-
 ```sql
 ALTER TABLE acore_characters.guild
     ADD COLUMN public_access boolean,
     ADD COLUMN discord       text,
     ADD COLUMN multi_faction boolean;
 ```
-
-
 
 ```sql
 CREATE TABLE acore_characters.character_transaction
@@ -142,19 +140,19 @@ CREATE TABLE acore_auth.server_publications
 );
 ```
 
-## Variables de entorno 
+## Variables de entorno
+
 Para el correcto funcionamiento del sistema, es necesario configurar las siguientes variables de entorno:
 
 - **Opcionales:** Las siguientes variables de entorno están marcadas como opcionales, lo que significa que deben ser creadas y definidas, pero su valor puede ser cualquier atributo.
-        Estas variables permiten la integración con la central de WoW Libre. Si no deseas o no estás interesado en conectarte con WoW Libre, puedes asignarles cualquier valor sin afectar el funcionamiento interno del sistema. ✅
-  
-  Encuentra mas informacion de las variables de integracion en www.wowlibre.com/integrations 
-   
-   - Ejemplo
-      -  ![image](https://github.com/user-attachments/assets/a14a1af0-4b60-4d35-8ddd-617716edc31f)
+  Estas variables permiten la integración con la central de WoW Libre. Si no deseas o no estás interesado en conectarte con WoW Libre, puedes asignarles cualquier valor sin afectar el funcionamiento interno del sistema. ✅
 
-- **Requeridas:**  Las siguientes variables de entorno son obligatorias para la correcta configuración y funcionamiento del sistema web. Sin ellas, el sistema no podrá iniciarse correctamente. Asegúrate de definirlas con los valores adecuados antes de ejecutar la aplicación. 
+  Encuentra mas informacion de las variables de integracion en www.wowlibre.com/integrations
 
+  - Ejemplo
+    - ![image](https://github.com/user-attachments/assets/a14a1af0-4b60-4d35-8ddd-617716edc31f)
+
+- **Requeridas:** Las siguientes variables de entorno son obligatorias para la correcta configuración y funcionamiento del sistema web. Sin ellas, el sistema no podrá iniciarse correctamente. Asegúrate de definirlas con los valores adecuados antes de ejecutar la aplicación.
 
 ### 1. Configuración de la Base de Datos (Requerido)❤️
 
@@ -164,6 +162,7 @@ Estas variables permiten la conexión con la base de datos.
 - **DB_WOW_LIBRE_PASSWORD** → Contraseña asociada al usuario de la base de datos.
 
 ### 2. Credenciales de Administración (Opcional)
+
 Credenciales utilizadas para acceder a la interfaz de administración del sistema.
 
 Asignar una cuenta de Game Master (GM) a la aplicación web permitirá el envío de ítems dentro del sistema. Esto es necesario, ya que la cuenta debe tener los permisos adecuados para ejecutar el comando:
@@ -175,77 +174,74 @@ Asignar una cuenta de Game Master (GM) a la aplicación web permitirá el envío
 - **GM_USERNAME** → Nombre de usuario del administrador.
 - **GM_PASSWORD** → Contraseña del administrador.
 
-### 3. Autenticación y API del Sistema  (Opcional)
+### 3. Autenticación y API del Sistema (Opcional)
 
-Claves necesarias para la integración con la API del sistema central  WowLibre
- 
+Claves necesarias para la integración con la API del sistema central WowLibre
+
 - API_KEY_WOW_LIBRE → Clave de acceso a la API del sistema.
 - **USERNAME_WOW_LIBRE** → Usuario de www.wowlibre.com para la autenticación en la API.
 - **PASSWORD_WOW_LIBRE** → Contraseña de www.wowlibre.com para la autenticación en la API.
 
-### 4. Seguridad y Servicios Externos  (Requerido)
+### 4. Seguridad y Servicios Externos (Requerido)
+
 Variables utilizadas para la seguridad y servicios de terceros.
 
 - **SECRET_JWT** → Clave secreta para la generación y validación de tokens JWT.
 - **GOOGLE_API_SECRET** → Clave secreta para integraciones con los servicios de Google.
 - **GOOGLE_API_KEY** → Clave de API para el uso de servicios de Google.
 
-### 5. Configuración del Servidor Web  (Requerido)❤️
+### 5. Configuración del Servidor Web (Requerido)❤️
 
 Define el nombre del servidor web en el entorno de ejecución.
 
 - **SERVER_WEB_NAME** → Nombre personalizado del servidor web.
-- 
-📌 Nota: Asegúrate de configurar estas variables en el entorno adecuado para garantizar el correcto funcionamiento del sistema. 🚀
-
- 
+- 📌 Nota: Asegúrate de configurar estas variables en el entorno adecuado para garantizar el correcto funcionamiento del sistema. 🚀
 
 ## Cómo Iniciar la Aplicación
 
-### Compilar aplicacion 
+### Compilar aplicacion
 
-  - Descargar repositorio
-   
-    ```sh
-    git clone https://github.com/ManuChitiva/wow-libre-client.git
-    ```
+- Descargar repositorio
 
-  - Compilar proyecto - Maven 
-    
-      Ingresar a la carpeta donde clono el repositorio:
+  ```sh
+  git clone https://github.com/ManuChitiva/wow-libre-client.git
+  ```
 
-      Ejemplo C:\Users\usuario\Documents\worskpace\wow-libre-client Ejecutar un powershell 
-      ![image](https://github.com/user-attachments/assets/6a75b140-13fc-4ee4-8036-24d3fe60ca28)
+- Compilar proyecto - Maven
 
-      Ejecutar en el powershell
-    
-      ```sh
-      mvn install
-      ```
-      
-      ![image](https://github.com/user-attachments/assets/3ec5ec88-1fab-4d75-b0dd-c5019f070cad)
-      ![image](https://github.com/user-attachments/assets/209a2eb6-6ebd-483c-9325-3cc274108943)
+  Ingresar a la carpeta donde clono el repositorio:
 
-      Al compilar el proyecto se debio generar  una carpeta llamada "target"
+  Ejemplo C:\Users\usuario\Documents\worskpace\wow-libre-client Ejecutar un powershell
+  ![image](https://github.com/user-attachments/assets/6a75b140-13fc-4ee4-8036-24d3fe60ca28)
 
-      ![image](https://github.com/user-attachments/assets/f90eddef-8c12-4e88-9164-42eed97ebbbb)
+  Ejecutar en el powershell
 
-      Dentro de "target" debes tener un .jar como muestra la imagen, esta es nuestra App compilada.
-    
-      ![image](https://github.com/user-attachments/assets/421e62d7-385c-4015-b7ee-55d080668ec0)
+  ```sh
+  mvn install
+  ```
 
-      En el mismo CMD o Powershell vamos a ejecutar.
-    
-      ```sh
-      java -jar wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
-      ```
-      
-      ![image](https://github.com/user-attachments/assets/4aba2c1b-5b69-4efe-9592-5df606e8a088)
-    
-      Si la ejecusion fue un exito deberias poder ver que la aplicacion web se esta ejecutando en http://localhost:8090/
-     
-      ![image](https://github.com/user-attachments/assets/e0a4760a-aaad-4a81-9bf3-a1a68f281e8b)
+  ![image](https://github.com/user-attachments/assets/3ec5ec88-1fab-4d75-b0dd-c5019f070cad)
+  ![image](https://github.com/user-attachments/assets/209a2eb6-6ebd-483c-9325-3cc274108943)
 
+  Al compilar el proyecto se debio generar una carpeta llamada "target"
+
+  ![image](https://github.com/user-attachments/assets/f90eddef-8c12-4e88-9164-42eed97ebbbb)
+
+  Dentro de "target" debes tener un .jar como muestra la imagen, esta es nuestra App compilada.
+
+  ![image](https://github.com/user-attachments/assets/421e62d7-385c-4015-b7ee-55d080668ec0)
+
+  En el mismo CMD o Powershell vamos a ejecutar.
+
+  ```sh
+  java -jar wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+  ```
+
+  ![image](https://github.com/user-attachments/assets/4aba2c1b-5b69-4efe-9592-5df606e8a088)
+
+  Si la ejecusion fue un exito deberias poder ver que la aplicacion web se esta ejecutando en http://localhost:8090/
+
+  ![image](https://github.com/user-attachments/assets/e0a4760a-aaad-4a81-9bf3-a1a68f281e8b)
 
 ## 🌟 APP EJECUTANDOSE CON EXITO 🌟
 
@@ -257,7 +253,6 @@ http://localhost:8090/
 ## 🌟 Únete a Nuestra Comunidad 🌟
 
 ![fgasdasd](https://github.com/user-attachments/assets/6a4dd599-86ec-4e16-ace0-a9b9f7bdd510)
-
 
 ¡Sumérgete en el universo de World of Warcraft como nunca antes! Síguenos en nuestras redes sociales y sé parte de una comunidad apasionada, donde compartimos la emoción, las aventuras y los secretos del juego que nos une.
 
@@ -271,10 +266,4 @@ Conéctate con otros jugadores, recibe las últimas novedades, y disfruta de con
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://chat.whatsapp.com/BDELJKhuJkWIMKxF8ExIdN)
 [![TikTok](https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white)](https://www.tiktok.com/@wowlibre?_t=8ootaqKLQKj&_r=1)
 
-
-
-
-
-
-
-
+> > > > > > > 7cd495f2517af0c3b241d03e65e83e9c16af809f

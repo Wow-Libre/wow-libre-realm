@@ -1,31 +1,26 @@
 package com.auth.wow.libre.infrastructure.security;
 
-import com.auth.wow.libre.application.services.jwt.JwtPortService;
-import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
-import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
+import com.auth.wow.libre.application.services.jwt.*;
+import com.auth.wow.libre.domain.model.security.*;
+import com.auth.wow.libre.domain.ports.in.jwt.*;
 import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
-import com.auth.wow.libre.infrastructure.filter.JwtAuthenticationFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import com.auth.wow.libre.infrastructure.filter.*;
+import org.springframework.context.annotation.*;
+import org.springframework.http.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.dao.*;
+import org.springframework.security.config.annotation.web.builders.*;
+import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.http.*;
+import org.springframework.security.crypto.bcrypt.*;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.web.*;
+import org.springframework.security.web.authentication.*;
+import org.springframework.web.cors.*;
 
-import java.util.Arrays;
+import java.util.*;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
 @EnableWebSecurity
 @Configuration
@@ -75,21 +70,31 @@ public class SecurityConfiguration {
                         endpoints -> endpoints.requestMatchers("/api/auth/login").authenticated()
                 ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
                         UsernamePasswordAuthenticationFilter.class)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(
-                                        //INTERNAL API
-                                        "/api/client",
-                                        "/api/account/create",
-                                        //SWAGGER
-                                        "/v2/api-docs", "/swagger-resources",
-                                        "/swagger-resources/**", "/configuration/ui",
-                                        "/configuration/security", "/swagger-ui.html", "/webjars/**",
-                                        "/v3/api-docs/**", "/swagger-ui/**")
-                                .permitAll().anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                // INTERNAL API (siguen sin autenticación)
+                                "/api/client",
+                                "/api/account/create",
+
+                                // SWAGGER (siguen sin autenticación)
+                                "/v2/api-docs", "/swagger-resources",
+                                "/swagger-resources/**", "/configuration/ui",
+                                "/configuration/security", "/swagger-ui.html", "/webjars/**",
+                                "/v3/api-docs/**", "/swagger-ui/**",
+
+                                // PERMITIR THYMELEAF (agregado)
+                                "/", "/home",  "/error","/register","/congrats",
+
+                                // PERMITIR ARCHIVOS ESTÁTICOS (CSS, JS, IMAGES)
+                                "/css/**", "/js/**", "/images/**", "/webjars/**","/favicon.ico"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
