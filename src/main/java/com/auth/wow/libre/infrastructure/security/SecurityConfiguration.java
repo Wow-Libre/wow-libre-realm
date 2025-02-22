@@ -41,8 +41,8 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
-                "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001","https://api.wowlibre.com"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("https://api.wowlibre" +
+                ".com/api", "https://www.wowlibre.com/api"));
         corsConfiguration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -71,6 +71,7 @@ public class SecurityConfiguration {
                 ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
                         UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/account/create", "/api/client"))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 // INTERNAL API (siguen sin autenticación)
@@ -84,10 +85,10 @@ public class SecurityConfiguration {
                                 "/v3/api-docs/**", "/swagger-ui/**",
 
                                 // PERMITIR THYMELEAF (agregado)
-                                "/", "/home",  "/error","/register","/congrats",
+                                "/", "/home", "/error", "/register", "/congrats",
 
                                 // PERMITIR ARCHIVOS ESTÁTICOS (CSS, JS, IMAGES)
-                                "/css/**", "/js/**", "/images/**", "/webjars/**","/favicon.ico"
+                                "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
