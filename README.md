@@ -186,7 +186,7 @@ Claves necesarias para la integración con la API del sistema central WowLibre
 
 Variables utilizadas para la seguridad y servicios de terceros.
 
-- **SECRET_JWT** → Clave secreta para la generación y validación de tokens JWT.
+- **SECRET_JWT** → Clave secreta para la generación y validación de tokens JWT. (Ejemplo A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158) Genera tu propio SECRET
 - **GOOGLE_API_SECRET** → Clave secreta para integraciones con los servicios de Google.
 - **GOOGLE_API_KEY** → Clave de API para el uso de servicios de Google.
 
