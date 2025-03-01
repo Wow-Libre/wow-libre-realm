@@ -39,11 +39,11 @@ public class CharactersEntity implements Serializable {
     @Column(name = "playerflags")
     private Integer playerFlags;
     @Column(name = "position_x")
-    private Integer positionX;
+    private Double positionX;
     @Column(name = "position_y")
-    private Integer positionY;
+    private Double positionY;
     @Column(name = "position_z")
-    private Integer positionZ;
+    private Double positionZ;
     private Integer map;
     @Column(name = "instance_id")
     private Integer instanceId;

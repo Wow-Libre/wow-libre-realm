@@ -41,8 +41,7 @@ public class CharactersController {
     public ResponseEntity<GenericResponse<CharactersDto>> loanApplicationCharacters(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestParam(name = PARAM_ACCOUNT_ID) final Long accountId,
-            @RequestParam int time,
-            @RequestParam int level) {
+            @RequestParam int time, @RequestParam int level) {
 
         CharactersDto characters = charactersPort.loanApplicationCharacters(accountId, level, time, transactionId);
 

@@ -22,7 +22,7 @@ public class CommandsController {
     @PostMapping
     public ResponseEntity<GenericResponse<Void>> commands(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestBody @Valid ExecuteCommandRequest request) throws Exception {
+            @RequestBody @Valid ExecuteCommandRequest request)  {
 
         executeCommandsPort.execute(request.getMessage(), request.getSalt(), transactionId);
 

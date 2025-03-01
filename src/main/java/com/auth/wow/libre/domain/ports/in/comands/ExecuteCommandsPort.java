@@ -4,7 +4,7 @@ import jakarta.xml.bind.*;
 
 
 public interface ExecuteCommandsPort {
-    void execute(String messageEncrypt, byte[] salt, String transactionId) throws Exception;
+    void execute(String messageEncrypt, byte[] salt, String transactionId);
 
     void execute(String command, String transactionId) throws JAXBException;
 

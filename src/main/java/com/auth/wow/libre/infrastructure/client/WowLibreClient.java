@@ -77,7 +77,7 @@ public class WowLibreClient {
                     new ParameterizedTypeReference<>() {
                     });
 
-            if (response.getStatusCode().is2xxSuccessful()) {
+            if (response.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
                 return Objects.requireNonNull(response.getBody()).getData();
             }
 
@@ -86,7 +86,7 @@ public class WowLibreClient {
                             "server error. " +
                             "HTTP Status: {}, Response Body: {}",
                     e.getMessage(), e.getStatusCode(), e.getResponseBodyAsString());
-            throw new InternalException("Transaction failed due to client or server error", transactionId);
+            throw new InternalException(Objects.requireNonNull(e.getResponseBodyAs(GenericResponse.class)).getMessage(), transactionId);
         } catch (Exception e) {
             LOGGER.error("[WowLibreClient] [getApiSecret] Unexpected Error: {}. An unexpected error occurred during the" +
                             " transaction with ID: {}.",

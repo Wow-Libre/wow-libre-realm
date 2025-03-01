@@ -25,9 +25,9 @@ public class CharacterModel {
     public final Integer bankSlots;
     public final Integer restState;
     public final Integer playerFlags;
-    public final Integer positionX;
-    public final Integer positionY;
-    public final Integer positionZ;
+    public final Double positionX;
+    public final Double positionY;
+    public final Double positionZ;
     public final Integer map;
     public final Integer instanceId;
     public final Integer instanceModeMask;

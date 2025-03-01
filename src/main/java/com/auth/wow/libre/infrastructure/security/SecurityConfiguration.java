@@ -11,6 +11,7 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.*;
 import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.*;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.crypto.password.*;
@@ -71,7 +72,7 @@ public class SecurityConfiguration {
                 ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
                         UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/account/create", "/api/client"))
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 // INTERNAL API (siguen sin autenticación)
