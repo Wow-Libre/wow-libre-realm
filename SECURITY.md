@@ -49,7 +49,7 @@ Para ejecutar correctamente el proyecto, asegúrate de cumplir con los siguiente
 | Java    | JDK 17	           |JDK 21             |
 | Maven   | 3.8.x              |Última versión estable|
 | MySQL   | 8.0 o superior     | 8.0 o superior          |
-| RAM     | 500mbs             | 500 mbs o más          |
+| RAM     | 500mbs             | 200 mbs o más          |
 
 
 ¡Gracias por ayudarnos a mejorar la seguridad de WowLibre! 🚀
