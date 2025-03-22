@@ -25,4 +25,9 @@ public interface AccountPort {
 
     void updateMail(String username, String updateMail, String transactionId);
 
+    void bannedUser(String username, Integer days, Integer hours, Integer minutes, Integer seconds, String bannedBy,
+                    String banReason, String transactionId);
+
+    void changePassword(String username, String password, String newPassword, String transactionId);
+
 }

@@ -22,8 +22,7 @@ public class CustomLoggingInterceptor implements ClientInterceptor {
             LOGGER.error("Error writing request: " + e.getMessage());
             throw new RuntimeException(e);
         }
-        System.out.println(); // Salto de línea para claridad
-        return true; // Continuar con la ejecución normal
+        return true;
     }
 
     @Override

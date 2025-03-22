@@ -2,6 +2,7 @@ package com.auth.wow.libre.application.services.wow_libre;
 
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.client.*;
@@ -29,16 +30,17 @@ public class WowLibreService implements WowLibrePort {
     @Override
     public String getJwt(String transactionId) {
 
-        Optional<ClientEntity> clientJwt = obtainClient.getClientStatusIsTrue();
+        Optional<ClientEntity> clientWowLibre = obtainClient.findByRolName(RolType.WOW_LIBRE.getName())
+                .stream().findFirst();
 
-        if (clientJwt.isEmpty()) {
+        if (clientWowLibre.isEmpty()) {
             LOGGER.error("[WowLibreService][getJwt] The system has not been configured correctly to use the " +
-                    "registration system with Wow Libre {}", transactionId);
+                    "registration system with Wow Libre transactionId: {}", transactionId);
             throw new InternalException("The system has not been configured correctly to register users.",
                     transactionId);
         }
 
-        ClientEntity client = clientJwt.get();
+        ClientEntity client = clientWowLibre.get();
 
         if (client.getExpirationDate() != null && client.getExpirationDate().after(new Date())) {
             return client.getJwt();
@@ -79,7 +81,7 @@ public class WowLibreService implements WowLibrePort {
     }
 
     @Override
-    public ServerModel getApiSecret(String jwt, String transactionId) {
+    public ServerKey getApiSecret(String jwt, String transactionId) {
         ServerDto serverDto = wowLibreClient.getApiSecret(jwt, transactionId);
 
         if (serverDto == null || serverDto.getApiSecret() == null) {
@@ -90,6 +92,6 @@ public class WowLibreService implements WowLibrePort {
                     "base", transactionId);
         }
 
-        return new ServerModel(serverDto.getApiSecret());
+        return new ServerKey(serverDto.getApiSecret());
     }
 }

@@ -22,8 +22,8 @@ public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
 
     @Query("SELECT new com.auth.wow.libre.infrastructure.repositories.auth.account.MetricsProjection("
             + "COUNT(a), "  // Contar el total de usuarios
-            + "SUM(CASE WHEN a.online = true THEN 1 ELSE 0 END), "  // Contar los usuarios online
-            + "SUM(CASE WHEN a.userId IS NOT NULL THEN 1 ELSE 0 END)) "  // Contar los usuarios con userId no nulo
+            + "SUM(CASE WHEN a.online = true THEN 1 ELSE 0 END), "
+            + "SUM(CASE WHEN a.userId IS NOT NULL THEN 1 ELSE 0 END)) "
             + "FROM AccountEntity a")
     MetricsProjection fetchMetrics();
 

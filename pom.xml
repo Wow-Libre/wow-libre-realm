@@ -12,7 +12,7 @@
     <artifactId>wow-libre-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>wow-libre-client</name>
-    <description>Server Wow</description>
+    <description>Cliente de conexión a WoW Libre</description>
     <properties>
         <java.version>17</java.version>
     </properties>

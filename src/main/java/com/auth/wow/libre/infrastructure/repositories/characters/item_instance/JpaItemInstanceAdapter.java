@@ -8,6 +8,7 @@ import java.util.*;
 
 @Repository
 public class JpaItemInstanceAdapter implements DeleteItemInstance, ObtainItemInstance {
+
     private final ItemInstanceRepository itemInstanceRepository;
 
     public JpaItemInstanceAdapter(ItemInstanceRepository itemInstanceRepository) {

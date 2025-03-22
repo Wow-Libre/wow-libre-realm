@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.*;
 
 @Data
+@AllArgsConstructor
 public class CreateAccountDto {
     @NotNull
     @Length(min = 5, max = 20)
@@ -13,7 +14,6 @@ public class CreateAccountDto {
     private String password;
     @NotNull
     private String email;
-    private boolean rebuildUsername;
     @NotNull
     private Long userId;
     @NotNull

@@ -25,7 +25,7 @@ public class CommandsService implements ExecuteCommandsPort {
     public void execute(String messageEncrypt, byte[] salt, String transactionId) {
 
         final String jwt = wowLibrePort.getJwt(transactionId);
-        final ServerModel apiSecret = wowLibrePort.getApiSecret(jwt, transactionId);
+        final ServerKey apiSecret = wowLibrePort.getApiSecret(jwt, transactionId);
 
         try {
             SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret.keyPassword(), salt);

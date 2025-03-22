@@ -25,6 +25,11 @@ public class JpaClientAdapter implements ObtainClient, SaveClient {
     }
 
     @Override
+    public List<ClientEntity> findByRolName(String rolType) {
+        return clientRepository.findByRol(rolType);
+    }
+
+    @Override
     public void save(ClientEntity client) {
         clientRepository.save(client);
     }

@@ -1,14 +1,16 @@
 package com.auth.wow.libre.domain.model.enums;
 
+import java.util.*;
+
 public enum PromotionType {
     ITEM,
     LEVEL,
     MONEY;
 
     public static PromotionType findByName(String name) {
-        if (name == null) {
-            return null;
-        }
-        return PromotionType.valueOf(name.toUpperCase());
+        return Arrays.stream(values())
+                .filter(promoType -> promoType.name().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
     }
 }

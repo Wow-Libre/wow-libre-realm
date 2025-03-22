@@ -15,9 +15,8 @@ public record AccountsServerDto(
         String muteBy,
         boolean mute,
         LocalDate lastLogin,
-        String os
+        String os,
+        boolean banned
 ) {
-
-
 
 }

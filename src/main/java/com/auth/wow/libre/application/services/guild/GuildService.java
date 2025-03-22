@@ -2,7 +2,6 @@ package com.auth.wow.libre.application.services.guild;
 
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
-import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;

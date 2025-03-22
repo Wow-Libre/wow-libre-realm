@@ -5,8 +5,10 @@ import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
+import com.auth.wow.libre.domain.ports.in.google.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
+import com.auth.wow.libre.infrastructure.client.dto.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
@@ -24,8 +26,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class AccountServiceTest {
-
+class AccountServiceTest {
 
     @Mock
     private WowLibrePort wowLibrePort;
@@ -41,7 +42,10 @@ public class AccountServiceTest {
 
     @Mock
     private AccountBannedPort accountBannedPort;
-
+    @Mock
+    private SaveBannedPort saveBannedPort;
+    @Mock
+    private GooglePort googlePort;
 
     private String username;
     private String email;
@@ -49,6 +53,11 @@ public class AccountServiceTest {
     private String expansion;
     private String transactionId;
     private String apiKeySecret;
+    private String bannedBy;
+    private String banReason;
+    private String password;
+    private String recaptchaToken;
+    private String ipAddress;
 
     @BeforeEach
     void setUp() {
@@ -58,6 +67,53 @@ public class AccountServiceTest {
         expansion = "2";
         transactionId = "transaction123";
         apiKeySecret = "keyPassword";
+        bannedBy = "admin";
+        banReason = "Violation of rules";
+        password = "securePassword";
+        recaptchaToken = "validCaptchaToken";
+        ipAddress = "127.0.0.1";
+    }
+
+    @Test
+    void testBannedUser_Success() {
+        AccountEntity account = new AccountEntity();
+        account.setId(1L);
+
+        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(account));
+        when(accountBannedPort.getAccountBanned(account.getId())).thenReturn(null);
+
+        accountService.bannedUser(username, 1, 0, 0, 0, bannedBy, banReason, transactionId);
+
+        verify(saveBannedPort).save(anyLong(), anyLong(), anyLong(), eq(bannedBy), eq(banReason), eq(true));
+    }
+
+    @Test
+    void testBannedUser_AccountNotFound() {
+        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
+
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                accountService.bannedUser(username, 1, 0, 0, 0, bannedBy, banReason, transactionId)
+        );
+
+        assertEquals("The server where your character is currently located is not available", thrown.getMessage());
+    }
+
+    @Test
+    void testBannedUser_AlreadyBanned() {
+        AccountEntity account = new AccountEntity();
+        account.setId(1L);
+
+        AccountBanned existingBan = new AccountBanned(1L, new Date(), new Date(), bannedBy, banReason, true);
+
+
+        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(account));
+        when(accountBannedPort.getAccountBanned(account.getId())).thenReturn(existingBan);
+
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                accountService.bannedUser(username, 1, 0, 0, 0, bannedBy, banReason, transactionId)
+        );
+
+        assertEquals("The client already submits a ban", thrown.getMessage());
     }
 
     @Test
@@ -68,11 +124,11 @@ public class AccountServiceTest {
 
         // Arrange
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerModel("keyPassword"));
+        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
         when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
         when(saveAccountPort.save(any(AccountEntity.class))).thenAnswer(invocation -> {
             AccountEntity account = invocation.getArgument(0);
-            account.setId(1L); // Simulate the ID generation
+            account.setId(1L);
             return account;
         });
 
@@ -95,7 +151,7 @@ public class AccountServiceTest {
 
         // Arrange
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerModel("keyPassword"));
+        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
         when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(new AccountEntity()));
 
         // Act & Assert
@@ -115,7 +171,7 @@ public class AccountServiceTest {
 
         // Arrange
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerModel("keyPassword"));
+        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
 
         // Act & Assert
         InternalException exception = assertThrows(InternalException.class, () -> accountService.create(username,
@@ -286,7 +342,7 @@ public class AccountServiceTest {
 
         when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.of(accountEntity));
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerModel("keyPassword"));
+        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
 
         accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, transactionId);
 
@@ -304,7 +360,7 @@ public class AccountServiceTest {
         InternalException exception = assertThrows(InternalException.class, () ->
                 accountService.changePassword(accountId, userId, "password", saltPassword, transactionId));
 
-        assertEquals("The server where your character is currently located is not available", exception.getMessage());
+        assertEquals("The requested account is not linked to the user or the account id", exception.getMessage());
     }
 
     @Test
@@ -321,9 +377,9 @@ public class AccountServiceTest {
 
         when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.of(accountEntity));
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerModel("keyPassword"));
+        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
 
-        doThrow(new InternalException("Encryption error",""))
+        doThrow(new InternalException("Encryption error", ""))
                 .when(saveAccountPort).save(any(AccountEntity.class));
 
         InternalException exception = assertThrows(InternalException.class, () ->
@@ -346,7 +402,7 @@ public class AccountServiceTest {
 
         when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.of(accountEntity));
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerModel("keyPassword"));
+        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
 
         doThrow(new RuntimeException("Unexpected error"))
                 .when(saveAccountPort).save(any(AccountEntity.class));
@@ -357,4 +413,57 @@ public class AccountServiceTest {
         assertEquals("Could not update password", exception.getMessage());
     }
 
+    @Test
+    void testCreateLocal_Success() {
+        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
+                .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
+        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
+        when(saveAccountPort.save(any(AccountEntity.class))).thenAnswer(invocation -> {
+            AccountEntity account = invocation.getArgument(0);
+            account.setId(1L);
+            return account;
+        });
+
+        assertDoesNotThrow(() -> accountService.createLocal(username, password, email, recaptchaToken, ipAddress));
+        verify(saveAccountPort, times(1)).save(any(AccountEntity.class));
+    }
+
+    @Test
+    void testCreateLocal_InvalidCaptcha() {
+        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
+                .thenReturn(new VerifyCaptchaResponse(false, "www.google.com"));
+
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                accountService.createLocal(username, password, email, recaptchaToken, ipAddress)
+        );
+
+        assertEquals("The captcha is invalid", thrown.getMessage());
+    }
+
+    @Test
+    void testCreateLocal_UsernameAlreadyExists() {
+        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
+                .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
+        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(new AccountEntity()));
+
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                accountService.createLocal(username, password, email, recaptchaToken, ipAddress)
+        );
+
+        assertEquals("The username is not available", thrown.getMessage());
+    }
+
+    @Test
+    void testCreateLocal_UnexpectedError() {
+        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
+                .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
+        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
+        when(saveAccountPort.save(any(AccountEntity.class))).thenThrow(new RuntimeException("Database error"));
+
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                accountService.createLocal(username, password, email, recaptchaToken, ipAddress)
+        );
+
+        assertEquals("It was not possible to create the user, an unexpected error occurred", thrown.getMessage());
+    }
 }

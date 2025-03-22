@@ -167,7 +167,7 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String transactionId) {
-        MachineType machineType = MachineType.getName(type);
+        MachineType machineType = MachineType.findByName(type);
 
         CharactersDto characterDetailDto = charactersPort.getCharacters(accountId, transactionId);
 

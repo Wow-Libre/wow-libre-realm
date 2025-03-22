@@ -6,6 +6,9 @@ import java.util.*;
 
 public interface ObtainClient {
     Optional<ClientEntity> findByUsername(String username);
+
     Optional<ClientEntity> getClientStatusIsTrue();
+
+    List<ClientEntity> findByRolName(String rolType);
 
 }

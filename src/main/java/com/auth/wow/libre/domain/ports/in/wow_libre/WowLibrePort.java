@@ -8,5 +8,5 @@ public interface WowLibrePort {
 
     LoginResponseDto login(String transactionId);
 
-    ServerModel getApiSecret(String jwt, String transactionId);
+    ServerKey getApiSecret(String jwt, String transactionId);
 }

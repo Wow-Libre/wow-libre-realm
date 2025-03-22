@@ -1,10 +1,11 @@
 package com.auth.wow.libre.infrastructure.security;
 
 import com.auth.wow.libre.application.services.jwt.*;
+import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.security.*;
 import com.auth.wow.libre.domain.ports.in.jwt.*;
-import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
 import com.auth.wow.libre.infrastructure.filter.*;
+import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
 import org.springframework.context.annotation.*;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
@@ -86,11 +87,15 @@ public class SecurityConfiguration {
                                 "/v3/api-docs/**", "/swagger-ui/**",
 
                                 // PERMITIR THYMELEAF (agregado)
-                                "/", "/home", "/error", "/register", "/congrats",
+                                "/", "/home", "/error", "/register", "/congrats", "login", "/dashboard", "/logout",
 
                                 // PERMITIR ARCHIVOS ESTÁTICOS (CSS, JS, IMAGES)
                                 "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico"
                         ).permitAll()
+                        .requestMatchers("/api/account/**", "/api/bank/**", "/api/characters/**",
+                                "/api/professions/**", "/api/social", "/commands/**", "/api/dashboard/**",
+                                "/api/guilds/**", "/api/transaction/**", "/api/mails/**")
+                        .hasAuthority(RolType.WOW_LIBRE.getName())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

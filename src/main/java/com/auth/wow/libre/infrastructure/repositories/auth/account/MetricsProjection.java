@@ -8,5 +8,4 @@ public class MetricsProjection {
     private Long totalUsers;
     private Long onlineUsers;
     private Long totalUsersExternal;
-
 }

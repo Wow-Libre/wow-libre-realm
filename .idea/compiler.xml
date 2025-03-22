@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="core" />
         <module name="libre-auth" />
+        <module name="wow-libre-client" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -20,6 +21,7 @@
       <module name="auth" options="-parameters" />
       <module name="core" options="-parameters" />
       <module name="libre-auth" options="-parameters" />
+      <module name="wow-libre-client" options="-parameters" />
     </option>
   </component>
 </project>

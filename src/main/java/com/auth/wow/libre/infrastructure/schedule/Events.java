@@ -1,6 +1,6 @@
 package com.auth.wow.libre.infrastructure.schedule;
 
-import com.auth.wow.libre.domain.model.enums.*;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.infrastructure.conf.*;

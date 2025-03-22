@@ -17,9 +17,9 @@ public enum MachineType {
         this.name = name;
     }
 
-    public static MachineType getName(String name) {
+    public static MachineType findByName(String name) {
         return Arrays.stream(values())
-                .filter(data -> Objects.equals(data.name, name))
+                .filter(data -> data.name.equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
     }

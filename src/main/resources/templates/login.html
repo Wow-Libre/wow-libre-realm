@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xml:lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script async defer src="https://www.google.com/recaptcha/api.js"></script>
+</head>
+
+<nav class="bg-gray-800">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+        <a class="text-yellow-400 text-3xl font-bold" href="/" th:text="${serverName}"></a>
+        <div class="flex space-x-4">
+            <a class="text-gray-200 px-4 py-2 hover:text-yellow-400" href="/">Home</a>
+            <a class="text-gray-200 px-4 py-2 hover:text-yellow-400" href="/register">Create an Account</a>
+        </div>
+    </div>
+</nav>
+<body class="bg-gray-900 text-white">
+
+<div class="container mx-auto px-4 py-10 flex justify-center">
+    <div class="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold text-center text-yellow-400 mb-8">Login</h1>
+        <form class="space-y-6" method="post" th:action="@{/login}" th:object="${login}">
+
+            <!-- Username Field -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300" for="username">Username</label>
+                <input class="w-full mt-1 p-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                       id="username"
+                       name="username"
+                       placeholder="Enter your username"
+                       required
+                       pattern="^[a-z0-9]{5,20}$"
+                       title="Username must be 5-20 characters long and contain only lowercase letters and numbers"
+                       minlength="5" maxlength="20"
+                       th:field="*{username}"
+                       type="text"
+                       oninput="this.value = this.value.toLowerCase();">
+                <p class="text-red-500 text-sm mt-1" th:errors="*{username}" th:if="${#fields.hasErrors('username')}"></p>
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300" for="password">Password</label>
+                <input class="w-full mt-1 p-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                       id="password"
+                       name="password"
+                       placeholder="Enter your password"
+                       required
+                       pattern=".{5,20}"
+                       title="Password must be between 5 and 20 characters"
+                       minlength="5" maxlength="20"
+                       th:field="*{password}"
+                       type="password">
+                <p class="text-red-500 text-sm mt-1" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="bg-red-500 text-white p-4 rounded-lg shadow-lg text-center">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <div class="g-recaptcha" th:data-sitekey="${recaptchaSiteKey}"></div>
+
+            <!-- Submit Button -->
+            <div>
+                <button class="w-full bg-yellow-400 text-gray-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors" type="submit">
+                    Login
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+<footer class="bg-gray-900 text-gray-300 py-8">
+    <div class="container mx-auto px-4 text-center">
+        <div class="flex justify-center space-x-6 mb-4">
+            <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                <i class="fab fa-facebook-f text-2xl"></i>
+            </a>
+            <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                <i class="fab fa-twitter text-2xl"></i>
+            </a>
+            <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                <i class="fab fa-discord text-2xl"></i>
+            </a>
+        </div>
+        <p class="text-sm text-gray-400">&copy; 2024 WoW Private Server. All rights reserved.</p>
+        <p class="mt-2 text-sm">Crafted with ❤️ by the WoW Libre</p>
+    </div>
+</footer>
+
+</html>

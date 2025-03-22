@@ -1,6 +1,10 @@
 package com.auth.wow.libre.domain.model.constant;
 
+
 public class Constants {
+    private Constants() {
+    }
+
     // CONSTANT
     public static final String CONSTANT_UNIQUE_ID = "uniqueID";
     public static final String CONSTANT_ROL_JWT_PROP = "roles";
@@ -9,7 +13,7 @@ public class Constants {
 
     /* JWT HEADERS */
     public static final String HEADER_EMAIL = "x-email";
-    public static final String HEADER_USER_ID= "x-user-id";
+    public static final String HEADER_USER_ID = "x-user-id";
     public static final String PARAM_ACCOUNT_ID = "account_id";
 
     public static class Errors {

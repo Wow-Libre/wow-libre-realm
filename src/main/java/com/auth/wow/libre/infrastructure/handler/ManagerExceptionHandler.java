@@ -1,19 +1,14 @@
 package com.auth.wow.libre.infrastructure.handler;
 
-import com.auth.wow.libre.domain.model.exception.GenericErrorException;
-import com.auth.wow.libre.domain.model.shared.GenericResponse;
-import com.auth.wow.libre.domain.model.shared.NotNullValuesDto;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.model.shared.*;
+import org.springframework.http.*;
+import org.springframework.http.converter.*;
+import org.springframework.validation.*;
+import org.springframework.web.bind.*;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestControllerAdvice
 public class ManagerExceptionHandler {
@@ -43,10 +38,10 @@ public class ManagerExceptionHandler {
             value = {
                     HttpMessageNotReadableException.class
             })
-    public ResponseEntity<GenericResponse<Void>> httpMessageNotReadableException() {
+    public ResponseEntity<GenericResponse<Void>> httpMessageNotReadableException(HttpMessageNotReadableException e) {
 
         GenericResponse<Void> response = new GenericResponse<>();
-        response.setMessage("Check the request body");
+        response.setMessage(String.format("Check the request body %s", e.getMessage()));
         response.setCode(400);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

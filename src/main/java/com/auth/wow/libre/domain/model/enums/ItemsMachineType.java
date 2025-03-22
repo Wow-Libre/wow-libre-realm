@@ -2,7 +2,6 @@ package com.auth.wow.libre.domain.model.enums;
 
 import lombok.*;
 
-//.send items Mellyne "" "" 43102:1
 @Getter
 public enum ItemsMachineType {
     ID_50684("50684","Corpse-Impaling Spike","https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg",true),

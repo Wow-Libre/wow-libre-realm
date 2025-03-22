@@ -25,8 +25,7 @@ public class AccountController {
             @RequestBody @Valid CreateAccountDto request) {
 
         Long accountId = accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(),
-                request.getUserId(), request.getExpansion(), request.getSalt(),
-                transactionId);
+                request.getUserId(), request.getExpansion(), request.getSalt(), transactionId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
@@ -45,7 +44,7 @@ public class AccountController {
                     .body(new GenericResponseBuilder<AccountDetailDto>(transactionId).ok(account).build());
         }
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping(path = "/change-password")

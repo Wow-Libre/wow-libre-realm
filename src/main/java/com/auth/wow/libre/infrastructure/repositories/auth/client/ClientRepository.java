@@ -10,4 +10,5 @@ public interface ClientRepository extends CrudRepository<ClientEntity, Long> {
 
     Optional<ClientEntity> findByStatusIsTrue();
 
+    List<ClientEntity> findByRol(String rol);
 }

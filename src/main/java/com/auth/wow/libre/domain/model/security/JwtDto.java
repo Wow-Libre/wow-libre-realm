@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.*;
 
+@Getter
 @AllArgsConstructor
 public class JwtDto {
     public final String jwt;

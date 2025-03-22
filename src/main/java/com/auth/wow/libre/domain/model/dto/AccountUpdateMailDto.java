@@ -9,6 +9,5 @@ public class AccountUpdateMailDto {
 
     private String mail;
     @NotNull
-
     private String username;
 }

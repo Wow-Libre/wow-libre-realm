@@ -1,4 +1,4 @@
-package com.auth.wow.libre.infrastructure.conf;
+package com.auth.wow.libre.infrastructure.conf.rest;
 
 import com.auth.wow.libre.infrastructure.filter.*;
 import org.springframework.beans.factory.annotation.*;
@@ -12,7 +12,7 @@ import java.time.*;
 import java.util.*;
 
 @Configuration
-public class RestemplateConfiguration {
+public class RestemplateConf {
 
     @Value("${restemplate.config.connect-timeout:60}")
     private Integer connectTimeout;

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xml:lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<nav class="bg-gray-800">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+        <a class="text-3xl font-semibold text-yellow-400 hover:text-yellow-600 transition duration-300" href="/"
+           th:text="${serverName}"></a>
+        <div class="flex space-x-4">
+            <a class="text-gray-200 px-4 py-2 hover:text-yellow-400" href="/">Home</a>
+        </div>
+    </div>
+</nav>
+<body class="bg-gray-800 text-white">
+
+<div class="container mx-auto px-4 py-10">
+
+    <!-- component -->
+    <div class="relative max-w-2xl mx-auto my-3">
+        <!-- top navbar -->
+        <div class="flex justify-between items-center text-sm">
+            <button>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+            </button>
+            <a href="#" class="flex gap-1 items-center">
+                <span class="font-bold">Server Private</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </a>
+            <div class="flex gap-2">
+
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- top navbar end -->
+
+        <!-- top header -->
+        <div class="flex flex-col justify-center items-center my-5">
+            <div class="w-16 h-16 bg-cover bg-center bg-no-repeat rounded-full"
+                 style="background-image: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcm9nNG5yd21sNjBzenQ0ZDBhdGoxMmY1MnN3YnA0MGhrZGEzOXhyaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rrJO6gBS9gJTKHNvsZ/giphy.gif');"></div>
+            <span class="my-3">@username</span>
+
+            <div class="flex gap-10 text-sm">
+                <div class="flex flex-col items-center">
+                    <span class="font-bold">0</span>
+                    <span>Characters</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="font-bold">0</span>
+                    <span>Points</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="font-bold">0</span>
+                    <span>Vote</span>
+                </div>
+            </div>
+
+            <button id="changePasswordButton" class="my-5 px-5 py-2 font-semibold text-sm border border-gray-400">
+                Change Password
+            </button>
+
+            <p class="mb-3" th:text="${serverName}"></p>
+        </div>
+        <!-- top header end -->
+
+
+        <!-- middle navigation -->
+        <div class="grid grid-cols-4">
+            <button class="mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="border-b-2 border-gray-600 h-6 w-6" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+            </button>
+            <button class="mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </button>
+            <button class="mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                </svg>
+            </button>
+            <button class="mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </button>
+        </div>
+        <!-- middle navigation end -->
+
+        <!-- video grid -->
+        <div class="grid grid-cols-4 gap-0.5 mt-2">
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXN3ZW9qd2w0cXhqdjdnZ2xpczRkZGF2b3I5d29zbndyeXhxaWI3bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/14e27FhfQA3Yivhi6e/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExODNheGE5MXY0b2tnYmRhMzF0ZDZqeHh5aHhsZGVqZjE1endsdHhiYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/65D9lmbH8Nn8KKQRqR/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbG5oYmZrcmhsYjBreTRlNGtrdHFtOXByc3lvODU3cTQ0NGtram51NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2UpMjkgq1lZdVVnTAv/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHM4Nm9tcDhzNTZlcDY5YnZ2dGl6dzY1Z2x3ZGM0bG5penM5aWdyMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDDDdoyNeyMpykPKrq/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <!-- ///////////// -->
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDEybDdycm1kNTl0YjNmY2c4Z2hyaGloOGVqMTRzZGxhc2R5aXc3NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vccgHuzSVf8BppdZ1e/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGczbGx0dmlia3A0MzVrNTByNXBoZTl5cnp2b3BwejExZWdvemthZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/96RMYbR5xJMyY/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTNlZGdibnN3NG9sMTFiYmI1OXlnZm9zMzNyOWJuaXpvNXQ0NWdhdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d3is6thHCMJEMWCjj7/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+            <div class="relative w-full h-60 bg-cover bg-center bg-no-repeat"
+                 style="background-image: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ21nMWpyYjV2Z2E1NzJxZjlsMHM1eGlhMmxwejQ4N3Fvc3B3d3F4aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cloa7xuTRirRrmoSHj/giphy.gif');">
+                <!-- small player with views -->
+                <div class="absolute bottom-1 left-1 flex gap-1 text-white text-xs items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>800</span>
+                </div>
+                <!-- small player with views end -->
+            </div>
+
+
+        </div>
+        <!-- video grid end -->
+
+        <!-- bottom navigation -->
+        <div class="sticky bottom-0 left-0 bg-white w-full py-2 px-3 mt-1 text-xs">
+            <div class="flex justify-center items-center">
+
+
+                <div id="AddImgButton" class="flex flex-col items-center text-black">
+                    <button class="bg-black text-white px-5 py-2 rounded-md border border-pink-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <!-- bottom navigation end -->
+    </div>
+</div>
+<div id="changePasswordModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden">
+    <div class="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4">Change Password</h2>
+        <form class="space-y-6" method="post" th:action="@{/dashboard}" th:object="${changePassword}">
+            <div class="mb-4">
+                <label for="newPassword" class="block text-sm font-medium mb-2">Password</label>
+                <input type="password" id="password" name="newPassword"
+                       placeholder=" Password"
+                       minlength="5" maxlength="20"
+                       th:field="*{password}"
+                       class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="newPassword" class="block text-sm font-medium mb-2">New Password</label>
+                <input type="password"
+                       id="newPassword"
+                       name="newPassword"
+                       placeholder=" Password"
+                       minlength="5" maxlength="20"
+                       th:field="*{newPassword}"
+                       class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md" required>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" id="closeModalButton" class="bg-gray-700 text-white px-4 py-2 rounded-md mr-2">
+                    Cancel
+                </button>
+                <button type="submit" class="bg-yellow-400 text-gray-900 px-4 py-2 rounded-md">Save</button>
+            </div>
+            <div th:if="${errorMessage}" class="bg-red-500 text-white p-4 rounded-lg shadow-lg text-center">
+                <p th:text="${errorMessage}"></p>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+
+<div id="addImgModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden">
+    <div class="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4">Publication</h2>
+        <form>
+            <div class="mb-4">
+                <label for="newPassword" class="block text-sm font-medium mb-2">Link</label>
+                <input type="password" id="x" name="newPassword"
+                       class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md" required>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" id="closeModalLink" class="bg-gray-700 text-white px-4 py-2 rounded-md mr-2">
+                    Cancel
+                </button>
+                <button type="submit" class="bg-yellow-400 text-gray-900 px-4 py-2 rounded-md">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<footer class="bg-gray-900 text-gray-300 py-8">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center">
+            <!-- Social Media Links -->
+            <div class="flex space-x-6">
+                <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                    <i class="fab fa-facebook-f text-2xl"></i>
+                </a>
+                <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                    <i class="fab fa-twitter text-2xl"></i>
+                </a>
+                <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+                <a class="text-gray-400 hover:text-yellow-400 transition-colors" href="#">
+                    <i class="fab fa-discord text-2xl"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer Links or Copyright -->
+        <div class="mt-6 text-center text-sm text-gray-400">
+            <p>&copy; 2024 WoW Private Server. All rights reserved.</p>
+            <p class="mt-2">Crafted with ❤️ by the WoW Libre</p>
+        </div>
+    </div>
+</footer>
+<!-- Script para manejar el modal -->
+<script>
+    document.getElementById('changePasswordButton').addEventListener('click', function () {
+        document.getElementById('changePasswordModal').classList.remove('hidden');
+    });
+
+    document.getElementById('closeModalButton').addEventListener('click', function () {
+        document.getElementById('changePasswordModal').classList.add('hidden');
+    });
+</script>
+
+<script>
+    document.getElementById('AddImgButton').addEventListener('click', function () {
+        document.getElementById('addImgModal').classList.remove('hidden');
+    });
+
+    document.getElementById('closeModalLink').addEventListener('click', function () {
+        document.getElementById('addImgModal').classList.add('hidden');
+    });
+</script>
+<!-- Incluir SweetAlert2 desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+        integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxRbW8bNofcEX0bxyHh4z9Wwyo5fzh+"
+        crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+    /* Mostrar alerta si hay un mensaje de éxito */
+    let successMessage = [[${successMessage}]];
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: successMessage,
+            confirmButtonColor: '#3085d6'
+        });
+    }
+
+    /* Mostrar alerta si hay un mensaje de error */
+    let errorMessage = [[${errorMessage}]];
+    if (errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            confirmButtonColor: '#d33'
+        });
+    }
+</script>
+
+
+</html>

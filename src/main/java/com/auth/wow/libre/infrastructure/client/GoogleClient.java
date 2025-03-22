@@ -1,5 +1,6 @@
 package com.auth.wow.libre.infrastructure.client;
 
+import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.infrastructure.client.dto.*;
 import com.auth.wow.libre.infrastructure.conf.*;
 import org.slf4j.*;
@@ -53,14 +54,11 @@ public class GoogleClient {
                             "or server error. " +
                             "HTTP Status: {}, Response Body: {}",
                     e.getMessage(), e.getStatusCode(), e.getResponseBodyAsString());
-            throw new RuntimeException("Transaction failed due to client or server error");
+            throw new InternalException("Transaction failed due to client or server error", "");
         } catch (Exception e) {
-            LOGGER.error("[GoogleClient] [verifyRecaptcha] Unexpected Error: {}. An unexpected error occurred during " +
-                            "the transaction with ID: {}.",
-                    e.getMessage(), "", e);
-            throw new RuntimeException("Unexpected transaction failure");
+            LOGGER.error("[GoogleClient] [verifyRecaptcha] Unexpected Error: {}. ", e.getMessage());
+            throw new InternalException("Unexpected transaction failure", "");
         }
-
-        throw new RuntimeException("Unexpected transaction failure");
+        throw new InternalException("Unexpected transaction failure", "");
     }
 }

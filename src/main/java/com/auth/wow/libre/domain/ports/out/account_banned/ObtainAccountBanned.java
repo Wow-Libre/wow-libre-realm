@@ -4,6 +4,6 @@ import com.auth.wow.libre.infrastructure.entities.auth.AccountBannedEntity;
 
 import java.util.Optional;
 
-public interface ObtainAccountBannedPort {
+public interface ObtainAccountBanned {
     Optional<AccountBannedEntity> getAccountBanned(Long accountId);
 }

@@ -1,5 +1,10 @@
 package com.auth.wow.libre.domain.model.enums;
 
+import lombok.*;
+
+import java.util.*;
+
+@Getter
 public enum BenefitType {
     ITEM,
     CUSTOMIZE,
@@ -8,9 +13,9 @@ public enum BenefitType {
     MONEY;
 
     public static BenefitType findByName(String name) {
-        if (name == null) {
-            return null;
-        }
-        return BenefitType.valueOf(name.toUpperCase());
+        return Arrays.stream(BenefitType.values())
+                .filter(data -> name != null && data.name().equalsIgnoreCase(name.trim()))
+                .findFirst()
+                .orElse(null);
     }
 }

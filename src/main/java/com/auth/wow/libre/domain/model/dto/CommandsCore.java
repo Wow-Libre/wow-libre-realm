@@ -1,10 +1,12 @@
-package com.auth.wow.libre.domain.model.enums;
-
-import com.auth.wow.libre.domain.model.dto.*;
+package com.auth.wow.libre.domain.model.dto;
 
 import java.util.*;
 
 public class CommandsCore {
+    private CommandsCore() {
+
+    }
+
     public static String invite(String playerName, String guildName) {
         return String.format(".guild invite %s \"%s\"", playerName, guildName);
     }
