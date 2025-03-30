@@ -21,11 +21,13 @@ import org.springframework.stereotype.*;
 import java.time.*;
 import java.util.*;
 
+import static com.auth.wow.libre.domain.model.constant.Constants.Errors.*;
+
 @Service
 public class CharacterSocialService implements CharacterSocialPort {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(CharacterSocialService.class);
-    public static final String ERROR_IT_WAS_NOT_POSSIBLE_TO_OBTAIN_THE_REQUESTED_CHARACTER = "It was not possible to obtain the requested character";
+
 
     private final CharactersPort charactersPort;
     private final ObtainCharacterSocial obtainCharacterSocial;
@@ -53,7 +55,7 @@ public class CharacterSocialService implements CharacterSocialPort {
         CharacterDetailDto characterDetail = charactersPort.getCharacter(characterId, transactionId);
 
         if (characterDetail == null) {
-            throw new InternalException("It was not possible to obtain the requested character", transactionId);
+            throw new InternalException(CONSTANT_ERROR_NOT_POSSIBLE_OBTAIN_CHARACTER, transactionId);
         }
 
         CharacterSocialDto characterSocialDto = new CharacterSocialDto();
@@ -81,7 +83,7 @@ public class CharacterSocialService implements CharacterSocialPort {
         verifierAccount(accountId, userId, transactionId);
 
         if (charactersPort.getCharacter(characterId, accountId, transactionId) == null) {
-            throw new InternalException(ERROR_IT_WAS_NOT_POSSIBLE_TO_OBTAIN_THE_REQUESTED_CHARACTER, transactionId);
+            throw new InternalException(CONSTANT_ERROR_NOT_POSSIBLE_OBTAIN_CHARACTER, transactionId);
         }
 
         obtainCharacterSocial.getFriends(characterId, transactionId)
@@ -111,7 +113,7 @@ public class CharacterSocialService implements CharacterSocialPort {
         CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
 
         if (character == null) {
-            throw new InternalException("It was not possible to obtain the requested character", transactionId);
+            throw new InternalException(CONSTANT_ERROR_NOT_POSSIBLE_OBTAIN_CHARACTER, transactionId);
         }
 
         final Long goldSend = money * 10000;
@@ -138,7 +140,9 @@ public class CharacterSocialService implements CharacterSocialPort {
         }
 
         try {
-            final String command = CommandsCore.sendMoney(friend.getName(), "", "",
+            String body = String.format("Your companion %s has sent you gold from the web. Use it wisely on your " +
+                    "adventures in Azeroth! ", character.getName());
+            final String command = CommandsCore.sendMoney(friend.getName(), "You have received a golden gift!", body,
                     String.valueOf(goldSend));
 
             executeCommandsPort.execute(command, transactionId);
@@ -159,8 +163,8 @@ public class CharacterSocialService implements CharacterSocialPort {
                     .build(), transactionId);
 
         } catch (JAXBException e) {
-            LOGGER.error("I tried to send money by mail to my colleague but it was not possible. CharacterId{} " +
-                            "FriendId{} ",
+            LOGGER.error("I tried to send money by mail to my colleague but it was not possible. CharacterId {} " +
+                            "FriendId {} ",
                     characterId, friendGuid);
             throw new InternalException("It was not possible to send the money", transactionId);
         }
@@ -176,13 +180,14 @@ public class CharacterSocialService implements CharacterSocialPort {
         CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
 
         if (character == null) {
-            throw new InternalException("It was not possible to obtain the requested character", transactionId);
+            throw new InternalException(CONSTANT_ERROR_NOT_POSSIBLE_OBTAIN_CHARACTER, transactionId);
         }
 
         final CharacterDetailDto friend = charactersPort.getCharacter(friendGuid, transactionId);
 
         if (friend == null) {
-            throw new InternalException("The recipient is not found or is no longer available", transactionId);
+            throw new InternalException("The recipient is not registered or is unavailable, please try again.",
+                    transactionId);
         }
 
         if (friend.getLevel() >= 80) {

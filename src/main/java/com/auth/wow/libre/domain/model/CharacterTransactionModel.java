@@ -8,7 +8,6 @@ import java.time.*;
 
 @Builder
 public class CharacterTransactionModel {
-
     public final Long id;
     public final TransactionType transactionType;
     public final Long characterId;
@@ -21,6 +20,4 @@ public class CharacterTransactionModel {
     public final Long userId;
     public final String reference;
     public final boolean successful;
-
-
 }

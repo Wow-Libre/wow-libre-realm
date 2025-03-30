@@ -73,7 +73,7 @@ public class Transactions {
 
     }
 
-    @Scheduled(cron = " * */30 * * * *")
+    @Scheduled(cron = " * 1/30 * * * *")
     @Transactional
     public void sendAnnouncement() {
         String transactionId = "";

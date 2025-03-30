@@ -45,7 +45,7 @@ public class CharactersSkillController {
             @RequestBody @Valid AnnouncementDto request) {
 
         characterSkillsPort.professionAnnouncement(request.getUserId(), request.getCharacterId(),
-                request.getAccountId(), request.getSkillId(), transactionId);
+                request.getAccountId(), request.getSkillId(), request.getMessage(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>

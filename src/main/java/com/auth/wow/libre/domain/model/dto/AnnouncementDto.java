@@ -13,4 +13,7 @@ public class AnnouncementDto {
     private Long characterId;
     @NotNull
     private Long skillId;
+    @NotNull
+    private String message;
+
 }

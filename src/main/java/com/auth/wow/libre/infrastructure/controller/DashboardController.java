@@ -7,7 +7,6 @@ import jakarta.validation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
 import java.util.*;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.*;
@@ -92,9 +91,12 @@ public class DashboardController {
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
-        } catch (IOException | InterruptedException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new GenericResponseBuilder<Void>(transactionId).build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new GenericResponseBuilder<Void>(transactionId).build());
         }
     }

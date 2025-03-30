@@ -42,7 +42,7 @@ public class CharacterSkillService implements CharacterSkillsPort {
     }
 
     @Override
-    public void professionAnnouncement(Long userId, Long characterId, Long accountId, Long skillId,
+    public void professionAnnouncement(Long userId, Long characterId, Long accountId, Long skillId, String message,
                                        String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
@@ -66,8 +66,8 @@ public class CharacterSkillService implements CharacterSkillsPort {
                 .userId(userId)
                 .characterId(characterId)
                 .accountId(accountId)
-                .command(CommandsCore.announcement(String.format("Specialty: %s  Character: %s Lvl: %s",
-                        characterSkills.get().name(), characterDetailDto.getName(), characterSkills.get().value()
+                .command(CommandsCore.announcement(String.format("Character: %s  %s",
+                        characterDetailDto.getName(), message
                 )))
                 .transactionDate(LocalDateTime.now())
                 .status(true)

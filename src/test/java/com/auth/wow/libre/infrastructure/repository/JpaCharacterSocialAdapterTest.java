@@ -53,4 +53,5 @@ class JpaCharacterSocialAdapterTest {
 
         verify(characterSocialRepository, times(1)).delete(characterSocialEntity);
     }
+
 }

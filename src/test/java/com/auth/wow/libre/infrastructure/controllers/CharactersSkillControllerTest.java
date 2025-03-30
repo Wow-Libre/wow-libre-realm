@@ -81,6 +81,7 @@ class CharactersSkillControllerTest {
                 announcementDto.getCharacterId(),
                 announcementDto.getAccountId(),
                 announcementDto.getSkillId(),
+                announcementDto.getMessage(),
                 transactionId);
 
         assertNotNull(response);
