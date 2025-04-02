@@ -1,10 +1,14 @@
 package com.auth.wow.libre.infrastructure.repositories.world.item_template;
 
 import com.auth.wow.libre.infrastructure.entities.world.*;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.*;
 
 import java.util.*;
 
 public interface ItemTemplateRepository extends CrudRepository<ItemTemplateEntity, Long> {
     Optional<ItemTemplateEntity> findByEntry(Long entry);
+
+    @Query(value = "SELECT * FROM item_template ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    Optional<ItemTemplateEntity> findRandomItem();
 }

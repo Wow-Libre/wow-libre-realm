@@ -18,4 +18,9 @@ public class JpaItemTemplateAdapter implements ObtainItemTemplate {
     public Optional<ItemTemplateEntity> findByEntry(Long entry) {
         return itemTemplateRepository.findByEntry(entry);
     }
+
+    @Override
+    public Optional<ItemTemplateEntity> findRandomEntry() {
+        return itemTemplateRepository.findRandomItem();
+    }
 }

@@ -4,192 +4,332 @@ import lombok.*;
 
 @Getter
 public enum ItemsMachineType {
-    ID_50684("50684","Corpse-Impaling Spike","https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg",true),
-    ID_51936("51936","Citadel Enforcer's Claymore","https://wow.zamimg.com/images/wow/icons/large/inv_sword_153.jpg",true),
-    ID_50654("50654","Scourgeborne Waraxe","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_50621("50621","Lungbreaker","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",true),
-    ID_49919("49919","Cryptmaker","https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg",true),
-    ID_50738("50738","Mithrios, Bronzebeard's Legacy","https://wow.zamimg.com/images/wow/icons/large/inv_mace_117.jpg",true),
-    ID_51834("51834","dreamhunters-carbine","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg",true),
-    ID_50425("50425","Oathbinder, Charge of the Ranger-General","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg",true),
-    ID_50731("50731","Archus, Greatstaff of Antonidas","https://wow.zamimg.com/images/wow/icons/large/inv_staff_108.jpg",true),
-    ID_50028("50028","Trauma","https://wow.zamimg.com/images/wow/icons/large/inv_mace_118.jpg",true),
-    ID_50428("50428","Royal Scepter of Terenas II","https://wow.zamimg.com/images/wow/icons/large/inv_mace_115.jpg",true),
-    ID_50070("50070","Glorenzelg, High-Blade of the Silver Hand","https://wow.zamimg.com/images/wow/icons/large/inv_sword_153.jpg",true),
-    ID_50444("50444","Rowan's Rifle of Silver Bullets","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg",true),
-    ID_50411("50411","Scourgeborne Waraxe","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_51432("51432","Wrathful Gladiator's Greatstaff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_111.jpg",true),
-    ID_50429("50429","Archus, Greatstaff of Antonidas","https://wow.zamimg.com/images/wow/icons/large/inv_staff_108.jpg",true),
-    ID_49992("49992","Nibelung","https://wow.zamimg.com/images/wow/icons/large/inv_staff_109.jpg",true),
-    ID_50472("50472","Nightmare Ender","https://wow.zamimg.com/images/wow/icons/large/inv_wand_34.jpg",true),
-    ID_50695("50695","Distant Land","https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg",true),
-    ID_50427("50427","Bloodsurge, Kel'Thuzad's Blade of Agony","https://wow.zamimg.com/images/wow/icons/large/inv_sword_150.jpg",true),
-    ID_49968("49968","Frozen Bonespike","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_101.jpg",true),
-    ID_50638("50638","Zod's Repeating Longbow","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_55.jpg",true),
-    ID_50704("50704","Rigormortis","https://wow.zamimg.com/images/wow/icons/large/inv_sword_152.jpg",true),
-    ID_51395("51395","wrathful-gladiators-recurve","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_56.jpg",true),
-    ID_51515("51515","wrathful-gladiators-cleaver","https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",true),
-    ID_51927("51927","Njorndar Bone Bow","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_55.jpg",true),
-    ID_50035("50035","black-bruise","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg",true),
-    ID_50412("50412","bloodvenom-blade","https://wow.zamimg.com/images/wow/icons/large/inv_sword_154.jpg",true),
-    ID_51875("51875","Lockjaw","https://wow.zamimg.com/images/wow/icons/large/inv_mace_118.jpg",true),
-    ID_50016("50016","Rib Spreader","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",true),
-    ID_51516("51516","Wrathful Gladiator's Handaxe","https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",true),
-    ID_50040("50040","Distant Land","https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg",true),
-    ID_50179("50179","Last Word","https://wow.zamimg.com/images/wow/icons/large/inv_mace_114.jpg",true),
-    ID_51392("51392","Wrathful Gladiator's Greatsword","https://wow.zamimg.com/images/wow/icons/large/inv_sword_157.jpg",true),
-    ID_51833("51833","Oxheart","https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg",true),
-    ID_50178("50178","bloodfall","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg",true),
-    ID_51887("51887","Abracadaver","https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg",true),
-    ID_51898("51898","Mag'hari Chieftain's Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg",true),
-    ID_49981("49981","Fal'inrush, Defender of Quel'thalas","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_crossbow_38.jpg",true),
-    ID_50692("50692","Black Bruise","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg",true),
-    ID_51905("51905","Ramaladni's Blade of Culling","https://wow.zamimg.com/images/wow/icons/large/inv_axe_115.jpg",true),
-    ID_50608("50608","Frozen Bonespike","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_101.jpg",true),
-    ID_50685("50685","Trauma","https://wow.zamimg.com/images/wow/icons/large/inv_mace_118.jpg",true),
-    ID_51389("51389","Wrathful Gladiator's Sunderer","https://wow.zamimg.com/images/wow/icons/large/inv_axe_115.jpg",true),
-    ID_51857("51857","Hersir's Greatspear","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg",true),
-    ID_50181("50181","Dying Light","https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg",true),
-    ID_51943("51943","Halion, Staff of Forgotten Love","https://wow.zamimg.com/images/wow/icons/large/inv_staff_109.jpg",true),
-    ID_49997("49997","Mithrios, Bronzebeard's Legacy","https://wow.zamimg.com/images/wow/icons/large/inv_mace_117.jpg",true),
-    ID_50725("50725","Dying Light","https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg",true),
-    ID_50727("50727","Bloodfall","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg",true),
-    ID_51845("51845","Stakethrower","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg",true),
-    ID_51916("51916","Frost Giant's Cleaver","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_51932("51932","Frost Needle","https://wow.zamimg.com/images/wow/icons/large/inv_sword_152.jpg",true),
-    ID_51938("51938","Bone Warden's Splitter","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_49982("49982","Heartpierce","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_103.jpg",true),
-    ID_51393("51393","Wrathful Gladiator's Claymore","https://wow.zamimg.com/images/wow/icons/large/inv_sword_157.jpg",true),
-    ID_50183("50183","lungbreaker","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",true),
-    ID_50710("50710","Keleseth's Seducer","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg",true),
-    ID_51399("51399","Wrathful Gladiator's Mageblade","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_107.jpg",true),
-    ID_51450("51450","Wrathful Gladiator's Shotgun","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg",true),
-    ID_51453("51453","Wrathful Gladiator's Gavel","https://wow.zamimg.com/images/wow/icons/large/inv_mace_111.jpg",true),
-    ID_51520("51520","Wrathful Gladiator's Truncheon","https://wow.zamimg.com/images/wow/icons/large/inv_mace_120.jpg",true),
-    ID_51525("51525","Wrathful Gladiator's Chopper","https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",true),
-    ID_51531("51531","Wrathful Gladiator's Piercing Touch","https://wow.zamimg.com/images/wow/icons/large/inv_wand_36.jpg",true),
-    ID_51939("51939","Tel'thas, Dagger of the Blood King","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_101.jpg",true),
-    ID_50648("50648","nibelung","https://wow.zamimg.com/images/wow/icons/large/inv_staff_109.jpg",true),
-    ID_51388("51388","Wrathful Gladiator's Decapitator","https://wow.zamimg.com/images/wow/icons/large/inv_axe_115.jpg",true),
-    ID_51398("51398","Wrathful Gladiator's Blade of Celerity","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_107.jpg",true),
-    ID_51442("51442","Wrathful Gladiator's Dirk","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_106.jpg",true),
-    ID_51828("51828","Sister Svalna's Aether Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg",true),
-    ID_51858("51858","Soulbreaker","https://wow.zamimg.com/images/wow/icons/large/inv_sword_151.jpg",true),
-    ID_51868("51868","Flesh-Carving Scalpel","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_102.jpg",true),
-    ID_50033("50033","Corpse-Impaling Spike","https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg",true),
-    ID_50184("50184","Keleseth's Seducer","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg",true),
-    ID_50204("50204","Wand of the Drowned Contessa","https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg",true),
-    ID_50631("50631","Nightmare Ender","https://wow.zamimg.com/images/wow/icons/large/inv_wand_34.jpg",true),
-    ID_50641("50641","Heartpierce","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_103.jpg",true),
-    ID_50676("50676","Rib Spreader","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",true),
-    ID_51401("51401","Wrathful Gladiator's Combat Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_112.jpg",true),
-    ID_51517("51517","wrathful-gladiators-shanker","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_106.jpg",true),
-    ID_51815("51815","bleak-coldarra-carver","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_101.jpg",true),
-    ID_51846("51846","Bloodsipper","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_102.jpg",true),
-    ID_51880("51880","Gluth's Fetching Knife","https://wow.zamimg.com/images/wow/icons/large/inv_throwingknife_01.jpg",true),
-    ID_51881("51881","Shaft of Glacial Ice","https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg",true),
-    ID_50603("50603","Cryptmaker","https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg",true),
-    ID_50736("50736","Heaven's Fall, Kryss of a Thousand Lies","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_104.jpg",true),
-    ID_50709("50709","Bryntroll, the Bone Arbiter","https://wow.zamimg.com/images/wow/icons/large/inv_axe_120.jpg",true),
-    ID_50034("50034","Zod's Repeating Longbow","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_55.jpg",true),
-    ID_50672("50672","Bloodvenom Blade","https://wow.zamimg.com/images/wow/icons/large/inv_sword_154.jpg",true),
-    ID_50734("50734","Royal Scepter of Terenas II","https://wow.zamimg.com/images/wow/icons/large/inv_mace_115.jpg",true),
-    ID_50735("50735","Oathbinder, Charge of the Ranger-General","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg",true),
-    ID_50426("50426","Heaven's Fall, Kryss of a Thousand Lies","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_104.jpg",true),
-    ID_50733("Fal'inrush, Defender of Quel'thalas","Fal'inrush, Defender of Quel'thalas","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_crossbow_38.jpg",true),
-    ID_50737("50737","Havoc's Call, Blade of Lordaeron Kings","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_50730("50730","Glorenzelg, alta hoja de la Mano de Plata","https://wow.zamimg.com/images/wow/icons/large/inv_sword_153.jpg",true),
-    ID_39344("39344","Slayer of the Lifeless","https://wow.zamimg.com/images/wow/icons/large/inv_sword_62.jpg",true),
-    ID_19019("19019","Thunderfury, Blessed Blade of the Windseeker","https://wow.zamimg.com/images/wow/icons/large/inv_sword_39.jpg",true),
-    ID_34334("34334","Thori'dal, the Stars' Fury","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_39.jpg",true),
-    ID_17182("17182","Sulfuras, Hand of Ragnaros","https://wow.zamimg.com/images/wow/icons/large/inv_hammer_unique_sulfuras.jpg",true),
-    ID_50415("50415","Bryntroll, the Bone Arbiter","https://wow.zamimg.com/images/wow/icons/large/inv_axe_120.jpg",true),
-    ID_32837("32837","Warglaive of Azzinoth","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_glave_01.jpg",true),
-    ID_44050("44050","Mastercraft Kalu'ak Fishing Pole","https://wow.zamimg.com/images/wow/icons/large/inv_fishingpole_03.jpg",true),
-    ID_49888("49888","Shadow's Edge","",true),
-    ID_49623("49623","Shadowmourne","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_46017("46017","Val'anyr, Hammer of Ancient Kings","https://wow.zamimg.com/images/wow/icons/large/inv_mace_99.jpg",true),
-    ID_51893("51893","Gutbuster","https://wow.zamimg.com/images/wow/icons/large/inv_mace_114.jpg",true),
-    ID_51937("51937","bonebreaker-scepter","https://wow.zamimg.com/images/wow/icons/large/inv_mace_117.jpg",true),
-    ID_51940("51940","Windrunner's Heartseeker","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_crossbow_38.jpg",true),
-    ID_50068("50068","rigormortis","https://wow.zamimg.com/images/wow/icons/large/inv_sword_152.jpg",true),
-    ID_51406("51406","Wrathful Gladiator's Blade of Alacrity","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_107.jpg",true),
-    ID_51431("51431","wrathful-gladiators-staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_111.jpg",true),
-    ID_51441("51441","Wrathful Gladiator's Shiv","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_106.jpg",true),
-    ID_51456("51456","Wrathful Gladiator's Energy Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_112.jpg",true),
-    ID_51535("51535","Wrathful Gladiator's War Edge","https://wow.zamimg.com/images/wow/icons/large/inv_throwingaxepvp330_08.jpg",true),
-    ID_51852("51852","Wand of Ruby Claret","https://wow.zamimg.com/images/wow/icons/large/inv_wand_34.jpg",true),
-    ID_51946("51946","Warmace of Menethil","https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg",true),
-    ID_51400("51400","Wrathful Gladiator's War Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_112.jpg",true),
-    ID_51446("51446","Wrathful Gladiator's Punisher","https://wow.zamimg.com/images/wow/icons/large/inv_mace_120.jpg",true),
-    ID_51876("51876","Abomination Knuckles","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_51910("51910","Midnight Sun","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_103.jpg",true),
-    ID_51944("51944","Valius, Gavel of the Lightbringer","https://wow.zamimg.com/images/wow/icons/large/inv_mace_115.jpg",true),
-    ID_51945("51945","Tainted Twig of Nordrassil","https://wow.zamimg.com/images/wow/icons/large/inv_staff_108.jpg",true),
-    ID_51947("51947","Troggbane-axe-of-the-frostborne-king","https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg",true),
-    ID_51439("51439","Wrathful Gladiator's Hacker","https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",true),
-    ID_51480("51480","Wrathful Gladiator's Pike","https://wow.zamimg.com/images/wow/icons/large/inv_staff_110.jpg",true),
-    ID_51394("51394","Wrathful Gladiator's Longbow","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_56.jpg",true),
-    ID_51410("51410","Wrathful Gladiator's Touch of Defeat","https://wow.zamimg.com/images/wow/icons/large/inv_wand_36.jpg",true),
-    ID_51447("51447","Wrathful Gladiator's Quickblade","https://wow.zamimg.com/images/wow/icons/large/inv_sword_156.jpg",true),
-    ID_51526("51526","Wrathful Gladiator's Splitter","https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",true),
-    ID_51529("51529","Wrathful Gladiator's Left Claw","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_50708("50708","Last Word","https://wow.zamimg.com/images/wow/icons/large/inv_mace_114.jpg",true),
-    ID_51404("51404","Wrathful Gladiator's Battle Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_112.jpg",true),
-    ID_51405("51405","Wrathful Gladiator's Skirmish Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_112.jpg",true),
-    ID_51444("51444","wrathful-gladiators-left-razor","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_51451("51451","Wrathful Gladiator's Wand of Alacrity","https://wow.zamimg.com/images/wow/icons/large/inv_wand_36.jpg",true),
-    ID_51481("51481","wrathful-gladiators-halberd","https://wow.zamimg.com/images/wow/icons/large/inv_staff_110.jpg",true),
-    ID_51528("51528","Wrathful Gladiator's Eviscerator","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_106.jpg",true),
-    ID_51942("51942","Stormfury, Black Blade of the Betrayer","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",true),
-    ID_51402("51402","Wrathful-gladiators-focus-staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_111.jpg",true),
-    ID_51448("51448","Wrathful-gladiators-swiftblade","https://wow.zamimg.com/images/wow/icons/large/inv_sword_156.jpg",true),
-    ID_51449("51449","Wrathful Gladiator's Rifle","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg",true),
-    ID_51454("51454","Wrathful Gladiator's Salvation","https://wow.zamimg.com/images/wow/icons/large/inv_mace_111.jpg",true),
-    ID_51521("51521","Wrathful-gladiators-slicer","https://wow.zamimg.com/images/wow/icons/large/inv_sword_156.jpg",true),
-    ID_51522("51522","Wrathful Gladiator's Longblade","https://wow.zamimg.com/images/wow/icons/large/inv_sword_156.jpg",true),
-    ID_51523("51523","wrathful-gladiators-right-ripper","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_51838("51838","Lanathels-bloody-nail","https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg",true),
-    ID_51869("51869","The Facelifter","https://wow.zamimg.com/images/wow/icons/large/inv_sword_154.jpg",true),
-    ID_51941("51941","Pugius, Fist of Defiance","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_51411("51411","Wrathful Gladiator's Heavy Crossbow","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_crossbow_38.jpg",true),
-    ID_51440("51440","Wrathful Gladiator's Dicer","https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",true),
-    ID_51457("51457","Wrathful Gladiator's Light Staff","https://wow.zamimg.com/images/wow/icons/large/inv_staff_112.jpg",true),
-    ID_50474("50474","Shrapnel Star","https://wow.zamimg.com/images/wow/icons/large/inv_throwingknife_07.jpg",true),
-    ID_51390("51390","Wrathful Gladiator's Bonegrinder","https://wow.zamimg.com/images/wow/icons/large/inv_mace_119.jpg",true),
-    ID_51819("51819","Splintershard","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_51532("51532","Wrathful Gladiator's Baton of Light","https://wow.zamimg.com/images/wow/icons/large/inv_wand_36.jpg",true),
-    ID_51519("51519","Wrathful Gladiator's Pummeler","https://wow.zamimg.com/images/wow/icons/large/inv_mace_120.jpg",true),
-    ID_51412("51412","Wrathful Gladiator's Repeater","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_crossbow_38.jpg",true),
-    ID_51443("51443","Wrathful Gladiator's Left Ripper","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true),
-    ID_51541 ("51541","Wrathful Gladiator's Plate Chestpiece","https://wow.zamimg.com/images/wow/icons/large/inv_chest_leather_24.jpg",true),
-    ID_51542 ("51542","Wrathful Gladiator's Plate Gauntlets","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_62.jpg",true),
-    ID_51543 ("51543","Wrathful Gladiator's Plate Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_98.jpg",true),
-    ID_51544 ("51544","Wrathful Gladiator's Plate Legguards","https://wow.zamimg.com/images/wow/icons/large/inv_pants_plate_27.jpg",true),
-    ID_51545 ("51545","Wrathful Gladiator's Plate Shoulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_132.jpg",true),
-    ID_51474 ("51474","Wrathful Gladiator's Scaled Chestpiece","https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate26.jpg",true),
-    ID_51475 ("51475","Wrathful Gladiator's Scaled Gauntlets","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_91.jpg",true),
-    ID_51476 ("51476","Wrathful Gladiator's Scaled Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_164.jpg",true),
-    ID_51477 ("51477","Wrathful Gladiator's Scaled Legguards","https://wow.zamimg.com/images/wow/icons/large/inv_pants_plate_37.jpg",true),
-    ID_51479 ("51479","Wrathful Gladiator's Scaled Shoulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_126.jpg",true),
-    ID_51468 ("51468","Wrathful Gladiator's Ornamented Chestguard","https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate26.jpg",true),
-    ID_51469 ("51469","Wrathful Gladiator's Ornamented Gloves","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_91.jpg",true),
-    ID_51470 ("51470","Wrathful Gladiator's Ornamented Headcover","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_164.jpg",true),
-    ID_51471 ("51471","Wrathful Gladiator's Ornamented Legplates","https://wow.zamimg.com/images/wow/icons/large/inv_pants_plate_37.jpg",true),
-    ID_51473 ("51473","Wrathful Gladiator's Ornamented Spaulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_126.jpg",true),
-    ID_51413 ("51413","Wrathful Gladiator's Dreadplate Chestpiece","https://wow.zamimg.com/images/wow/icons/large/inv_chest_plate_25.jpg",true),
-    ID_51414 ("51414","Wrathful Gladiator's Dreadplate Gauntlets","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_75.jpg",true),
-    ID_51415 ("51415","Wrathful Gladiator's Dreadplate Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_158.jpg",true),
-    ID_51418 ("51418","Wrathful Gladiator's Dreadplate Shoulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_99.jpg",true),
-    ID_51493 ("51493","Wrathful Gladiator's Leather Gloves","https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_97.jpg",true),
-    ID_51494 ("51494","Wrathful Gladiator's Leather Helm","https://wow.zamimg.com/images/wow/icons/large/inv_helmet_161.jpg",true),
-    ID_51495 ("51495","Wrathful Gladiator's Leather Legguards","https://wow.zamimg.com/images/wow/icons/large/inv_pants_leather_36.jpg",true),
-    ID_51496 ("51496","Wrathful Gladiator's Leather Spaulders","https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_120.jpg",true),
-    ID_51492 ("51492","Wrathful Gladiator's Leather Tunic","https://wow.zamimg.com/images/wow/icons/large/inv_chest_leather_24.jpg",true),
+    ID_50684("50684", "Corpse-Impaling Spike", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg", true),
+    ID_51936("51936", "Citadel Enforcer's Claymore", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_153" +
+            ".jpg", true),
+    ID_50654("50654", "Scourgeborne Waraxe", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_50621("50621", "Lungbreaker", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",
+            true),
+    ID_49919("49919", "Cryptmaker", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg", true),
+    ID_50738("50738", "Mithrios, Bronzebeard's Legacy", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_117" +
+            ".jpg", true),
+    ID_51834("51834", "dreamhunters-carbine", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg"
+            , true),
+    ID_50425("50425", "Oathbinder, Charge of the Ranger-General", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_staff_109.jpg", true),
+    ID_50731("50731", "Archus, Greatstaff of Antonidas", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_108" +
+            ".jpg", true),
+    ID_50028("50028", "Trauma", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_118.jpg", true),
+    ID_50428("50428", "Royal Scepter of Terenas II", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_115.jpg"
+            , true),
+    ID_50070("50070", "Glorenzelg, High-Blade of the Silver Hand", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_sword_153.jpg", true),
+    ID_50444("50444", "Rowan's Rifle of Silver Bullets", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_rifle_39.jpg", true),
+    ID_50411("50411", "Scourgeborne Waraxe", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_51432("51432", "Wrathful Gladiator's Greatstaff", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_111" +
+            ".jpg", true),
+    ID_50429("50429", "Archus, Greatstaff of Antonidas", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_108" +
+            ".jpg", true),
+    ID_49992("49992", "Nibelung", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_109.jpg", true),
+    ID_50472("50472", "Nightmare Ender", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_34.jpg", true),
+    ID_50695("50695", "Distant Land", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg", true),
+    ID_50427("50427", "Bloodsurge, Kel'Thuzad's Blade of Agony", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_sword_150.jpg", true),
+    ID_49968("49968", "Frozen Bonespike", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_101" +
+            ".jpg", true),
+    ID_50638("50638", "Zod's Repeating Longbow", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_55" +
+            ".jpg", true),
+    ID_50704("50704", "Rigormortis", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_152.jpg", true),
+    ID_51395("51395", "wrathful-gladiators-recurve", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_56" +
+            ".jpg", true),
+    ID_51515("51515", "wrathful-gladiators-cleaver", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",
+            true),
+    ID_51927("51927", "Njorndar Bone Bow", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_55.jpg", true),
+    ID_50035("50035", "black-bruise", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg", true),
+    ID_50412("50412", "bloodvenom-blade", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_154.jpg", true),
+    ID_51875("51875", "Lockjaw", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_118.jpg", true),
+    ID_50016("50016", "Rib Spreader", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",
+            true),
+    ID_51516("51516", "Wrathful Gladiator's Handaxe", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg"
+            , true),
+    ID_50040("50040", "Distant Land", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg", true),
+    ID_50179("50179", "Last Word", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_114.jpg", true),
+    ID_51392("51392", "Wrathful Gladiator's Greatsword", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_157" +
+            ".jpg", true),
+    ID_51833("51833", "Oxheart", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg", true),
+    ID_50178("50178", "bloodfall", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg", true),
+    ID_51887("51887", "Abracadaver", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg", true),
+    ID_51898("51898", "Mag'hari Chieftain's Staff", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_107.jpg"
+            , true),
+    ID_49981("49981", "Fal'inrush, Defender of Quel'thalas", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_crossbow_38.jpg", true),
+    ID_50692("50692", "Black Bruise", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg", true),
+    ID_51905("51905", "Ramaladni's Blade of Culling", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_115.jpg"
+            , true),
+    ID_50608("50608", "Frozen Bonespike", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_101" +
+            ".jpg", true),
+    ID_50685("50685", "Trauma", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_118.jpg", true),
+    ID_51389("51389", "Wrathful Gladiator's Sunderer", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_115" +
+            ".jpg", true),
+    ID_51857("51857", "Hersir's Greatspear", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg"
+            , true),
+    ID_50181("50181", "Dying Light", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg", true),
+    ID_51943("51943", "Halion, Staff of Forgotten Love", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_109" +
+            ".jpg", true),
+    ID_49997("49997", "Mithrios, Bronzebeard's Legacy", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_117" +
+            ".jpg", true),
+    ID_50725("50725", "Dying Light", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg", true),
+    ID_50727("50727", "Bloodfall", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_staff_109.jpg", true),
+    ID_51845("51845", "Stakethrower", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_rifle_39.jpg", true),
+    ID_51916("51916", "Frost Giant's Cleaver", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_51932("51932", "Frost Needle", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_152.jpg", true),
+    ID_51938("51938", "Bone Warden's Splitter", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_49982("49982", "Heartpierce", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_103.jpg",
+            true),
+    ID_51393("51393", "Wrathful Gladiator's Claymore", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_157" +
+            ".jpg", true),
+    ID_50183("50183", "lungbreaker", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",
+            true),
+    ID_50710("50710", "Keleseth's Seducer", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg",
+            true),
+    ID_51399("51399", "Wrathful Gladiator's Mageblade", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_107.jpg", true),
+    ID_51450("51450", "Wrathful Gladiator's Shotgun", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_rifle_39.jpg", true),
+    ID_51453("51453", "Wrathful Gladiator's Gavel", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_111.jpg",
+            true),
+    ID_51520("51520", "Wrathful Gladiator's Truncheon", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_120" +
+            ".jpg", true),
+    ID_51525("51525", "Wrathful Gladiator's Chopper", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg"
+            , true),
+    ID_51531("51531", "Wrathful Gladiator's Piercing Touch", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_wand_36.jpg", true),
+    ID_51939("51939", "Tel'thas, Dagger of the Blood King", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_101.jpg", true),
+    ID_50648("50648", "nibelung", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_109.jpg", true),
+    ID_51388("51388", "Wrathful Gladiator's Decapitator", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_115" +
+            ".jpg", true),
+    ID_51398("51398", "Wrathful Gladiator's Blade of Celerity", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_107.jpg", true),
+    ID_51442("51442", "Wrathful Gladiator's Dirk", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_106.jpg", true),
+    ID_51828("51828", "Sister Svalna's Aether Staff", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_106" +
+            ".jpg", true),
+    ID_51858("51858", "Soulbreaker", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_151.jpg", true),
+    ID_51868("51868", "Flesh-Carving Scalpel", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_102.jpg", true),
+    ID_50033("50033", "Corpse-Impaling Spike", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg", true),
+    ID_50184("50184", "Keleseth's Seducer", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_33.jpg",
+            true),
+    ID_50204("50204", "Wand of the Drowned Contessa", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg"
+            , true),
+    ID_50631("50631", "Nightmare Ender", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_34.jpg", true),
+    ID_50641("50641", "Heartpierce", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_103.jpg",
+            true),
+    ID_50676("50676", "Rib Spreader", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_105.jpg",
+            true),
+    ID_51401("51401", "Wrathful Gladiator's Combat Staff", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_staff_112.jpg", true),
+    ID_51517("51517", "wrathful-gladiators-shanker", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_106.jpg", true),
+    ID_51815("51815", "bleak-coldarra-carver", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_101.jpg", true),
+    ID_51846("51846", "Bloodsipper", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_102.jpg",
+            true),
+    ID_51880("51880", "Gluth's Fetching Knife", "https://wow.zamimg.com/images/wow/icons/large/inv_throwingknife_01" +
+            ".jpg", true),
+    ID_51881("51881", "Shaft of Glacial Ice", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_106.jpg", true),
+    ID_50603("50603", "Cryptmaker", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg", true),
+    ID_50736("50736", "Heaven's Fall, Kryss of a Thousand Lies", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_104.jpg", true),
+    ID_50709("50709", "Bryntroll, the Bone Arbiter", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_120.jpg",
+            true),
+    ID_50034("50034", "Zod's Repeating Longbow", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_55" +
+            ".jpg", true),
+    ID_50672("50672", "Bloodvenom Blade", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_154.jpg", true),
+    ID_50734("50734", "Royal Scepter of Terenas II", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_115.jpg"
+            , true),
+    ID_50735("50735", "Oathbinder, Charge of the Ranger-General", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_staff_109.jpg", true),
+    ID_50426("50426", "Heaven's Fall, Kryss of a Thousand Lies", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_104.jpg", true),
+    ID_50733("Fal'inrush, Defender of Quel'thalas", "Fal'inrush, Defender of Quel'thalas", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_crossbow_38.jpg", true),
+    ID_50737("50737", "Havoc's Call, Blade of Lordaeron Kings", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_50730("50730", "Glorenzelg, alta hoja de la Mano de Plata", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_sword_153.jpg", true),
+    ID_39344("39344", "Slayer of the Lifeless", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_62.jpg", true),
+    ID_19019("19019", "Thunderfury, Blessed Blade of the Windseeker", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_sword_39.jpg", true),
+    ID_34334("34334", "Thori'dal, the Stars' Fury", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_bow_39" +
+            ".jpg", true),
+    ID_17182("17182", "Sulfuras, Hand of Ragnaros", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_hammer_unique_sulfuras.jpg", true),
+    ID_50415("50415", "Bryntroll, the Bone Arbiter", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_120.jpg",
+            true),
+    ID_32837("32837", "Warglaive of Azzinoth", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_glave_01" +
+            ".jpg", true),
+    ID_44050("44050", "Mastercraft Kalu'ak Fishing Pole", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_fishingpole_03.jpg", true),
+    ID_49888("49888", "Shadow's Edge", "", true),
+    ID_49623("49623", "Shadowmourne", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_46017("46017", "Val'anyr, Hammer of Ancient Kings", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_99" +
+            ".jpg", true),
+    ID_51893("51893", "Gutbuster", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_114.jpg", true),
+    ID_51937("51937", "bonebreaker-scepter", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_117.jpg", true),
+    ID_51940("51940", "Windrunner's Heartseeker", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_crossbow_38.jpg", true),
+    ID_50068("50068", "rigormortis", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_152.jpg", true),
+    ID_51406("51406", "Wrathful Gladiator's Blade of Alacrity", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_107.jpg", true),
+    ID_51431("51431", "wrathful-gladiators-staff", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_111.jpg",
+            true),
+    ID_51441("51441", "Wrathful Gladiator's Shiv", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_106.jpg", true),
+    ID_51456("51456", "Wrathful Gladiator's Energy Staff", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_staff_112.jpg", true),
+    ID_51535("51535", "Wrathful Gladiator's War Edge", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_throwingaxepvp330_08.jpg", true),
+    ID_51852("51852", "Wand of Ruby Claret", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_34.jpg", true),
+    ID_51946("51946", "Warmace of Menethil", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_116.jpg", true),
+    ID_51400("51400", "Wrathful Gladiator's War Staff", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_112" +
+            ".jpg", true),
+    ID_51446("51446", "Wrathful Gladiator's Punisher", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_120" +
+            ".jpg", true),
+    ID_51876("51876", "Abomination Knuckles", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",
+            true),
+    ID_51910("51910", "Midnight Sun", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_shortblade_103.jpg",
+            true),
+    ID_51944("51944", "Valius, Gavel of the Lightbringer", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_mace_115.jpg", true),
+    ID_51945("51945", "Tainted Twig of Nordrassil", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_108.jpg"
+            , true),
+    ID_51947("51947", "Troggbane-axe-of-the-frostborne-king", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_axe_113.jpg", true),
+    ID_51439("51439", "Wrathful Gladiator's Hacker", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",
+            true),
+    ID_51480("51480", "Wrathful Gladiator's Pike", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_110.jpg",
+            true),
+    ID_51394("51394", "Wrathful Gladiator's Longbow", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_bow_56.jpg", true),
+    ID_51410("51410", "Wrathful Gladiator's Touch of Defeat", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_wand_36.jpg", true),
+    ID_51447("51447", "Wrathful Gladiator's Quickblade", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_156" +
+            ".jpg", true),
+    ID_51526("51526", "Wrathful Gladiator's Splitter", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_116" +
+            ".jpg", true),
+    ID_51529("51529", "Wrathful Gladiator's Left Claw", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_hand_34.jpg", true),
+    ID_50708("50708", "Last Word", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_114.jpg", true),
+    ID_51404("51404", "Wrathful Gladiator's Battle Staff", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_staff_112.jpg", true),
+    ID_51405("51405", "Wrathful Gladiator's Skirmish Staff", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_staff_112.jpg", true),
+    ID_51444("51444", "wrathful-gladiators-left-razor", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_hand_34.jpg", true),
+    ID_51451("51451", "Wrathful Gladiator's Wand of Alacrity", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_wand_36.jpg", true),
+    ID_51481("51481", "wrathful-gladiators-halberd", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_110" +
+            ".jpg", true),
+    ID_51528("51528", "Wrathful Gladiator's Eviscerator", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_106.jpg", true),
+    ID_51942("51942", "Stormfury, Black Blade of the Betrayer", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_shortblade_105.jpg", true),
+    ID_51402("51402", "Wrathful-gladiators-focus-staff", "https://wow.zamimg.com/images/wow/icons/large/inv_staff_111" +
+            ".jpg", true),
+    ID_51448("51448", "Wrathful-gladiators-swiftblade", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_156" +
+            ".jpg", true),
+    ID_51449("51449", "Wrathful Gladiator's Rifle", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_rifle_39.jpg", true),
+    ID_51454("51454", "Wrathful Gladiator's Salvation", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_111" +
+            ".jpg", true),
+    ID_51521("51521", "Wrathful-gladiators-slicer", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_156.jpg"
+            , true),
+    ID_51522("51522", "Wrathful Gladiator's Longblade", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_156" +
+            ".jpg", true),
+    ID_51523("51523", "wrathful-gladiators-right-ripper", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_hand_34.jpg", true),
+    ID_51838("51838", "Lanathels-bloody-nail", "https://wow.zamimg.com/images/wow/icons/large/inv_wand_35.jpg", true),
+    ID_51869("51869", "The Facelifter", "https://wow.zamimg.com/images/wow/icons/large/inv_sword_154.jpg", true),
+    ID_51941("51941", "Pugius, Fist of Defiance", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34" +
+            ".jpg", true),
+    ID_51411("51411", "Wrathful Gladiator's Heavy Crossbow", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_crossbow_38.jpg", true),
+    ID_51440("51440", "Wrathful Gladiator's Dicer", "https://wow.zamimg.com/images/wow/icons/large/inv_axe_116.jpg",
+            true),
+    ID_51457("51457", "Wrathful Gladiator's Light Staff", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_staff_112.jpg", true),
+    ID_50474("50474", "Shrapnel Star", "https://wow.zamimg.com/images/wow/icons/large/inv_throwingknife_07.jpg", true),
+    ID_51390("51390", "Wrathful Gladiator's Bonegrinder", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_119" +
+            ".jpg", true),
+    ID_51819("51819", "Splintershard", "https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg", true),
+    ID_51532("51532", "Wrathful Gladiator's Baton of Light", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_wand_36.jpg", true),
+    ID_51519("51519", "Wrathful Gladiator's Pummeler", "https://wow.zamimg.com/images/wow/icons/large/inv_mace_120" +
+            ".jpg", true),
+    ID_51412("51412", "Wrathful Gladiator's Repeater", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_crossbow_38.jpg", true),
+    ID_51443("51443", "Wrathful Gladiator's Left Ripper", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_hand_34.jpg", true),
+    ID_51541("51541", "Wrathful Gladiator's Plate Chestpiece", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_chest_leather_24.jpg", true),
+    ID_51542("51542", "Wrathful Gladiator's Plate Gauntlets", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_gauntlets_62.jpg", true),
+    ID_51543("51543", "Wrathful Gladiator's Plate Helm", "https://wow.zamimg.com/images/wow/icons/large/inv_helmet_98" +
+            ".jpg", true),
+    ID_51544("51544", "Wrathful Gladiator's Plate Legguards", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_pants_plate_27.jpg", true),
+    ID_51545("51545", "Wrathful Gladiator's Plate Shoulders", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_shoulder_132.jpg", true),
+    ID_51474("51474", "Wrathful Gladiator's Scaled Chestpiece", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_chest_plate26.jpg", true),
+    ID_51475("51475", "Wrathful Gladiator's Scaled Gauntlets", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_gauntlets_91.jpg", true),
+    ID_51476("51476", "Wrathful Gladiator's Scaled Helm", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_helmet_164.jpg", true),
+    ID_51477("51477", "Wrathful Gladiator's Scaled Legguards", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_pants_plate_37.jpg", true),
+    ID_51479("51479", "Wrathful Gladiator's Scaled Shoulders", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_shoulder_126.jpg", true),
+    ID_51468("51468", "Wrathful Gladiator's Ornamented Chestguard", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_chest_plate26.jpg", true),
+    ID_51469("51469", "Wrathful Gladiator's Ornamented Gloves", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_gauntlets_91.jpg", true),
+    ID_51470("51470", "Wrathful Gladiator's Ornamented Headcover", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_helmet_164.jpg", true),
+    ID_51471("51471", "Wrathful Gladiator's Ornamented Legplates", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_pants_plate_37.jpg", true),
+    ID_51473("51473", "Wrathful Gladiator's Ornamented Spaulders", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_shoulder_126.jpg", true),
+    ID_51413("51413", "Wrathful Gladiator's Dreadplate Chestpiece", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_chest_plate_25.jpg", true),
+    ID_51414("51414", "Wrathful Gladiator's Dreadplate Gauntlets", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_gauntlets_75.jpg", true),
+    ID_51415("51415", "Wrathful Gladiator's Dreadplate Helm", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_helmet_158.jpg", true),
+    ID_51418("51418", "Wrathful Gladiator's Dreadplate Shoulders", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_shoulder_99.jpg", true),
+    ID_51493("51493", "Wrathful Gladiator's Leather Gloves", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_gauntlets_97.jpg", true),
+    ID_51494("51494", "Wrathful Gladiator's Leather Helm", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_helmet_161.jpg", true),
+    ID_51495("51495", "Wrathful Gladiator's Leather Legguards", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_pants_leather_36.jpg", true),
+    ID_51496("51496", "Wrathful Gladiator's Leather Spaulders", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_shoulder_120.jpg", true),
+    ID_51492("51492", "Wrathful Gladiator's Leather Tunic", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_chest_leather_24.jpg", true),
+    ID_32824("32824", "Tigole's Trash Catcher", "https://wotlk.ultimowow" +
+            ".com/static/images/wow/icons/large/inv_sword_48.jpg", true),
+    ID_51530("51530", "Wrathful Gladiator's Left Render", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/inv_weapon_hand_34.jpg", true),
+    ID_50805("50805", "Mag'hari Chief's Staff", "https://wotlk.ultimowow" +
+            ".com/static/images/wow/icons/large/inv_staff_107.jpg", true),
+    ID_50798("50798", "Ramallah Slaughter Sheet", "https://wotlk.ultimowow" +
+            ".com/static/images/wow/icons/large/inv_axe_115.jpg", true);
 
-
-
-    ID_51530("51530","Wrathful Gladiator's Left Render","https://wow.zamimg.com/images/wow/icons/large/inv_weapon_hand_34.jpg",true);
 
     private final String code;
     private final String name;

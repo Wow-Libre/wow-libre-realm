@@ -6,4 +6,7 @@ import java.util.*;
 
 public interface ObtainItemTemplate {
     Optional<ItemTemplateEntity> findByEntry(Long entry);
+
+    Optional<ItemTemplateEntity> findRandomEntry();
+
 }

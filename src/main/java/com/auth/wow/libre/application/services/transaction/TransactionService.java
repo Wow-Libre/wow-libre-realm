@@ -8,6 +8,8 @@ import com.auth.wow.libre.domain.ports.in.character_service.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.in.transaction.*;
+import com.auth.wow.libre.domain.ports.out.item_template.*;
+import com.auth.wow.libre.infrastructure.entities.world.*;
 import jakarta.xml.bind.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
@@ -29,12 +31,15 @@ public class TransactionService implements TransactionPort {
     private final CharactersPort charactersPort;
     private final CharacterTransactionPort characterTransactionPort;
     private final ExecuteCommandsPort executeCommandsPort;
+    private final ObtainItemTemplate obtainItemTemplate;
+
 
     public TransactionService(CharactersPort charactersPort, CharacterTransactionPort characterTransactionPort,
-                              ExecuteCommandsPort executeCommandsPort) {
+                              ExecuteCommandsPort executeCommandsPort, ObtainItemTemplate obtainItemTemplate) {
         this.charactersPort = charactersPort;
         this.characterTransactionPort = characterTransactionPort;
         this.executeCommandsPort = executeCommandsPort;
+        this.obtainItemTemplate = obtainItemTemplate;
     }
 
     @Transactional
@@ -178,7 +183,6 @@ public class TransactionService implements TransactionPort {
         List<CharacterDetailDto> characters = characterDetailDto.getCharacters();
 
         Random random = new Random();
-        int randomNumber = random.nextInt(10) + 1;
         String command;
 
         ItemQuantityDto itemQuantityDto = new ItemQuantityDto();
@@ -187,14 +191,24 @@ public class TransactionService implements TransactionPort {
 
         switch (machineType) {
             case ITEMS:
-                ItemsMachineType itemsRandom =
-                        ItemsMachineType.values()[random.nextInt(ItemsMachineType.values().length)];
-                itemQuantityDto.setId(itemsRandom.getCode());
-                itemQuantityDto.setQuantity(itemsRandom.isLimit() ? 1 : randomNumber);
-                name = itemsRandom.getName();
-                logo = itemsRandom.getLogo();
-                // Asigna el comando para ITEMS
-                command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
+                Optional<ItemTemplateEntity> item = obtainItemTemplate.findRandomEntry();
+
+                if (item.isEmpty()) {
+                    ItemsMachineType itemsRandom =
+                            ItemsMachineType.values()[random.nextInt(ItemsMachineType.values().length)];
+                    itemQuantityDto.setId(itemsRandom.getCode());
+                    itemQuantityDto.setQuantity(1);
+                    name = itemsRandom.getName();
+                    logo = itemsRandom.getLogo();
+                    command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
+                } else {
+                    ItemTemplateEntity itemTemplateEntity = item.get();
+                    itemQuantityDto.setId(itemTemplateEntity.getEntry().toString());
+                    itemQuantityDto.setQuantity(1);
+                    name = itemTemplateEntity.getEntry().toString();
+                    logo = "https://static.wixstatic.com/media/5dd8a0_ecda67ad536d4e40ab5ed0d768b105d3~mv2.png";
+                    command = CommandsCore.sendItems(null, "", "", List.of(itemQuantityDto));
+                }
                 break;
             case LEVEL:
                 int levelMax = 80;
