@@ -10,4 +10,5 @@ public class ItemTemplateEntity {
     @Id
     private Long entry;
     private String name;
+    private Long ItemLevel;
 }

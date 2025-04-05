@@ -9,6 +9,6 @@ import java.util.*;
 public interface ItemTemplateRepository extends CrudRepository<ItemTemplateEntity, Long> {
     Optional<ItemTemplateEntity> findByEntry(Long entry);
 
-    @Query(value = "SELECT * FROM item_template ORDER BY RAND() LIMIT 1", nativeQuery = true)
-    Optional<ItemTemplateEntity> findRandomItem();
+    @Query("SELECT i FROM ItemTemplateEntity i WHERE i.ItemLevel > 100 ORDER BY FUNCTION('RAND')")
+    List<ItemTemplateEntity> findRandomItem();
 }
