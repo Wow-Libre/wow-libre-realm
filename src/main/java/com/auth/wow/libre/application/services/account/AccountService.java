@@ -24,6 +24,7 @@ import java.util.*;
 @Service
 public class AccountService implements AccountPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
+    public static final String EXPANSION_LK = "2";
 
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
@@ -100,19 +101,19 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void createLocal(String username, String password, String email, String recaptchaToken,
-                            String ipAddress) {
+    public void createUser(String username, String password, String email, String recaptchaToken,
+                           String ipAddress, String transactionId) {
 
         if (!googlePort.verifyRecaptcha(recaptchaToken, ipAddress).getSuccess()) {
             LOGGER.error("The captcha is invalid");
-            throw new InternalException("The captcha is invalid", "");
+            throw new InternalException("The captcha is invalid", transactionId);
         }
 
         final boolean usernameExist = obtainAccountPort.findByUsername(username).isPresent();
 
         if (usernameExist) {
-            LOGGER.error("The username is not available {}", "");
-            throw new InternalException("The username is not available", "");
+            LOGGER.error("The username is not available - transactionId {}", transactionId);
+            throw new InternalException("The username is not available", transactionId);
         }
 
         try {
@@ -128,10 +129,11 @@ public class AccountService implements AccountPort {
             account.setLocked(false);
             account.setUsername(username);
             account.setEmail(email);
-            account.setExpansion("2");
+            account.setExpansion(EXPANSION_LK);
             account.setUserId(null);
             saveAccountPort.save(account);
         } catch (Exception e) {
+            LOGGER.error("It was not possible to create the user, an unexpected error occurred {}", e.getMessage());
             throw new InternalException("It was not possible to create the user, an unexpected error occurred", "");
         }
     }
@@ -198,10 +200,7 @@ public class AccountService implements AccountPort {
                     transactionId, e);
             throw new InternalException("Could not update password", transactionId);
         }
-
-
     }
-
 
     @Override
     public AccountsDto accounts(int size, int page, String filter, String transactionId) {

@@ -1,6 +1,7 @@
 package com.auth.wow.libre.infrastructure.controller;
 
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.dto.view.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import jakarta.validation.*;
@@ -29,6 +30,19 @@ public class AccountController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
+    }
+
+
+    @PostMapping(path = "/create/user")
+    public ResponseEntity<GenericResponse<Void>> createUser(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid AccountViewCreateDto createDto) {
+
+        accountPort.createUser(createDto.getUsername(), createDto.getPassword(), createDto.getEmail(),
+                createDto.getRecaptchaResponse(), "", transactionId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
 
     @GetMapping(path = "/{account_id}")

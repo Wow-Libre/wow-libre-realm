@@ -15,4 +15,5 @@ public class AccountViewCreateDto {
     @NotNull
     @Length(min = 5, max = 40)
     private String email;
+    private String recaptchaResponse;
 }

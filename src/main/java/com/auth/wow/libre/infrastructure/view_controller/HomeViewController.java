@@ -48,8 +48,8 @@ public class HomeViewController {
         String clientIp = request.getRemoteAddr();
 
         try {
-            accountPort.createLocal(createDto.getUsername(), createDto.getPassword(), createDto.getEmail(),
-                    recaptchaResponse, clientIp);
+            accountPort.createUser(createDto.getUsername(), createDto.getPassword(), createDto.getEmail(),
+                    recaptchaResponse, clientIp, "");
             clientPort.create(createDto.getUsername(), createDto.getPassword());
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -75,7 +75,6 @@ public class HomeViewController {
     @GetMapping("/")
     public String home(Model model) {
         DashboardMetricsDto dashboard = dashboardPort.metricsCount("");
-
 
         model.addAttribute("serverName", configurations.getServerWebName());
         Map<String, Long> stats = new HashMap<>();

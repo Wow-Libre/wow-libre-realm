@@ -47,7 +47,8 @@ public class TransactionService implements TransactionPort {
     public void sendItems(Long userId, Long accountId, List<ItemQuantityDto> items, String reference,
                           Double amount, String transactionId) {
 
-
+        LOGGER.info("[TransactionService] [sendItems] accountId {} userId {} items {} reference {} amount {}",
+                accountId, userId, items, reference, amount);
         CharactersDto characters = charactersPort.getCharacters(accountId, transactionId);
 
         if (characters == null || characters.getCharacters().isEmpty()) {
@@ -65,10 +66,11 @@ public class TransactionService implements TransactionPort {
                                 reference);
                         return;
                     }
+                    String command = CommandsCore.sendItems(character.name, "", "Thank you for your kind " +
+                            "donation! Your support truly means a lot.", items);
 
                     characterTransactionPort.create(CharacterTransactionModel.builder()
-                                    .command(CommandsCore.sendItems(character.name, "", "Thank you for your kind " +
-                                            "donation! Your support truly means a lot.", items))
+                                    .command(command)
                                     .accountId(accountId)
                                     .userId(userId)
                                     .reference(referenceId)
@@ -79,6 +81,11 @@ public class TransactionService implements TransactionPort {
                                     .status(true)
                                     .characterId(character.id).transactionDate(LocalDateTime.now()).build(),
                             transactionId);
+                    try {
+                        executeCommandsPort.execute(command, transactionId);
+                    } catch (JAXBException ignored) {
+                    }
+
 
                 }
         );
@@ -219,7 +226,7 @@ public class TransactionService implements TransactionPort {
                 break;
             case MOUNT:
                 MountType mountType = MountType.values()[random.nextInt(MountType.values().length)];
-                name = mountType.getName();
+                name = mountType.getCode();
                 logo = mountType.getLogo();
 
                 itemQuantityDto.setId(mountType.getCode());

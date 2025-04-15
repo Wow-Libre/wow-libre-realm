@@ -44,7 +44,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("https://api.wowlibre" +
-                ".com/api", "https://www.wowlibre.com/api"));
+                ".com/api", "https://www.wowlibre.com/api", "http://localhost:3000/"));
         corsConfiguration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -79,6 +79,8 @@ public class SecurityConfiguration {
                                 // INTERNAL API (siguen sin autenticación)
                                 "/api/client",
                                 "/api/account/create",
+                                "/api/account/create/user",
+                                "/api/dashboard/stats",
 
                                 // SWAGGER (siguen sin autenticación)
                                 "/v2/api-docs", "/swagger-resources",

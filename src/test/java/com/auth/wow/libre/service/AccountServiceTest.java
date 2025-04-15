@@ -414,7 +414,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void testCreateLocal_Success() {
+    void testCreateUser_Success() {
         when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
                 .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
         when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
@@ -424,44 +424,45 @@ class AccountServiceTest {
             return account;
         });
 
-        assertDoesNotThrow(() -> accountService.createLocal(username, password, email, recaptchaToken, ipAddress));
+        assertDoesNotThrow(() -> accountService.createUser(username, password, email, recaptchaToken, ipAddress,
+                transactionId));
         verify(saveAccountPort, times(1)).save(any(AccountEntity.class));
     }
 
     @Test
-    void testCreateLocal_InvalidCaptcha() {
+    void testCreateUser_InvalidCaptcha() {
         when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
                 .thenReturn(new VerifyCaptchaResponse(false, "www.google.com"));
 
         InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createLocal(username, password, email, recaptchaToken, ipAddress)
+                accountService.createUser(username, password, email, recaptchaToken, ipAddress, transactionId)
         );
 
         assertEquals("The captcha is invalid", thrown.getMessage());
     }
 
     @Test
-    void testCreateLocal_UsernameAlreadyExists() {
+    void testCreateUser_UsernameAlreadyExists() {
         when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
                 .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
         when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(new AccountEntity()));
 
         InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createLocal(username, password, email, recaptchaToken, ipAddress)
+                accountService.createUser(username, password, email, recaptchaToken, ipAddress, transactionId)
         );
 
         assertEquals("The username is not available", thrown.getMessage());
     }
 
     @Test
-    void testCreateLocal_UnexpectedError() {
+    void testCreateUser_UnexpectedError() {
         when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
                 .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
         when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
         when(saveAccountPort.save(any(AccountEntity.class))).thenThrow(new RuntimeException("Database error"));
 
         InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createLocal(username, password, email, recaptchaToken, ipAddress)
+                accountService.createUser(username, password, email, recaptchaToken, ipAddress, transactionId)
         );
 
         assertEquals("It was not possible to create the user, an unexpected error occurred", thrown.getMessage());
