@@ -36,7 +36,7 @@ class GoogleClientTest {
 
     @Test
     void testVerifyRecaptcha_Success() {
-        when(configurations.getApiSecret()).thenReturn("secret-key");
+        when(configurations.getGoogleApiSecret()).thenReturn("secret-key");
         VerifyCaptchaResponse mockResponse = new VerifyCaptchaResponse(true, "localhost");
         ResponseEntity<VerifyCaptchaResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
 
@@ -52,7 +52,7 @@ class GoogleClientTest {
 
     @Test
     void testVerifyRecaptcha_ClientError() {
-        when(configurations.getApiSecret()).thenReturn("secret-key");
+        when(configurations.getGoogleApiSecret()).thenReturn("secret-key");
         when(restTemplate.exchange(eq(apiUrl), eq(HttpMethod.POST), any(HttpEntity.class),
                 eq(VerifyCaptchaResponse.class)))
                 .thenThrow(new InternalException("Transaction failed due to client or server error", ""));
@@ -62,7 +62,7 @@ class GoogleClientTest {
 
     @Test
     void testVerifyRecaptcha_UnexpectedError() {
-        when(configurations.getApiSecret()).thenReturn("secret-key");
+        when(configurations.getGoogleApiSecret()).thenReturn("secret-key");
         when(restTemplate.exchange(eq(apiUrl), eq(HttpMethod.POST), any(HttpEntity.class),
                 eq(VerifyCaptchaResponse.class)))
                 .thenThrow(new RuntimeException("Unexpected Error"));

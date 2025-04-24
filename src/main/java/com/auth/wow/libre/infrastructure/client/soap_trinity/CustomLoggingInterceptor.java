@@ -1,4 +1,4 @@
-package com.auth.wow.libre.infrastructure.client.soap.xml;
+package com.auth.wow.libre.infrastructure.client.soap_trinity;
 
 import org.slf4j.*;
 import org.springframework.ws.client.support.interceptor.*;

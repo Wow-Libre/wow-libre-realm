@@ -26,7 +26,7 @@ public class AccountController {
             @RequestBody @Valid CreateAccountDto request) {
 
         Long accountId = accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(),
-                request.getUserId(), request.getExpansion(), request.getSalt(), transactionId);
+                request.getUserId(), request.getExpansionId(), request.getSalt(), transactionId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
@@ -36,10 +36,10 @@ public class AccountController {
     @PostMapping(path = "/create/user")
     public ResponseEntity<GenericResponse<Void>> createUser(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestBody @Valid AccountViewCreateDto createDto) {
+            @RequestBody @Valid AccountCreateUserDto createDto) {
 
         accountPort.createUser(createDto.getUsername(), createDto.getPassword(), createDto.getEmail(),
-                createDto.getRecaptchaResponse(), "", transactionId);
+                createDto.getRecaptchaResponse(), createDto.getExpansionId(), transactionId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
@@ -64,11 +64,10 @@ public class AccountController {
     @PostMapping(path = "/change-password")
     public ResponseEntity<GenericResponse<Void>> changePassword(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestBody @Valid UpdateAccountDto request) {
+            @RequestBody @Valid ChangePasswordAccountDto request) {
 
         accountPort.changePassword(request.getAccountId(), request.getUserId(), request.getPassword(),
-                request.getSalt(),
-                transactionId);
+                request.getSalt(), request.getExpansionId(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());

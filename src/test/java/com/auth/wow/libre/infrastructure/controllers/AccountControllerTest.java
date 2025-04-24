@@ -33,7 +33,7 @@ class AccountControllerTest {
     @Test
     void testCreateAccount() {
         when(accountPort.create(any(), any(), any(), any(), any(), any(), any())).thenReturn(1L);
-        CreateAccountDto request = new CreateAccountDto("user", "pass", "email", 1L, "2", new byte[16]);
+        CreateAccountDto request = new CreateAccountDto("user", "pass", "email", 1L, 2, new byte[16]);
         ResponseEntity<GenericResponse<Long>> response = accountController.create("12345", request);
 
         assertNotNull(response);
@@ -83,8 +83,8 @@ class AccountControllerTest {
 
     @Test
     void testChangePassword() {
-        doNothing().when(accountPort).changePassword(anyLong(), anyLong(), any(), any(), any());
-        UpdateAccountDto request = new UpdateAccountDto();
+        doNothing().when(accountPort).changePassword(anyLong(), anyLong(), any(), any(), any(), any());
+        ChangePasswordAccountDto request = new ChangePasswordAccountDto();
         request.setPassword("newPass");
         request.setAccountId(1L);
         request.setSalt(new byte[16]);

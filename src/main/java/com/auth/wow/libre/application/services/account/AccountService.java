@@ -6,9 +6,12 @@ import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
+import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.in.google.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
+import com.auth.wow.libre.domain.strategy.accounts.*;
+import com.auth.wow.libre.infrastructure.conf.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
@@ -24,7 +27,6 @@ import java.util.*;
 @Service
 public class AccountService implements AccountPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
-    public static final String EXPANSION_LK = "2";
 
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
@@ -32,23 +34,27 @@ public class AccountService implements AccountPort {
     private final WowLibrePort wowLibrePort;
     private final GooglePort googlePort;
     private final SaveBannedPort saveBannedPort;
-
+    private final ExecuteCommandsPort executeCommandsPort;
+    private final Configurations configurations;
 
     public AccountService(ObtainAccountPort obtainAccountPort,
                           SaveAccountPort saveAccountPort,
                           AccountBannedPort accountBannedPort,
-                          WowLibrePort wowLibrePort, GooglePort googlePort, SaveBannedPort saveBannedPort) {
+                          WowLibrePort wowLibrePort, GooglePort googlePort, SaveBannedPort saveBannedPort,
+                          ExecuteCommandsPort executeCommandsPort, Configurations configurations) {
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
         this.accountBannedPort = accountBannedPort;
         this.wowLibrePort = wowLibrePort;
         this.googlePort = googlePort;
         this.saveBannedPort = saveBannedPort;
+        this.executeCommandsPort = executeCommandsPort;
+        this.configurations = configurations;
     }
 
     @Override
     public Long create(String username, String password, String email,
-                       Long userId, String expansion, byte[] saltPassword,
+                       Long userId, Integer expansionId, byte[] saltPassword,
                        String transactionId) {
 
         final String jwt = wowLibrePort.getJwt(transactionId);
@@ -58,84 +64,37 @@ public class AccountService implements AccountPort {
             final SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret.keyPassword(), saltPassword);
             final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
 
-            final boolean usernameExist = obtainAccountPort.findByUsername(username).isPresent();
+            Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
+                    obtainAccountPort, saveAccountPort, configurations);
+            account.create(username, decryptedPassword, email, userId, transactionId);
 
-            if (usernameExist) {
-                LOGGER.error("The requested username is already registered in the system {}", transactionId);
-                throw new InternalException("The username is not available", transactionId);
-            }
-
-            SecureRandom random = new SecureRandom();
-
-            byte[] salt = new byte[32];
-            random.nextBytes(salt);
-
-            byte[] verifier = getVerifier(username, salt, decryptedPassword);
-
-            AccountEntity account = new AccountEntity();
-            account.setSalt(salt);
-            account.setVerifier(verifier);
-            account.setLocked(false);
-            account.setUsername(username);
-            account.setEmail(email);
-            account.setExpansion(expansion);
-            account.setUserId(userId);
-            return saveAccountPort.save(account).getId();
+            return account.getId();
         } catch (InternalException e) {
             throw new InternalException(e.getMessage(), transactionId);
         } catch (Exception e) {
             LOGGER.error("[AccountService] [create] It was not possible to create the account on the server, there " +
-                            "was a failure with the " +
-                            "encryption. {} {}",
+                            "was a failure with the encryption. TransactionId{} error: {}",
                     transactionId, e.getMessage());
             throw new InternalException(
                     "It was not possible to create the client, please try later and contact support", transactionId);
         }
-
-
     }
 
-    private byte[] getVerifier(String username, byte[] salt, String decryptedPassword) throws Exception {
-        return EncryptionService.computeVerifier(ParamsEncrypt.trinitycore, salt, username.toUpperCase(),
-                decryptedPassword.toUpperCase());
-    }
 
     @Override
     public void createUser(String username, String password, String email, String recaptchaToken,
-                           String ipAddress, String transactionId) {
+                           Integer expansionId, String transactionId) {
 
-        if (!googlePort.verifyRecaptcha(recaptchaToken, ipAddress).getSuccess()) {
-            LOGGER.error("The captcha is invalid");
+        if (!googlePort.verifyRecaptcha(recaptchaToken, "").getSuccess()) {
+            LOGGER.error("The captcha is invalid. transactionId - {}", transactionId);
             throw new InternalException("The captcha is invalid", transactionId);
         }
 
-        final boolean usernameExist = obtainAccountPort.findByUsername(username).isPresent();
 
-        if (usernameExist) {
-            LOGGER.error("The username is not available - transactionId {}", transactionId);
-            throw new InternalException("The username is not available", transactionId);
-        }
+        Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
+                obtainAccountPort, saveAccountPort, configurations);
+        account.create(username, password, email, null, transactionId);
 
-        try {
-            byte[] salt = new byte[32];
-            SecureRandom random = new SecureRandom();
-            random.nextBytes(salt);
-
-            byte[] verifier = getVerifier(username.toUpperCase(), salt, password.toUpperCase());
-
-            AccountEntity account = new AccountEntity();
-            account.setSalt(salt);
-            account.setVerifier(verifier);
-            account.setLocked(false);
-            account.setUsername(username);
-            account.setEmail(email);
-            account.setExpansion(EXPANSION_LK);
-            account.setUserId(null);
-            saveAccountPort.save(account);
-        } catch (Exception e) {
-            LOGGER.error("It was not possible to create the user, an unexpected error occurred {}", e.getMessage());
-            throw new InternalException("It was not possible to create the user, an unexpected error occurred", "");
-        }
     }
 
     @Override
@@ -164,7 +123,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void changePassword(Long accountId, Long userId, String password, byte[] saltPassword,
+    public void changePassword(Long accountId, Long userId, String password, byte[] saltPassword, Integer expansionId,
                                String transactionId) {
 
         final Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
@@ -175,6 +134,8 @@ public class AccountService implements AccountPort {
             throw new InternalException("The requested account is not linked to the user or the account id",
                     transactionId);
         }
+        final String email = account.get().getEmail();
+        final String username = account.get().getUsername();
 
         final String jwt = wowLibrePort.getJwt(transactionId);
         final ServerKey apiSecret = wowLibrePort.getApiSecret(jwt, transactionId);
@@ -182,24 +143,19 @@ public class AccountService implements AccountPort {
         try {
             SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret.keyPassword(), saltPassword);
             final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
-            SecureRandom random = new SecureRandom();
-            byte[] salt = new byte[32];
-            random.nextBytes(salt);
-
-            AccountEntity accountUpdate = account.get();
-            accountUpdate.setSalt(salt);
-
-            byte[] verifier = getVerifier(accountUpdate.getUsername(), salt, decryptedPassword);
-
-
-            accountUpdate.setVerifier(verifier);
-
-            saveAccountPort.save(accountUpdate);
+            Account accountChangePassword = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
+                    obtainAccountPort, saveAccountPort, configurations);
+            accountChangePassword.changePassword(username, decryptedPassword, email, transactionId);
         } catch (Exception e) {
             LOGGER.error("[AccountService][changePassword] Could not update password: {} {}", e.getMessage(),
                     transactionId, e);
             throw new InternalException("Could not update password", transactionId);
         }
+    }
+
+    private byte[] getVerifier(String username, byte[] salt, String decryptedPassword) throws Exception {
+        return EncryptionService.computeVerifier(ParamsEncrypt.trinitycore, salt, username.toUpperCase(),
+                decryptedPassword.toUpperCase());
     }
 
     @Override

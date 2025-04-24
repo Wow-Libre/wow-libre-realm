@@ -50,14 +50,10 @@ application:
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
-events:
-  twinks:
-     enable: false
 google:
   api-secret: "6Ld2INkqAAAAAByGt40YkWgDIpkJQ1NE2oDVyyqb"
-  api-key: "6Ld2INkqAAAAAD3-ikPyI-yzYgMoL6mvcQkAJak-"
 server-web:
-  name: "Wow Private Server"
+  emulator-type: AzerothCore
 ---
 spring:
   config:
@@ -65,23 +61,23 @@ spring:
       on-profile: prod
   datasource:
     primary:
-      url: jdbc:mysql://localhost:3306/acore_auth
+      url: ${DB_WOW_LIBRE_HOST_AUTH}
       username: ${DB_WOW_LIBRE_USERNAME}
       password: ${DB_WOW_LIBRE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
     secondary:
-      url: jdbc:mysql://localhost:3306/acore_characters
+      url: ${DB_WOW_LIBRE_HOST_CHARACTERS}
       username: ${DB_WOW_LIBRE_USERNAME}
       password: ${DB_WOW_LIBRE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
     three:
-      url: jdbc:mysql://localhost:3306/acore_world
+      url:  ${DB_WOW_LIBRE_HOST_WORLD}
       username: ${DB_WOW_LIBRE_USERNAME}
       password: ${DB_WOW_LIBRE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   address: 0.0.0.0
-  port: 8090
+  port: ${SERVER_PORT}
 application:
   credentials:
     command:
@@ -100,11 +96,7 @@ application:
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
-events:
-  twinks:
-    enable: ${EVENTS_TWINKS_ENABLE}
 google:
   api-secret:  ${GOOGLE_API_SECRET}
-  api-key: ${GOOGLE_API_KEY}
 server-web:
-  name: ${SERVER_WEB_NAME}
+  emulator-type: ${EMULATOR_TYPE}

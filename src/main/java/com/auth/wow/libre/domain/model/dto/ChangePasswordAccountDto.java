@@ -4,8 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
-public class UpdateAccountDto {
-
+public class ChangePasswordAccountDto {
     @NotNull
     private String password;
     @NotNull
@@ -14,4 +13,6 @@ public class UpdateAccountDto {
     private Long userId;
     @NotNull
     private byte[] salt;
+    @NotNull
+    private Integer expansionId;
 }

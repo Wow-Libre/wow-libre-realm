@@ -44,7 +44,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("https://api.wowlibre" +
-                ".com/api", "https://www.wowlibre.com/api", "http://localhost:3000/"));
+                ".com/api", "https://www.wowlibre.com/api", "http://localhost:3000/","https://api.entropiux.com","https://www.entropiux.com"));
         corsConfiguration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),

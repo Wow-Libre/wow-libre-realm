@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ObtainAccountPort {
     Optional<AccountEntity> findByUsername(String username);
 
+    Optional<AccountEntity> findByEmail(String email);
+
     List<AccountEntity> findByUserId(Long id);
 
     Optional<AccountEntity> findById(Long id);

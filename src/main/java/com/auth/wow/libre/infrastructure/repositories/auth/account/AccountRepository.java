@@ -27,4 +27,6 @@ public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
             + "FROM AccountEntity a")
     MetricsProjection fetchMetrics();
 
+    Optional<AccountEntity> findByEmail(String email);
+
 }

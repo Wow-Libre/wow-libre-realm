@@ -17,8 +17,7 @@ public class CreateAccountDto {
     @NotNull
     private Long userId;
     @NotNull
-    @Length(min = 1, max = 10)
-    private String expansion;
+    private Integer expansionId;
     @NotNull
     private byte[] salt;
 }

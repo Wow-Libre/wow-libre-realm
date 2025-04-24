@@ -28,7 +28,7 @@ public class GoogleClient {
         HttpHeaders headers = new HttpHeaders();
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("secret", configurations.getApiSecret());
+        params.add("secret", configurations.getGoogleApiSecret());
         params.add("response", request.getResponse());
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);

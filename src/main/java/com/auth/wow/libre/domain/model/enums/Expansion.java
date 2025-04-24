@@ -15,7 +15,9 @@ public enum Expansion {
             ".png"),
     LEGION(6, "Legion", "https://i.ibb.co/DY7BQpt/legionn-wow-libre-expansion.png"),
     BATTLE_FOR_AZEROTH(7, "Battle for Azeroth", "https://i.ibb.co/GMqShXd/battle-For-Azeroth-wow-libre-expansion.png"),
-    SHADOWLANDS(8, "Shadowlands", "https://i.ibb.co/JvpHqj6/SHADOWLANDS-wow-libre-expansion.png");
+    SHADOWLANDS(8, "Shadowlands", "https://i.ibb.co/JvpHqj6/SHADOWLANDS-wow-libre-expansion.png"),
+    DRAGON_FLIGHT(9, "Dragonflight", ""),
+    WAR_WITHIN(10, "War Within", "");
 
     private final int value;
     private final String displayName;

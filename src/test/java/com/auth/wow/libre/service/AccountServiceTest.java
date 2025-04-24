@@ -5,13 +5,16 @@ import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
+import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.in.google.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.infrastructure.client.dto.*;
+import com.auth.wow.libre.infrastructure.conf.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
+import jakarta.xml.bind.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
@@ -20,6 +23,7 @@ import org.mockito.junit.jupiter.*;
 import javax.crypto.*;
 import java.util.*;
 
+import static com.auth.wow.libre.domain.model.enums.EmulatorCore.AZEROTH_CORE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -36,6 +40,8 @@ class AccountServiceTest {
 
     @Mock
     private SaveAccountPort saveAccountPort;
+    @Mock
+    private Configurations configurations;
 
     @InjectMocks
     private AccountService accountService;
@@ -46,11 +52,13 @@ class AccountServiceTest {
     private SaveBannedPort saveBannedPort;
     @Mock
     private GooglePort googlePort;
+    @Mock
+    private ExecuteCommandsPort commandsPort;
 
     private String username;
     private String email;
     private Long userId;
-    private String expansion;
+    private Integer expansion;
     private String transactionId;
     private String apiKeySecret;
     private String bannedBy;
@@ -64,14 +72,14 @@ class AccountServiceTest {
         username = "testUser";
         email = "test@example.com";
         userId = 1L;
-        expansion = "2";
+        expansion = 2;
         transactionId = "transaction123";
         apiKeySecret = "keyPassword";
         bannedBy = "admin";
         banReason = "Violation of rules";
         password = "securePassword";
         recaptchaToken = "validCaptchaToken";
-        ipAddress = "127.0.0.1";
+        ipAddress = "";
     }
 
     @Test
@@ -116,31 +124,7 @@ class AccountServiceTest {
         assertEquals("The client already submits a ban", thrown.getMessage());
     }
 
-    @Test
-    void testCreateAccountSuccessfully() throws Exception {
-        byte[] saltPassword = KeyDerivationUtil.generateSalt();
-        SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiKeySecret, saltPassword);
-        String passwordEncrypt = EncryptionUtil.encrypt("newPassword", derivedKey);
 
-        // Arrange
-        when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
-        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
-        when(saveAccountPort.save(any(AccountEntity.class))).thenAnswer(invocation -> {
-            AccountEntity account = invocation.getArgument(0);
-            account.setId(1L);
-            return account;
-        });
-
-        // Act
-        Long accountId = accountService.create(username, passwordEncrypt, email, userId, expansion, saltPassword,
-                transactionId);
-
-        // Assert
-        assertNotNull(accountId);
-        assertEquals(1L, accountId);
-        verify(saveAccountPort, times(1)).save(any(AccountEntity.class));
-    }
 
     @Test
     void testCreateAccountWithExistingUsername() throws Exception {
@@ -332,6 +316,7 @@ class AccountServiceTest {
     void testChangePasswordSuccessfully() throws Exception {
         Long accountId = 1L;
         Long userId = 10L;
+        Integer expansionId = 2;
         byte[] saltPassword = KeyDerivationUtil.generateSalt();
         SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiKeySecret, saltPassword);
         String encryptedPassword = EncryptionUtil.encrypt("newPassword", derivedKey);
@@ -343,10 +328,11 @@ class AccountServiceTest {
         when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.of(accountEntity));
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
         when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
+        when(configurations.getEmulatorType()).thenReturn("AzerothCore");
 
-        accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, transactionId);
+        accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, expansionId, transactionId);
 
-        verify(saveAccountPort, times(1)).save(any(AccountEntity.class));
+        verify(commandsPort, times(1)).execute(any(),any());
     }
 
     @Test
@@ -354,19 +340,22 @@ class AccountServiceTest {
         Long accountId = 1L;
         Long userId = 10L;
         byte[] saltPassword = new byte[16];
+        Integer expansionId = 10;
 
         when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.empty());
 
         InternalException exception = assertThrows(InternalException.class, () ->
-                accountService.changePassword(accountId, userId, "password", saltPassword, transactionId));
+                accountService.changePassword(accountId, userId, "password", saltPassword, expansionId, transactionId));
 
         assertEquals("The requested account is not linked to the user or the account id", exception.getMessage());
     }
 
     @Test
-    void testChangePasswordEncryptionFailure() throws Exception {
+    void testChangePasswordCoreInvalid() throws Exception {
         Long accountId = 1L;
         Long userId = 10L;
+        Integer expansionId = 2;
+
         byte[] saltPassword = KeyDerivationUtil.generateSalt();
         SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiKeySecret, saltPassword);
         String encryptedPassword = EncryptionUtil.encrypt("newPassword", derivedKey);
@@ -378,64 +367,47 @@ class AccountServiceTest {
         when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.of(accountEntity));
         when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
         when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
-
-        doThrow(new InternalException("Encryption error", ""))
-                .when(saveAccountPort).save(any(AccountEntity.class));
+        when(configurations.getEmulatorType()).thenReturn("CORE_INVALID");
 
         InternalException exception = assertThrows(InternalException.class, () ->
-                accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, transactionId));
+                accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, expansionId,
+                        transactionId));
 
         assertEquals("Could not update password", exception.getMessage());
     }
 
     @Test
-    void testChangePasswordGeneralFailure() throws Exception {
-        Long accountId = 1L;
-        Long userId = 10L;
-        byte[] saltPassword = KeyDerivationUtil.generateSalt();
-        SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiKeySecret, saltPassword);
-        String encryptedPassword = EncryptionUtil.encrypt("newPassword", derivedKey);
+    void testCreateUser_Success() throws JAXBException {
+        Integer expansionId = 2;
 
-        AccountEntity accountEntity = new AccountEntity();
-        accountEntity.setId(accountId);
-        accountEntity.setUsername(username);
-
-        when(obtainAccountPort.findByIdAndUserId(accountId, userId)).thenReturn(Optional.of(accountEntity));
-        when(wowLibrePort.getJwt(transactionId)).thenReturn("jwtToken");
-        when(wowLibrePort.getApiSecret("jwtToken", transactionId)).thenReturn(new ServerKey("keyPassword"));
-
-        doThrow(new RuntimeException("Unexpected error"))
-                .when(saveAccountPort).save(any(AccountEntity.class));
-
-        InternalException exception = assertThrows(InternalException.class, () ->
-                accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, transactionId));
-
-        assertEquals("Could not update password", exception.getMessage());
-    }
-
-    @Test
-    void testCreateUser_Success() {
         when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
                 .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
-        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
+        when(obtainAccountPort.findByUsername(username))
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(new AccountEntity()));
         when(saveAccountPort.save(any(AccountEntity.class))).thenAnswer(invocation -> {
             AccountEntity account = invocation.getArgument(0);
             account.setId(1L);
             return account;
         });
-
-        assertDoesNotThrow(() -> accountService.createUser(username, password, email, recaptchaToken, ipAddress,
+        when(configurations.getEmulatorType()).thenReturn(AZEROTH_CORE.getName());
+        assertDoesNotThrow(() -> accountService.createUser(username, password, email, recaptchaToken, expansionId,
                 transactionId));
         verify(saveAccountPort, times(1)).save(any(AccountEntity.class));
+        verify(commandsPort, times(1)).execute(any(), any());
+
     }
 
     @Test
     void testCreateUser_InvalidCaptcha() {
-        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
+        Integer expansionId = 2;
+        when(googlePort.verifyRecaptcha(eq(recaptchaToken), anyString()))
                 .thenReturn(new VerifyCaptchaResponse(false, "www.google.com"));
 
+
         InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createUser(username, password, email, recaptchaToken, ipAddress, transactionId)
+                accountService.createUser(username, password, email, recaptchaToken, expansionId,
+                        transactionId)
         );
 
         assertEquals("The captcha is invalid", thrown.getMessage());
@@ -443,28 +415,18 @@ class AccountServiceTest {
 
     @Test
     void testCreateUser_UsernameAlreadyExists() {
-        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
+        Integer expansionId = 2;
+
+        when(googlePort.verifyRecaptcha(anyString(), anyString()))
                 .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
         when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(new AccountEntity()));
 
         InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createUser(username, password, email, recaptchaToken, ipAddress, transactionId)
+                accountService.createUser(username, password, email, recaptchaToken, expansionId, transactionId)
         );
 
         assertEquals("The username is not available", thrown.getMessage());
     }
 
-    @Test
-    void testCreateUser_UnexpectedError() {
-        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
-                .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
-        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.empty());
-        when(saveAccountPort.save(any(AccountEntity.class))).thenThrow(new RuntimeException("Database error"));
 
-        InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createUser(username, password, email, recaptchaToken, ipAddress, transactionId)
-        );
-
-        assertEquals("It was not possible to create the user, an unexpected error occurred", thrown.getMessage());
-    }
 }

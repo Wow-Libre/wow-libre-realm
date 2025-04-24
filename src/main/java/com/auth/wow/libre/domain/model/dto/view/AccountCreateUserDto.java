@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.*;
 
 @Data
-public class AccountViewCreateDto {
+public class AccountCreateUserDto {
     @NotNull
     @Length(min = 5, max = 20)
     private String username;
@@ -16,4 +16,6 @@ public class AccountViewCreateDto {
     @Length(min = 5, max = 40)
     private String email;
     private String recaptchaResponse;
+    @NotNull
+    private Integer expansionId;
 }
