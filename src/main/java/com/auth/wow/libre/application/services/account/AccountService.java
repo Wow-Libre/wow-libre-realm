@@ -153,11 +153,6 @@ public class AccountService implements AccountPort {
         }
     }
 
-    private byte[] getVerifier(String username, byte[] salt, String decryptedPassword) throws Exception {
-        return EncryptionService.computeVerifier(ParamsEncrypt.trinitycore, salt, username.toUpperCase(),
-                decryptedPassword.toUpperCase());
-    }
-
     @Override
     public AccountsDto accounts(int size, int page, String filter, String transactionId) {
         return new AccountsDto(obtainAccountPort.findByAll(size, page, filter).stream().map(account ->
@@ -222,34 +217,5 @@ public class AccountService implements AccountPort {
         saveBannedPort.save(account.getId(), banDate, unBanDate, bannedBy, banReason, true);
     }
 
-    @Override
-    @Transactional
-    public void changePassword(String username, String password, String newPassword, String transactionId) {
-        final Optional<AccountEntity> account = obtainAccountPort.findByUsername(username);
 
-        if (account.isEmpty()) {
-            LOGGER.error("The requested account is not linked to the user {}  TransactionId {}", username,
-                    transactionId);
-            throw new InternalException("The requested account is not linked to the user or the account id",
-                    transactionId);
-        }
-
-        try {
-            byte[] salt = new byte[32];
-            SecureRandom random = new SecureRandom();
-            random.nextBytes(salt);
-
-            byte[] verifier = getVerifier(account.get().getUsername(), salt, newPassword);
-
-            AccountEntity accountUpdate = account.get();
-            accountUpdate.setSalt(salt);
-            accountUpdate.setVerifier(verifier);
-
-            saveAccountPort.save(accountUpdate);
-        } catch (Exception e) {
-            LOGGER.error("[AccountService][changePassword] Could not update password: {} {}", e.getMessage(),
-                    transactionId, e);
-            throw new InternalException("Could not update password", transactionId);
-        }
-    }
 }

@@ -43,4 +43,28 @@ class JpaItemTemplateAdapterTest {
         assertFalse(result.isPresent());
         verify(itemTemplateRepository, times(1)).findByEntry(entry);
     }
+
+    @Test
+    void findRandomEntry_ShouldReturnItemTemplateEntity_WhenRepositoryReturnsNonEmptyList() {
+        ItemTemplateEntity item = new ItemTemplateEntity();
+        List<ItemTemplateEntity> itemList = Collections.singletonList(item);
+        when(itemTemplateRepository.findRandomItem()).thenReturn(itemList);
+
+        Optional<ItemTemplateEntity> result = jpaItemTemplateAdapter.findRandomEntry();
+
+        assertTrue(result.isPresent());
+        assertEquals(item, result.get());
+        verify(itemTemplateRepository, times(1)).findRandomItem();
+    }
+
+    @Test
+    void findRandomEntry_ShouldReturnEmpty_WhenRepositoryReturnsEmptyList() {
+        when(itemTemplateRepository.findRandomItem()).thenReturn(Collections.emptyList());
+
+        Optional<ItemTemplateEntity> result = jpaItemTemplateAdapter.findRandomEntry();
+
+        assertFalse(result.isPresent());
+        verify(itemTemplateRepository, times(1)).findRandomItem();
+    }
+
 }

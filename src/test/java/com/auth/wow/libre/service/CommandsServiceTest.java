@@ -16,14 +16,20 @@ import javax.crypto.*;
 
 import static com.auth.wow.libre.domain.model.enums.EmulatorCore.AZEROTH_CORE;
 import static com.auth.wow.libre.domain.model.enums.EmulatorCore.TRINITY_CORE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommandsServiceTest {
-    @Mock private CoreClient azerothClient;
-    @Mock private TrinityClient trinityClient;
-    @Mock private WowLibrePort wowLibrePort;
-    @Mock private Configurations configurations;
+    @Mock
+    private CoreClient azerothClient;
+    @Mock
+    private TrinityClient trinityClient;
+    @Mock
+    private WowLibrePort wowLibrePort;
+    @Mock
+    private Configurations configurations;
 
     @InjectMocks
     private CommandsService commandsService;
@@ -84,8 +90,29 @@ class CommandsServiceTest {
     void execute_withUnknownCore_shouldThrowException() {
         when(configurations.getEmulatorType()).thenReturn("UNKNOWN_CORE");
 
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 commandsService.execute("cmd", TRANSACTION_ID));
+    }
+
+    @Test
+    void execute_plainCommand_shouldNotUseJwtOrSecrets() throws JAXBException {
+        String plainCommand = "some-command";
+        when(configurations.getEmulatorType()).thenReturn(TRINITY_CORE.getName());
+
+        commandsService.execute(plainCommand, TRANSACTION_ID);
+
+        verify(wowLibrePort, never()).getJwt(any());
+        verify(wowLibrePort, never()).getApiSecret(any(), any());
+    }
+
+    @Test
+    void execute_withUnmappedCore_shouldThrowUnsupportedOperationException() {
+        when(configurations.getEmulatorType()).thenReturn("Mangos"); // debe coincidir con el nombre del enum
+
+        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () ->
+                commandsService.execute("some-command", TRANSACTION_ID));
+
+        assertTrue(exception.getMessage().contains("No client defined for core: Mangos"));
     }
 }
 

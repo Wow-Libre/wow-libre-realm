@@ -2,9 +2,14 @@ package com.auth.wow.libre.application;
 
 import com.auth.wow.libre.application.services.guild.*;
 import com.auth.wow.libre.domain.model.*;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.ports.in.characters.*;
+import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.in.guild_member.*;
 import com.auth.wow.libre.domain.ports.out.guild.*;
+import com.auth.wow.libre.infrastructure.entities.characters.*;
+import jakarta.xml.bind.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
@@ -22,43 +27,333 @@ class GuildServiceTest {
     private ObtainGuild obtainGuild;
     @Mock
     private GuildMemberPort guildMemberPort;
-    @InjectMocks
+    @Mock
+    private SaveGuild saveGuild;
+    @Mock
+    private CharactersPort charactersPort;
+    @Mock
+    private ExecuteCommandsPort executeCommandsPort;
+
     private GuildService guildService;
 
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+        guildService = new GuildService(obtainGuild, guildMemberPort, saveGuild, charactersPort, executeCommandsPort);
+    }
 
     @Test
-    void detail_ShouldThrowNotFoundException_WhenGuildDoesNotExist() {
+    void testFindAll() {
+        List<GuildEntity> mockGuilds = getGuildEntities();
+        when(obtainGuild.getGuilds(10, 0, null, "txn123")).thenReturn(mockGuilds);
+        when(obtainGuild.getGuildCount("txn123")).thenReturn(1L);
+        when(charactersPort.getCharacter(any(), any())).thenReturn(getCharacterDetailDto());
+
+        // Llamada al método
+        GuildsDto result = guildService.findAll(10, 0, null, "txn123");
+
+        // Verificaciones
+        assertNotNull(result);
+        assertEquals(1, result.getGuilds().size());
+        assertEquals(1L, result.getSize());
+    }
+
+    private static List<GuildEntity> getGuildEntities() {
+        GuildEntity guild = getGuildEntity(1, true);
+        return List.of(guild);
+    }
+
+    @Test
+    void testDetailWhenGuildExists() {
+        GuildEntity guild = getGuildEntity(2, true);
+
+
+        when(obtainGuild.getGuild(any())).thenReturn(Optional.of(guild));
+        when(charactersPort.getCharacter(any(), any())).thenReturn(getCharacterDetailDto());
+
+        // Llamada al método
+        GuildDto result = guildService.detail(1L, "txn123");
+
+        // Verificaciones
+        assertNotNull(result);
+        assertEquals("Guild1", result.name);
+        assertEquals("CharacterName", result.leaderName);
+    }
+
+
+    @Test
+    void testDetailWhenGuildDoesNotExist() {
+        // Mock de dependencias
+        when(obtainGuild.getGuild(999L)).thenReturn(Optional.empty());
+
+        // Llamada al método y verificación de la excepción
+        NotFoundException thrown = assertThrows(NotFoundException.class, () ->
+                guildService.detail(999L, "txn123")
+        );
+
+        assertEquals("The requested guild does not exist", thrown.getMessage());
+    }
+
+    @Test
+    void testAttachWhenGuildIsPublic() throws JAXBException {
+        GuildEntity guild = getGuildEntity(1, true);
+
+        when(obtainGuild.getGuild(1L)).thenReturn(Optional.of(guild));
+        when(charactersPort.getCharacter(1L, 1L, "txn123"))
+                .thenReturn(getCharacterDetailDto());
+        when(charactersPort.getCharacter(any(), any()))
+                .thenReturn(getCharacterDetailDto());
+        // Llamada al método
+        guildService.attach(1L, 1L, 1L, "txn123");
+
+        // Verificaciones
+        verify(executeCommandsPort, times(2)).execute(any(), any());
+    }
+
+    private static GuildEntity getGuildEntity(int leaderGuid, boolean publicAccess) {
+        GuildEntity guild = new GuildEntity();
+
+        guild.setId(1L);
+        guild.setName("Guild1");
+        guild.setLeaderGuid(leaderGuid);
+        guild.setEmblemStyle(1L);
+        guild.setEmblemColor(1L);
+        guild.setBorderStyle(1L);
+        guild.setBorderColor(1L);
+        guild.setInfo("info");
+        guild.setMotd("motd");
+        guild.setCreateDate(1620000000L);
+        guild.setBankMoney(5000L);
+        guild.setPublicAccess(publicAccess);
+        guild.setDiscord("discord");
+        guild.setMultiFaction(false);
+        return guild;
+    }
+
+    @Test
+    void testAttachWhenCharactersDoesNotExist() {
+        GuildEntity guild = getGuildEntity(1, true);
+
+        when(obtainGuild.getGuild(1L)).thenReturn(Optional.of(guild));
+        when(charactersPort.getCharacter(1L, 1L, "txn123"))
+                .thenReturn(null);
+        when(charactersPort.getCharacter(any(), any()))
+                .thenReturn(getCharacterDetailDto());
+        // Llamada al método
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                guildService.attach(1L, 1L, 1L, "txn123")
+        );
+
+        // Verificaciones
+        assertEquals("The requested characters does not exist", thrown.getMessage());
+    }
+
+    @Test
+    void testAttachWhenGetGuildDoesNotExist() {
+
         when(obtainGuild.getGuild(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> guildService.detail(1L, "txn123"));
+        // Llamada al método
+        NotFoundException thrown = assertThrows(NotFoundException.class, () ->
+                guildService.attach(1L, 1L, 1L, "txn123")
+        );
+
+        // Verificaciones
+        assertEquals("The requested guild does not exist", thrown.getMessage());
     }
 
     @Test
-    void attach_ShouldThrowNotFoundException_WhenGuildDoesNotExist() {
-        when(obtainGuild.getGuild(1L)).thenReturn(Optional.empty());
+    void testAttachWhenGuildIsNotPublic() {
+        GuildEntity guild = getGuildEntity(1, false);
+        when(obtainGuild.getGuild(1L)).thenReturn(Optional.of(guild));
+        when(charactersPort.getCharacter(1L, ""))
+                .thenReturn(getCharacterDetailDto());
 
-        assertThrows(NotFoundException.class, () -> guildService.attach(1L, 1L, 1L, "txn123"));
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                guildService.attach(1L, 1L, 1L, "txn123")
+        );
+
+        assertEquals("The brotherhood is currently not public", thrown.getMessage());
+    }
+
+    @Test
+    void testUnInviteGuildWhenCharacterExists() throws JAXBException {
+        // Mock de dependencias
+        CharacterDetailDto mockCharacter = new CharacterDetailDto(CharacterModel.builder().guid(1L).build());
+        when(charactersPort.getCharacter(1L, 1L, "txn123")).thenReturn(mockCharacter);
+
+        GuildMemberModel mockGuildMember = new GuildMemberModel(1L, 1L, 1);
+        when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(mockGuildMember);
+
+        guildService.unInviteGuild(1L, 1L, "txn123");
+
+        // Verificaciones
+        verify(executeCommandsPort, times(1)).execute(any(), any());
+    }
+
+    @Test
+    void testDetailWhenGuildNotFound() {
+        GuildMemberModel guildMember = new GuildMemberModel(1L, 1L, 1);
+        when(guildMemberPort.guildMemberByCharacterId(any(), any())).thenReturn(guildMember);
+        when(obtainGuild.getGuild(any())).thenReturn(Optional.empty());
+
+        NotFoundException thrown = assertThrows(NotFoundException.class, () ->
+                guildService.detail(1L, 1L, "txn123")
+        );
+
+        assertEquals("The requested guild does not exist", thrown.getMessage());
+    }
+
+    @Test
+    void testDetailWhenGuildMemberNotFound() {
+        // Simulamos que el miembro existe, pero no se encuentra el gremio
+        when(guildMemberPort.guildMemberByCharacterId(any(), any())).thenReturn(null);
+
+        NotFoundException thrown = assertThrows(NotFoundException.class, () ->
+                guildService.detail(1L, 1L, "txn123")
+        );
+
+        assertEquals("The requested guild does not exist", thrown.getMessage());
     }
 
 
     @Test
-    void update_ShouldThrowNotFoundException_WhenUserIsNotGuildMaster() {
-        GuildMemberModel guildMember = new GuildMemberModel(1L, 1L, 12);
-        when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(guildMember);
+    void testUnInviteGuildWhenCharacterExistsByRankInvalid() {
+        CharacterDetailDto mockCharacter = new CharacterDetailDto(CharacterModel.builder().guid(1L).build());
+        when(charactersPort.getCharacter(1L, 1L, "txn123")).thenReturn(mockCharacter);
 
-        assertThrows(NotFoundException.class, () -> guildService.update(1L, 1L, "discord", true, true, "txn123"));
+        GuildMemberModel mockGuildMember = new GuildMemberModel(1L, 1L, 0);
+        when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(mockGuildMember);
+
+        InternalException thrown = assertThrows(InternalException.class, () -> guildService.unInviteGuild(1L, 1L,
+                "txn123"));
+        assertEquals("You cannot leave the guild without leaving a guild master.", thrown.getMessage());
     }
-
 
     @Test
-    void count_ShouldReturnGuildCount() {
-        when(obtainGuild.count("txn123")).thenReturn(5L);
+    void testUnInviteGuildWhenCharacterNotExists() {
+        // Mock de dependencias
+        CharacterDetailDto mockCharacter = new CharacterDetailDto(CharacterModel.builder().guid(1L).build());
+        when(charactersPort.getCharacter(1L, 1L, "txn123")).thenReturn(mockCharacter);
+        when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(null);
 
-        Long result = guildService.count("txn123");
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> guildService.unInviteGuild(1L, 1L,
+                "txn123"));
+        assertEquals("The requested guild does not exist", thrown.getMessage());
 
-        assertEquals(5L, result);
-        verify(obtainGuild, times(1)).count("txn123");
     }
 
+    @Test
+    void testUnInviteGuildWhenCharacterDoesNotExist() {
+        // Mock de dependencias
+        when(charactersPort.getCharacter(1L, 1L, "txn123")).thenReturn(null);
+
+        // Llamada al método y verificación de la excepción
+        InternalException thrown = assertThrows(InternalException.class, () ->
+                guildService.unInviteGuild(1L, 1L, "txn123"));
+
+        assertEquals("The requested characters does not exist", thrown.getMessage());
+    }
+
+    @Test
+    void testUpdateGuildInfoWhenGuildMaster() {
+        // Mock de dependencias
+        GuildMemberModel mockGuildMember = new GuildMemberModel(1L, 1L, 0);
+        when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(mockGuildMember);
+        GuildEntity mockGuild = new GuildEntity();
+        mockGuild.setId(1L);
+        when(obtainGuild.getGuild(1L)).thenReturn(Optional.of(mockGuild));
+
+        // Llamada al método
+        guildService.update(1L, 1L, "newDiscord", true, false, "txn123");
+
+        // Verificaciones
+        verify(saveGuild).save(mockGuild, "txn123");
+    }
+
+    private static CharacterDetailDto getCharacterDetailDto() {
+        return new CharacterDetailDto(CharacterModel.builder()
+                .guid(123L)
+                .account(456L)
+                .name("CharacterName")
+                .raceLogo("raceLogoUrl")
+                .raceName("Human")
+                .raceId(1)
+                .classCharacters(2)
+                .className("Warrior")
+                .classLogo("warriorLogoUrl")
+                .gender(1)  // 1 podría ser masculino
+                .level(60)
+                .xp(1500000)
+                .money(1000.50)
+                .skin(1)
+                .face(2)
+                .hairStyle(3)
+                .hairColor(5)
+                .facialStyle(1)
+                .bankSlots(6)
+                .restState(0)
+                .playerFlags(10)
+                .positionX(100.0)
+                .positionY(200.0)
+                .positionZ(300.0)
+                .map(1)
+                .instanceId(10)
+                .instanceModeMask(0)
+                .orientation(90)
+                .taximask("taxiMaskData")
+                .online(1)
+                .cinematic(0)
+                .totalTime(360000)
+                .levelTime(72000)
+                .logoutTime(1620000000)
+                .isLogoutResting(0)
+                .restBonus(100)
+                .resetTalentsCost(50)
+                .resetTalentsTime(1620000000)
+                .transX(100)
+                .transY(200)
+                .transZ(300)
+                .transO(360)
+                .transGuild(1)
+                .extraFlags(0)
+                .stableSlots(5)
+                .atLogin(0)
+                .zone(1)
+                .deathExpireTime(60)
+                .taxiPath(1)
+                .arenaPoints(200)
+                .totalHonorPoints(10000)
+                .todayHonorPoints(100)
+                .yesterdayHonorPoints(50)
+                .totalKills(500)
+                .todayKills(10)
+                .yesterdayKills(15)
+                .chosenTitle(1)
+                .knownCurrencies(3)
+                .watchedFaction(200L)
+                .drunk(0)
+                .health(100)
+                .power1(100)
+                .power2(50)
+                .power3(75)
+                .power4(30)
+                .power5(0)
+                .power6(10)
+                .power7(5)
+                .latency(50)
+                .talentGroupsCount(2)
+                .activeTalentGroup(1)
+                .exploredZones("zone1,zone2,zone3")
+                .equipmentCache("equipmentCacheData")
+                .ammold(1)
+                .knownTitles("title1,title2")
+                .actionsBars(1)
+                .grantableLevels(10)
+                .gold(1000L)
+                .silver(500L)
+                .copper(100L)
+                .build());
+    }
 
 }

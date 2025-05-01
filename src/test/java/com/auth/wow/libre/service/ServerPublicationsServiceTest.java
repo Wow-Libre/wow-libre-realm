@@ -43,11 +43,11 @@ class ServerPublicationsServiceTest {
         List<Card> result = serverPublicationsService.publications();
 
         assertEquals(2, result.size());
-        assertEquals("img1.jpg", result.get(0).getImg());
+        assertEquals("img1.jpg", result.get(0).getIcon());
         assertEquals("Title 1", result.get(0).getTitle());
         assertEquals("Description 1", result.get(0).getDescription());
 
-        assertEquals("img2.jpg", result.get(1).getImg());
+        assertEquals("img2.jpg", result.get(1).getIcon());
         assertEquals("Title 2", result.get(1).getTitle());
         assertEquals("Description 2", result.get(1).getDescription());
 

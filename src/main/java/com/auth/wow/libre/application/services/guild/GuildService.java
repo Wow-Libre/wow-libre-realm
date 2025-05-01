@@ -98,13 +98,13 @@ public class GuildService implements GuildPort {
             executeCommandsPort.execute(CommandsCore.invite(character.getName(), getGuild.get().name), transactionId);
             executeCommandsPort.execute(CommandsCore.sendMail(character.getName(), message, body), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
-            LOGGER.error("It was not possible to link the client to the brotherhood. TransactionId [{}] - " +
+            LOGGER.error("[GuildService] [attach] It was not possible to link the client to the brotherhood. TransactionId [{}] - " +
                             "LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("The request to join the brotherhood could not be made, please check if " +
                     "you  already belong to it", transactionId);
         } catch (WebServiceIOException e) {
-            LOGGER.error("Could not communicate with the emulator. TransactionId [{}] - " +
+            LOGGER.error("[GuildService] [attach] Could not communicate with the emulator. TransactionId [{}] - " +
                             "LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("Could not communicate with the emulator", transactionId);

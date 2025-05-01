@@ -1,6 +1,7 @@
 package com.auth.wow.libre.infrastructure.controller;
 
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.dto.view.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.dashboard.*;
 import jakarta.validation.*;
@@ -112,5 +113,17 @@ public class DashboardController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
+
+
+    @GetMapping(path = "/announcements")
+    public ResponseEntity<GenericResponse<List<Card>>> announcements(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
+
+        List<Card> serverCards = dashboardPort.findByPublications(transactionId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<List<Card>>(transactionId).ok(serverCards).build());
     }
 }

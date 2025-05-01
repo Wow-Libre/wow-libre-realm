@@ -5,7 +5,8 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 public class Card {
-    private String img;
+    private Long id;
+    private String icon;
     private String title;
     private String description;
 }

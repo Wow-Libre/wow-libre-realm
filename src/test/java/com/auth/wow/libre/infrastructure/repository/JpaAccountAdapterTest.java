@@ -102,4 +102,11 @@ class JpaAccountAdapterTest {
         assertEquals(mockMetrics, result);
         verify(accountRepository, times(1)).fetchMetrics();
     }
+
+    @Test
+    void findByEmail_ShouldReturnAccount() {
+        when(accountRepository.findByEmail("wowlibre@gmail.com")).thenReturn(Optional.of(account));
+        Optional<AccountEntity> count = jpaAccountAdapter.findByEmail("wowlibre@gmail.com");
+        assertNotNull(count);
+    }
 }

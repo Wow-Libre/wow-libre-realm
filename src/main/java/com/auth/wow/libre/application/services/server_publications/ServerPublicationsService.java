@@ -23,6 +23,7 @@ public class ServerPublicationsService implements ServerPublicationsPort {
 
 
     private Card buildCard(ServerPublicationsEntity publication) {
-        return new Card(publication.getImg(), publication.getTitle(), publication.getDescription());
+        return new Card(publication.getId(), publication.getImg(), publication.getTitle(),
+                publication.getDescription());
     }
 }

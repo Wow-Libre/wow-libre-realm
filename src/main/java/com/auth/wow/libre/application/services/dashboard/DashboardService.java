@@ -2,12 +2,15 @@ package com.auth.wow.libre.application.services.dashboard;
 
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.dto.view.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.dashboard.*;
 import com.auth.wow.libre.domain.ports.in.guild.*;
+import com.auth.wow.libre.domain.ports.in.server_publications.*;
 import com.auth.wow.libre.domain.ports.out.file.*;
+import com.auth.wow.libre.domain.ports.out.server_publications.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
@@ -23,14 +26,18 @@ public class DashboardService implements DashboardPort {
     private final GuildPort guildPort;
     private final ObtainConfigsServer obtainConfigsServer;
     private final SaveConfigsServer saveConfigsServer;
+    private final ServerPublicationsPort serverPublications;
+
 
     public DashboardService(AccountPort accountPort, CharactersPort charactersPort, GuildPort guildPort,
-                            ObtainConfigsServer obtainConfigsServer, SaveConfigsServer saveConfigsServer) {
+                            ObtainConfigsServer obtainConfigsServer, SaveConfigsServer saveConfigsServer,
+                            ServerPublicationsPort serverPublications) {
         this.accountPort = accountPort;
         this.charactersPort = charactersPort;
         this.guildPort = guildPort;
         this.obtainConfigsServer = obtainConfigsServer;
         this.saveConfigsServer = saveConfigsServer;
+        this.serverPublications = serverPublications;
     }
 
 
@@ -83,6 +90,11 @@ public class DashboardService implements DashboardPort {
     @Override
     public void updateFileConfig(String originalFilePath, Map<String, String> replacements, String transactionId) {
         saveConfigsServer.updateConfigFile(originalFilePath, replacements);
+    }
+
+    @Override
+    public List<Card> findByPublications(String transactionId) {
+        return serverPublications.publications();
     }
 
 

@@ -60,8 +60,5 @@ public class CommandsService implements ExecuteCommandsPort {
             case AZEROTH_CORE -> azerothClient.executeCommand(command);
             default -> throw new UnsupportedOperationException("No client defined for core: " + core.getName());
         }
-
     }
-
-
 }

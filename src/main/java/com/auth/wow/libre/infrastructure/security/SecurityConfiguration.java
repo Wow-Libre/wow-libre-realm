@@ -81,18 +81,13 @@ public class SecurityConfiguration {
                                 "/api/account/create",
                                 "/api/account/create/user",
                                 "/api/dashboard/stats",
+                                "/api/dashboard/announcements",
 
                                 // SWAGGER (siguen sin autenticación)
                                 "/v2/api-docs", "/swagger-resources",
                                 "/swagger-resources/**", "/configuration/ui",
                                 "/configuration/security", "/swagger-ui.html", "/webjars/**",
-                                "/v3/api-docs/**", "/swagger-ui/**",
-
-                                // PERMITIR THYMELEAF (agregado)
-                                "/", "/home", "/error", "/register", "/congrats", "login", "/dashboard", "/logout",
-
-                                // PERMITIR ARCHIVOS ESTÁTICOS (CSS, JS, IMAGES)
-                                "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico"
+                                "/v3/api-docs/**", "/swagger-ui/**"
                         ).permitAll()
                         .requestMatchers("/api/account/**", "/api/bank/**", "/api/characters/**",
                                 "/api/professions/**", "/api/social", "/commands/**", "/api/dashboard/**",
