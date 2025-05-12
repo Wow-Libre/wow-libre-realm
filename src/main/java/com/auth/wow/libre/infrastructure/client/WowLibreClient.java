@@ -39,7 +39,7 @@ public class WowLibreClient {
 
         try {
             ResponseEntity<GenericResponse<LoginResponseDto>> response = restTemplate.exchange(String.format("%s",
-                            configurations.getPathLoginWowLibre()),
+                            configurations.getHostLoginCore()),
                     HttpMethod.POST, entity,
                     new ParameterizedTypeReference<>() {
                     });
@@ -72,7 +72,7 @@ public class WowLibreClient {
 
         try {
             ResponseEntity<GenericResponse<ServerDto>> response = restTemplate.exchange(String.format("%s?api_key=%s",
-                            configurations.getPathServerWowLibre(), configurations.getServerApiKey()),
+                            configurations.getHostGetKeyCore(), configurations.getRealmApiKey()),
                     HttpMethod.GET, entity,
                     new ParameterizedTypeReference<>() {
                     });

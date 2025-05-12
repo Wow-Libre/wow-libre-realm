@@ -24,20 +24,8 @@ public class CharactersEntity implements Serializable {
     private Integer level;
     private Integer xp;
     private Double money;
-    private Integer skin;
-    private Integer face;
-    @Column(name = "hairstyle")
-    private Integer hairStyle;
-    @Column(name = "haircolor")
-    private Integer hairColor;
-    @Column(name = "facialstyle")
-    private Integer facialStyle;
     @Column(name = "bankslots")
     private Integer bankSlots;
-    @Column(name = "reststate")
-    private Integer restState;
-    @Column(name = "playerflags")
-    private Integer playerFlags;
     @Column(name = "position_x")
     private Double positionX;
     @Column(name = "position_y")
@@ -47,8 +35,6 @@ public class CharactersEntity implements Serializable {
     private Integer map;
     @Column(name = "instance_id")
     private Integer instanceId;
-    @Column(name = "instance_mode_mask")
-    private Integer instanceModeMask;
     private Integer orientation;
     private String taximask;
     private Integer online;
@@ -77,23 +63,10 @@ public class CharactersEntity implements Serializable {
     private Integer transO;
     @Column(name = "transguid")
     private Integer transGuid;
-    @Column(name = "extra_flags")
-    private Integer extraFlags;
-    @Column(name = "stable_slots")
-    private Integer stableSlots;
     @Column(name = "at_login")
     private Integer atLogin;
-    private Integer zone;
     @Column(name = "death_expire_time")
     private Integer deathExpireTime;
-    @Column(name = "arenapoints")
-    private Integer arenaPoints;
-    @Column(name = "totalhonorpoints")
-    private Integer totalHonorPoints;
-    @Column(name = "todayhonorpoints")
-    private Integer todayHonorPoints;
-    @Column(name = "yesterdayhonorpoints")
-    private Integer yesterdayHonorPoints;
     @Column(name = "totalkills")
     private Integer totalKills;
     @Column(name = "todaykills")

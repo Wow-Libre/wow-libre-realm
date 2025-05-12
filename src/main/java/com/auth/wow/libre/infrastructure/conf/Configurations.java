@@ -9,19 +9,19 @@ import org.springframework.context.annotation.Configuration;
 public class Configurations {
 
     @Value("${application.urls.wow-libre-login}")
-    private String pathLoginWowLibre;
+    private String hostLoginCore;
     @Value("${application.urls.wow-libre-server}")
-    private String pathServerWowLibre;
+    private String hostGetKeyCore;
 
     @Value("${application.account.username}")
     private String loginUsername;
     @Value("${application.account.password}")
     private String loginPassword;
-    @Value("${application.account.api-key}")
-    private String serverApiKey;
 
-    @Value("${google.api-secret}")
-    private String googleApiSecret;
+    @Value("${application.account.api-key}")
+    private String realmApiKey;
     @Value("${server-web.emulator-type}")
     private String emulatorType;
+    @Value("${server-web.domain}")
+    private String domain;
 }

@@ -35,8 +35,10 @@ public enum WowRace {
             ".com/images/wow/icons/large/achievement_character_draenei_male.jpg"),
     WORGEN(22, "Worgen", "Alliance", "https://wow.zamimg.com/images/wow/icons/large/race_worgen_female.jpg", "https" +
             "://wow.zamimg.com/images/wow/icons/large/race_worgen_male.jpg"),
-    PANDAREN_ALLIANCE(24, "Pandaren", "Alliance", "", ""),
-    PANDAREN_HORDE(25, "Pandaren", "Horde", "", ""),
+    PANDAREN_ALLIANCE(24, "Pandaren", "Alliance", "https://wow.zamimg.com/images/wow/icons/large/race_pandaren_female" +
+            ".jpg", "https://wow.zamimg.com/images/wow/icons/large/race_pandaren_male.jpg"),
+    PANDAREN_HORDE(25, "Pandaren", "Horde", "https://wow.zamimg.com/images/wow/icons/large/race_pandaren_female.jpg",
+            "https://wow.zamimg.com/images/wow/icons/large/race_pandaren_male.jpg"),
     NIGHTBORNE(27, "Nightborne", "Horde", "https://wow.zamimg.com/images/wow/icons/large/inv_nightbornefemale.jpg",
             "https://wow.zamimg.com/images/wow/icons/large/inv_nightbornemale.jpg"),
     HIGHMOUNTAIN_TAUREN(28, "Highmountain Tauren", "Horde", "https://wow.zamimg" +
@@ -44,11 +46,18 @@ public enum WowRace {
             ".com/images/wow/icons/large/race_highmountaintauren_male.jpg"),
     VOID_ELF(29, "Void Elf", "Alliance", "https://wow.zamimg.com/images/wow/icons/large/race_voidelf_female.jpg",
             "https://wow.zamimg.com/images/wow/icons/large/race_voidelf_male.jpg"),
-    LIGHTFORGED_DRAENEI(30, "Lightforged Draenei", "Alliance", "", ""),
-    DARK_IRON_DWARF(34, "Dark Iron Dwarf", "Alliance", "", ""),
-    VULPERA(35, "Vulpera", "Horde", "", ""),
-    MAGHAR_ORC(36, "Mag'har Orc", "Horde", "", ""),
-    MECHAGNOME(37, "Mechagnome", "Alliance", "", "");
+    LIGHTFORGED_DRAENEI(30, "Lightforged Draenei", "Alliance", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/race_lightforgeddraenei_female.jpg", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/race_lightforgeddraenei_male.jpg"),
+    DARK_IRON_DWARF(34, "Dark Iron Dwarf", "Alliance", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/race_darkirondwarf_female.jpg", "https://wow.zamimg" +
+            ".com/images/wow/icons/large/race_darkirondwarf_male.jpg"),
+    VULPERA(35, "Vulpera", "Horde", "https://wow.zamimg.com/images/wow/icons/large/race_vulpera_female.jpg",
+            "https://wow.zamimg.com/images/wow/icons/large/race_vulpera_male.jpg"),
+    MAGHAR_ORC(36, "Mag'har Orc", "Horde", "https://wow.zamimg.com/images/wow/icons/large/race_magharorc_female.jpg",
+            "https://wow.zamimg.com/images/wow/icons/large/race_magharorc_male.jpg"),
+    MECHAGNOME(37, "Mechagnome", "Alliance", "https://wow.zamimg.com/images/wow/icons/large/race_mechagnome_female" +
+            ".jpg", "https://wow.zamimg.com/images/wow/icons/large/race_mechagnome_male.jpg");
 
     private final int id;
     private final String raceName;

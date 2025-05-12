@@ -33,8 +33,8 @@ public class AccountWarWithin extends Account {
 
     @Override
     public void create(String username, String password, String email, Long userId, String transactionId) {
-
-        final boolean emailExist = obtainAccountPort.findByEmail(email).isPresent();
+        final String usernameDomain = String.format("%s@%s", username, configurations.getDomain());
+        final boolean emailExist = obtainAccountPort.findByEmail(usernameDomain).isPresent();
 
         if (emailExist) {
             LOGGER.error("The requested email is already registered in the system transactionId {}", transactionId);
@@ -44,14 +44,14 @@ public class AccountWarWithin extends Account {
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WAR_WITHIN,
                     configurations.getEmulatorType());
-            executeCommandsPort.execute(commandStrategy.getCreateCommand(email, password), transactionId);
+            executeCommandsPort.execute(commandStrategy.getCreateCommand(usernameDomain, password), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountWarWithin] [create] The client could not be registered because SOAP communication " +
                     "is  unavailable or because SOAP access is invalid. transactionId {}", transactionId);
             throw new InternalException("It was not possible to register the client to the system", transactionId);
         }
 
-        Optional<AccountEntity> accountLk = obtainAccountPort.findByEmail(email);
+        Optional<AccountEntity> accountLk = obtainAccountPort.findByEmail(usernameDomain);
 
         if (accountLk.isEmpty()) {
             LOGGER.error("[AccountWarWithin] [create] An error occurred while retrieving the registered account after" +

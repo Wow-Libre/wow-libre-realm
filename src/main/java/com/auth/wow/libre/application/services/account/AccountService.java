@@ -1,13 +1,11 @@
 package com.auth.wow.libre.application.services.account;
 
-import com.auth.wow.libre.application.services.encryption.*;
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
-import com.auth.wow.libre.domain.ports.in.google.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.domain.strategy.accounts.*;
@@ -17,10 +15,8 @@ import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
 
 import javax.crypto.*;
-import java.security.*;
 import java.time.*;
 import java.util.*;
 
@@ -32,7 +28,6 @@ public class AccountService implements AccountPort {
     private final SaveAccountPort saveAccountPort;
     private final AccountBannedPort accountBannedPort;
     private final WowLibrePort wowLibrePort;
-    private final GooglePort googlePort;
     private final SaveBannedPort saveBannedPort;
     private final ExecuteCommandsPort executeCommandsPort;
     private final Configurations configurations;
@@ -40,13 +35,12 @@ public class AccountService implements AccountPort {
     public AccountService(ObtainAccountPort obtainAccountPort,
                           SaveAccountPort saveAccountPort,
                           AccountBannedPort accountBannedPort,
-                          WowLibrePort wowLibrePort, GooglePort googlePort, SaveBannedPort saveBannedPort,
+                          WowLibrePort wowLibrePort, SaveBannedPort saveBannedPort,
                           ExecuteCommandsPort executeCommandsPort, Configurations configurations) {
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
         this.accountBannedPort = accountBannedPort;
         this.wowLibrePort = wowLibrePort;
-        this.googlePort = googlePort;
         this.saveBannedPort = saveBannedPort;
         this.executeCommandsPort = executeCommandsPort;
         this.configurations = configurations;
@@ -67,7 +61,6 @@ public class AccountService implements AccountPort {
             Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
                     obtainAccountPort, saveAccountPort, configurations);
             account.create(username, decryptedPassword, email, userId, transactionId);
-
             return account.getId();
         } catch (InternalException e) {
             throw new InternalException(e.getMessage(), transactionId);
@@ -78,23 +71,6 @@ public class AccountService implements AccountPort {
             throw new InternalException(
                     "It was not possible to create the client, please try later and contact support", transactionId);
         }
-    }
-
-
-    @Override
-    public void createUser(String username, String password, String email, String recaptchaToken,
-                           Integer expansionId, String transactionId) {
-
-        if (!googlePort.verifyRecaptcha(recaptchaToken, "").getSuccess()) {
-            LOGGER.error("The captcha is invalid. transactionId - {}", transactionId);
-            throw new InternalException("The captcha is invalid", transactionId);
-        }
-
-
-        Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
-                obtainAccountPort, saveAccountPort, configurations);
-        account.create(username, password, email, null, transactionId);
-
     }
 
     @Override

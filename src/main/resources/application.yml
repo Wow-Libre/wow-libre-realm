@@ -30,30 +30,28 @@ spring:
       password: Wowlibre96@@
       driver-class-name: com.mysql.cj.jdbc.Driver
 server:
-  address: 0.0.0.0
   port: 8090
 application:
   credentials:
     command:
-      username: 'admin'
-      password: 'admin'
+      username: 'admin' # Username emulator for the command
+      password: 'admin' # Password emulator for the command
   account:
-    api-key: rub25t7bsacom9r
-    username: wowlibre2025@gmail.com
+    api-key: s2sftjgo750sulq
+    username: mschitiva70@gmail.com
     password: 'sebas'
   urls:
     wow-libre-login: http://localhost:8091/core/api/auth/login
-    wow-libre-server: http://localhost:8091/core/api/server/key
+    wow-libre-server: http://localhost:8091/core/api/realm/key
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
-google:
-  api-secret: "6Ld2INkqAAAAAByGt40YkWgDIpkJQ1NE2oDVyyqb"
 server-web:
-  emulator-type: AzerothCore
+  emulator-type: "AzerothCore"
+  domain: "wowlibre.com"
 ---
 spring:
   config:
@@ -61,22 +59,21 @@ spring:
       on-profile: prod
   datasource:
     primary:
-      url: ${DB_WOW_LIBRE_HOST_AUTH}
-      username: ${DB_WOW_LIBRE_USERNAME}
-      password: ${DB_WOW_LIBRE_PASSWORD}
+      url: ${DB_WOW_CLIENT_HOST_AUTH}
+      username: ${DB_WOW_CLIENT_USERNAME}
+      password: ${DB_WOW_CLIENT_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
     secondary:
-      url: ${DB_WOW_LIBRE_HOST_CHARACTERS}
-      username: ${DB_WOW_LIBRE_USERNAME}
-      password: ${DB_WOW_LIBRE_PASSWORD}
+      url: ${DB_WOW_CLIENT_HOST_CHARACTERS}
+      username: ${DB_WOW_CLIENT_USERNAME}
+      password: ${DB_WOW_CLIENT_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
     three:
-      url:  ${DB_WOW_LIBRE_HOST_WORLD}
-      username: ${DB_WOW_LIBRE_USERNAME}
-      password: ${DB_WOW_LIBRE_PASSWORD}
+      url: ${DB_WOW_CLIENT_HOST_WORLD}
+      username: ${DB_WOW_CLIENT_USERNAME}
+      password: ${DB_WOW_CLIENT_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
 server:
-  address: 0.0.0.0
   port: ${SERVER_PORT}
 application:
   credentials:
@@ -84,19 +81,18 @@ application:
       username: ${GM_USERNAME}
       password: ${GM_PASSWORD}
   account:
-    api-key: ${API_KEY_WOW_LIBRE}
-    username: ${USERNAME_WOW_LIBRE}
-    password: ${PASSWORD_WOW_LIBRE}
+    api-key: ${API_KEY_CORE}
+    username: ${USERNAME_CORE}
+    password: ${PASSWORD_CORE}
   urls:
-    wow-libre-login: https://api.wowlibre.com/core/api/auth/login
-    wow-libre-server: https://api.wowlibre.com/core/api/server/key
+    wow-libre-login: ${HOST_BASE_CORE}/core/api/auth/login
+    wow-libre-server: ${HOST_BASE_CORE}/core/api/realm/key
   security:
     jwt:
       secret-key: ${SECRET_JWT}
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
-google:
-  api-secret:  ${GOOGLE_API_SECRET}
 server-web:
   emulator-type: ${EMULATOR_TYPE}
+  domain: ${DOMAIN}

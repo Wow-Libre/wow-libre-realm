@@ -6,15 +6,12 @@ import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
-import com.auth.wow.libre.domain.ports.in.google.*;
 import com.auth.wow.libre.domain.ports.in.wow_libre.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
-import com.auth.wow.libre.infrastructure.client.dto.*;
 import com.auth.wow.libre.infrastructure.conf.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
-import jakarta.xml.bind.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
@@ -23,7 +20,6 @@ import org.mockito.junit.jupiter.*;
 import javax.crypto.*;
 import java.util.*;
 
-import static com.auth.wow.libre.domain.model.enums.EmulatorCore.AZEROTH_CORE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -50,8 +46,7 @@ class AccountServiceTest {
     private AccountBannedPort accountBannedPort;
     @Mock
     private SaveBannedPort saveBannedPort;
-    @Mock
-    private GooglePort googlePort;
+
     @Mock
     private ExecuteCommandsPort commandsPort;
 
@@ -63,9 +58,6 @@ class AccountServiceTest {
     private String apiKeySecret;
     private String bannedBy;
     private String banReason;
-    private String password;
-    private String recaptchaToken;
-    private String ipAddress;
 
     @BeforeEach
     void setUp() {
@@ -77,9 +69,6 @@ class AccountServiceTest {
         apiKeySecret = "keyPassword";
         bannedBy = "admin";
         banReason = "Violation of rules";
-        password = "securePassword";
-        recaptchaToken = "validCaptchaToken";
-        ipAddress = "";
     }
 
     @Test
@@ -123,7 +112,6 @@ class AccountServiceTest {
 
         assertEquals("The client already submits a ban", thrown.getMessage());
     }
-
 
 
     @Test
@@ -332,7 +320,7 @@ class AccountServiceTest {
 
         accountService.changePassword(accountId, userId, encryptedPassword, saltPassword, expansionId, transactionId);
 
-        verify(commandsPort, times(1)).execute(any(),any());
+        verify(commandsPort, times(1)).execute(any(), any());
     }
 
     @Test
@@ -374,58 +362,6 @@ class AccountServiceTest {
                         transactionId));
 
         assertEquals("Could not update password", exception.getMessage());
-    }
-
-    @Test
-    void testCreateUser_Success() throws JAXBException {
-        Integer expansionId = 2;
-
-        when(googlePort.verifyRecaptcha(recaptchaToken, ipAddress))
-                .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
-        when(obtainAccountPort.findByUsername(username))
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(new AccountEntity()));
-        when(saveAccountPort.save(any(AccountEntity.class))).thenAnswer(invocation -> {
-            AccountEntity account = invocation.getArgument(0);
-            account.setId(1L);
-            return account;
-        });
-        when(configurations.getEmulatorType()).thenReturn(AZEROTH_CORE.getName());
-        assertDoesNotThrow(() -> accountService.createUser(username, password, email, recaptchaToken, expansionId,
-                transactionId));
-        verify(saveAccountPort, times(1)).save(any(AccountEntity.class));
-        verify(commandsPort, times(1)).execute(any(), any());
-
-    }
-
-    @Test
-    void testCreateUser_InvalidCaptcha() {
-        Integer expansionId = 2;
-        when(googlePort.verifyRecaptcha(eq(recaptchaToken), anyString()))
-                .thenReturn(new VerifyCaptchaResponse(false, "www.google.com"));
-
-
-        InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createUser(username, password, email, recaptchaToken, expansionId,
-                        transactionId)
-        );
-
-        assertEquals("The captcha is invalid", thrown.getMessage());
-    }
-
-    @Test
-    void testCreateUser_UsernameAlreadyExists() {
-        Integer expansionId = 2;
-
-        when(googlePort.verifyRecaptcha(anyString(), anyString()))
-                .thenReturn(new VerifyCaptchaResponse(true, "www.google.com"));
-        when(obtainAccountPort.findByUsername(username)).thenReturn(Optional.of(new AccountEntity()));
-
-        InternalException thrown = assertThrows(InternalException.class, () ->
-                accountService.createUser(username, password, email, recaptchaToken, expansionId, transactionId)
-        );
-
-        assertEquals("The username is not available", thrown.getMessage());
     }
 
 

@@ -33,18 +33,6 @@ public class AccountController {
     }
 
 
-    @PostMapping(path = "/create/user")
-    public ResponseEntity<GenericResponse<Void>> createUser(
-            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestBody @Valid AccountCreateUserDto createDto) {
-
-        accountPort.createUser(createDto.getUsername(), createDto.getPassword(), createDto.getEmail(),
-                createDto.getRecaptchaResponse(), createDto.getExpansionId(), transactionId);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new GenericResponseBuilder<Void>(transactionId).created().build());
-    }
-
     @GetMapping(path = "/{account_id}")
     public ResponseEntity<GenericResponse<AccountDetailDto>> account(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,

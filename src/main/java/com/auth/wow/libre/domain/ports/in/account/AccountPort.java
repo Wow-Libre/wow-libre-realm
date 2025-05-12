@@ -7,9 +7,6 @@ public interface AccountPort {
     Long create(String username, String password, String email, Long userId,
                 Integer expansion, byte[] salt, String transactionId);
 
-    void createUser(String username, String password, String email, String recaptchaResponse,
-                    Integer expansionId, String transactionId);
-
     Long countOnline(String transactionId);
 
     Boolean isOnline(Long accountId, String transactionId);
