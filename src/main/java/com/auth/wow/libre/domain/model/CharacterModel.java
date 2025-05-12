@@ -49,7 +49,6 @@ public class CharacterModel {
     public final Integer todayKills;
     public final Integer yesterdayKills;
     public final Integer chosenTitle;
-    public final Integer knownCurrencies;
     public final Long watchedFaction;
     public final Integer drunk;
     public final Integer health;
@@ -61,14 +60,11 @@ public class CharacterModel {
     public final Integer power6;
     public final Integer power7;
     public final Integer latency;
-    public final Integer talentGroupsCount;
     public final Integer activeTalentGroup;
     public final String exploredZones;
     public final String equipmentCache;
-    public final Integer ammold;
     public final String knownTitles;
     public final Integer actionsBars;
-    public final Integer grantableLevels;
     public final Long gold;
     public final Long silver;
     public final Long copper;

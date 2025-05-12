@@ -75,8 +75,6 @@ public class CharactersEntity implements Serializable {
     private Integer yesterdayKills;
     @Column(name = "chosentitle")
     private Integer chosenTitle;
-    @Column(name = "knowncurrencies")
-    private Integer knownCurrencies;
     @Column(name = "watchedfaction")
     private Long watchedFaction;
     private Integer drunk;
@@ -89,22 +87,16 @@ public class CharactersEntity implements Serializable {
     private Integer power6;
     private Integer power7;
     private Integer latency;
-    @Column(name = "talentgroupscount")
-    private Integer talentGroupsCount;
     @Column(name = "activetalentgroup")
     private Integer activeTalentGroup;
     @Column(name = "exploredzones")
     private String exploredZones;
     @Column(name = "equipmentcache")
     private String equipmentCache;
-    @Column(name = "ammoid")
-    private Integer ammoId;
     @Column(name = "knowntitles")
     private String knownTitles;
     @Column(name = "actionbars")
     private Integer actionBars;
-    @Column(name = "grantablelevels")
-    private Integer grantableLevels;
     @Column(name = "deleteinfos_account")
     private Integer deleteInfosAccount;
     @Column(name = "deleteinfos_name")
