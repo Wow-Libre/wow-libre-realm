@@ -51,7 +51,6 @@ application:
         expiration: 1209600000 # 14 días
 server-web:
   emulator-type: "AzerothCore"
-  domain: "wowlibre.com"
 ---
 spring:
   config:
@@ -95,4 +94,3 @@ application:
         expiration: 1209600000 # 14 días
 server-web:
   emulator-type: ${EMULATOR_TYPE}
-  domain: ${DOMAIN}

@@ -22,6 +22,4 @@ public class Configurations {
     private String realmApiKey;
     @Value("${server-web.emulator-type}")
     private String emulatorType;
-    @Value("${server-web.domain}")
-    private String domain;
 }
