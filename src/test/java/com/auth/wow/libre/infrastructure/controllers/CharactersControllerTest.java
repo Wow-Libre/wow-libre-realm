@@ -134,4 +134,30 @@ class CharactersControllerTest {
                 TRANSACTION_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
+    @Test
+    void testTeleport_Success() {
+        // Arrange
+        String transactionId = "tx123";
+        TeleportDto request = new TeleportDto();
+        request.setPositionX(1.0);
+        request.setPositionY(2.0);
+        request.setPositionZ(3.0);
+        request.setMap(530);
+        request.setOrientation(0);
+        request.setZone(12.0);
+        request.setCharacterId(100L);
+        request.setAccountId(200L);
+
+        // Act
+        ResponseEntity<GenericResponse<Void>> response = charactersController.teleport(transactionId, request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(transactionId, response.getBody().getTransactionId());
+
+        // Verify that the service method was called with correct params
+        verify(charactersPort, times(1)).teleport(request, transactionId);
+    }
 }

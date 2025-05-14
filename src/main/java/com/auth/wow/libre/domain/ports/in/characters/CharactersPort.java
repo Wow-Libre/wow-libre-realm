@@ -33,4 +33,6 @@ public interface CharactersPort {
 
     void transferInventoryItem(Long characterId, Long accountId, Long friendId, Long itemId, Integer count,
                                String transactionId);
+
+    void teleport(TeleportDto teleportDto, String transactionId);
 }

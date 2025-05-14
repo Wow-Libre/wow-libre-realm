@@ -196,6 +196,35 @@ public class CharactersService implements CharactersPort {
         characterInventoryPort.delete(characterId, itemId, transactionId);
     }
 
+    @Override
+    public void teleport(TeleportDto teleportDto, String transactionId) {
+        final Long accountId = teleportDto.getAccountId();
+        final Long characterId = teleportDto.getCharacterId();
+
+        Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
+
+        if (account.isEmpty() || account.get().isOnline()) {
+            throw new InternalException("Please log out of your game account", transactionId);
+        }
+
+        Optional<CharactersEntity> characterModel = obtainCharacters.getCharacter(characterId, account.get().getId(),
+                transactionId);
+
+        if (characterModel.isEmpty()) {
+            throw new InternalException("Character Not Found", transactionId);
+        }
+
+        CharactersEntity character = characterModel.get();
+        character.setPositionX(teleportDto.getPositionX());
+        character.setPositionY(teleportDto.getPositionY());
+        character.setPositionZ(teleportDto.getPositionZ());
+        character.setMap(teleportDto.getMap());
+        character.setOrientation(teleportDto.getOrientation());
+        character.setMap(teleportDto.getMap());
+        character.setZone(teleportDto.getZone());
+        saveCharacters.save(character, transactionId);
+    }
+
 
     private CharacterModel mapToModel(CharactersEntity characters) {
         long gold = characters.getMoney().longValue() / 10000;

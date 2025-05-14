@@ -96,4 +96,17 @@ public class CharactersController {
                 .body(new GenericResponseBuilder<Void>(transactionId)
                         .ok().build());
     }
+
+
+    @PostMapping("/teleport")
+    public ResponseEntity<GenericResponse<Void>> teleport(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid TeleportDto request) {
+
+        charactersPort.teleport(request, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId)
+                        .ok().build());
+    }
 }

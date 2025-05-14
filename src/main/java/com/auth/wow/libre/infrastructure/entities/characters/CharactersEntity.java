@@ -103,4 +103,5 @@ public class CharactersEntity implements Serializable {
     private String deleteInfosName;
     @Column(name = "deletedate")
     private Integer deleteDate;
+    private Double zone;
 }
