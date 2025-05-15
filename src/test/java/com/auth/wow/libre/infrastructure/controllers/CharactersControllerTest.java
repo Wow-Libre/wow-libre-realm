@@ -144,8 +144,8 @@ class CharactersControllerTest {
         request.setPositionY(2.0);
         request.setPositionZ(3.0);
         request.setMap(530);
-        request.setOrientation(0);
-        request.setZone(12.0);
+        request.setOrientation(0.0);
+        request.setZone(12);
         request.setCharacterId(100L);
         request.setAccountId(200L);
 

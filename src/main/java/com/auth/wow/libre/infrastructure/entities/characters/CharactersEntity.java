@@ -35,7 +35,7 @@ public class CharactersEntity implements Serializable {
     private Integer map;
     @Column(name = "instance_id")
     private Integer instanceId;
-    private Integer orientation;
+    private Double orientation;
     private String taximask;
     private Integer online;
     private Integer cinematic;
@@ -103,5 +103,5 @@ public class CharactersEntity implements Serializable {
     private String deleteInfosName;
     @Column(name = "deletedate")
     private Integer deleteDate;
-    private Double zone;
+    private Integer zone;
 }

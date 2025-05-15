@@ -61,6 +61,8 @@ public class JpaCharactersAdapter implements ObtainCharacters, SaveCharacters {
         return charactersRepository.findByCharacterOnlineByLevel(level);
     }
 
+
+
     @Override
     public void save(CharactersEntity characters, String transactionId) {
         charactersRepository.save(characters);

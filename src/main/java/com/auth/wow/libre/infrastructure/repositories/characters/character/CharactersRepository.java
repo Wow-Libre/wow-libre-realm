@@ -22,7 +22,8 @@ public interface CharactersRepository extends CrudRepository<CharactersEntity, L
     List<CharactersEntity> findCharactersAndOnline();
 
     @Query("SELECT c FROM CharactersEntity c WHERE c.money >= :money AND c.account = :accountId AND c.online=0")
-    List<CharactersEntity> findByCharacterAvailableMoney(@Param("money") Double money, @Param("accountId") Long accountId);
+    List<CharactersEntity> findByCharacterAvailableMoney(@Param("money") Double money,
+                                                         @Param("accountId") Long accountId);
 
 
     @Query("SELECT new com.auth.wow.libre.domain.model.FactionsDto(" +

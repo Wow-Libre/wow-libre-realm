@@ -14,11 +14,12 @@ public class TeleportDto {
     @NotNull
     private Integer map;
     @NotNull
-    private Integer orientation;
+    private Double orientation;
     @NotNull
-    private Double zone;
+    private Integer zone;
     @NotNull
     private Long characterId;
     @NotNull
     private Long accountId;
+    private Long userId;
 }

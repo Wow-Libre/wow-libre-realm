@@ -25,4 +25,5 @@ public interface ObtainCharacters {
 
     List<CharactersEntity> findByCharactersByLevel(int level, String transactionId);
 
+
 }

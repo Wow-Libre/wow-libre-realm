@@ -200,10 +200,16 @@ public class CharactersService implements CharactersPort {
     public void teleport(TeleportDto teleportDto, String transactionId) {
         final Long accountId = teleportDto.getAccountId();
         final Long characterId = teleportDto.getCharacterId();
+        final Long userId = teleportDto.getUserId();
 
-        Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
+        Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
 
-        if (account.isEmpty() || account.get().isOnline()) {
+        if (account.isEmpty()) {
+            throw new InternalException("Account Invalid Or Not Found", transactionId);
+
+        }
+
+        if (account.get().isOnline()) {
             throw new InternalException("Please log out of your game account", transactionId);
         }
 

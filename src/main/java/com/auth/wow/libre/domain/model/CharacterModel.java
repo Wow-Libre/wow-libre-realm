@@ -24,7 +24,7 @@ public class CharacterModel {
     public final Double positionZ;
     public final Integer map;
     public final Integer instanceId;
-    public final Integer orientation;
+    public final Double orientation;
     public final String taximask;
     public final Integer online;
     public final Integer cinematic;
