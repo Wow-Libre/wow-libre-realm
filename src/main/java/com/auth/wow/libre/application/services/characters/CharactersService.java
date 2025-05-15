@@ -8,6 +8,7 @@ import com.auth.wow.libre.domain.ports.in.character_inventory.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
+import com.auth.wow.libre.domain.ports.out.character_quest_status.*;
 import com.auth.wow.libre.domain.ports.out.characters.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
@@ -28,15 +29,17 @@ public class CharactersService implements CharactersPort {
     private final CharacterInventoryPort characterInventoryPort;
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainAccountPort obtainAccountPort;
+    private final DeleteCharacterQuest deleteCharacterQuest;
 
     public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
                              CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
-                             ObtainAccountPort obtainAccountPort) {
+                             ObtainAccountPort obtainAccountPort, DeleteCharacterQuest deleteCharacterQuest) {
         this.obtainCharacters = obtainCharacters;
         this.saveCharacters = saveCharacters;
         this.characterInventoryPort = characterInventoryPort;
         this.executeCommandsPort = executeCommandsPort;
         this.obtainAccountPort = obtainAccountPort;
+        this.deleteCharacterQuest = deleteCharacterQuest;
     }
 
 
@@ -229,6 +232,7 @@ public class CharactersService implements CharactersPort {
         character.setMap(teleportDto.getMap());
         character.setZone(teleportDto.getZone());
         saveCharacters.save(character, transactionId);
+        deleteCharacterQuest.deleteAllById(character.getGuid());
     }
 
 
