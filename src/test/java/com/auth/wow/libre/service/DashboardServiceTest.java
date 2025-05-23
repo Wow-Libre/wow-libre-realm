@@ -3,14 +3,11 @@ package com.auth.wow.libre.service;
 import com.auth.wow.libre.application.services.dashboard.*;
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
-import com.auth.wow.libre.domain.model.dto.view.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.guild.*;
-import com.auth.wow.libre.domain.ports.in.server_publications.*;
 import com.auth.wow.libre.domain.ports.out.file.*;
-import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
@@ -41,15 +38,13 @@ class DashboardServiceTest {
 
     @InjectMocks
     private DashboardService dashboardService;
-    @Mock
-    private ServerPublicationsPort serverPublicationsPort;
 
     private final String transactionId = "tx-123";
 
     @BeforeEach
     void setUp() {
         dashboardService = new DashboardService(accountPort, charactersPort, guildPort, obtainConfigsServer,
-                saveConfigsServer, serverPublicationsPort);
+                saveConfigsServer);
 
     }
 
@@ -134,33 +129,4 @@ class DashboardServiceTest {
         verify(saveConfigsServer, times(1)).updateConfigFile("path/to/config", Map.of("key1", "newValue"));
     }
 
-    @Test
-    void testPublicationsReturnsMappedCards() {
-        // Arrange
-        Card entity1 = new Card(1L,"img1.png", "Título 1", "Descripción 1");
-        Card entity2 = new Card(2L,"img2.png", "Título 2", "Descripción 2");
-
-        when(serverPublicationsPort.publications()).thenReturn(List.of(entity1, entity2));
-
-        // Act
-        List<Card> cards = dashboardService.findByPublications(transactionId);
-
-        // Assert
-        assertNotNull(cards);
-        assertEquals(2, cards.size());
-
-        Card card1 = cards.get(0);
-        assertEquals(1L, card1.getId());
-        assertEquals("img1.png", card1.getIcon());
-        assertEquals("Título 1", card1.getTitle());
-        assertEquals("Descripción 1", card1.getDescription());
-
-        Card card2 = cards.get(1);
-        assertEquals(2L, card2.getId());
-        assertEquals("img2.png", card2.getIcon());
-        assertEquals("Título 2", card2.getTitle());
-        assertEquals("Descripción 2", card2.getDescription());
-
-        verify(serverPublicationsPort, times(1)).publications();
-    }
 }

@@ -1,7 +1,6 @@
 package com.auth.wow.libre.infrastructure.controller;
 
 import com.auth.wow.libre.domain.model.dto.*;
-import com.auth.wow.libre.domain.model.dto.view.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import jakarta.validation.*;
