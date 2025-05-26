@@ -2,14 +2,6 @@ ALTER TABLE acore_auth.account
     ADD COLUMN user_id bigint;
 
 
-CREATE TABLE acore_auth.server_publications
-(
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    img         text NOT NULL,
-    title       VARCHAR(80)  NOT NULL,
-    description TEXT         NOT NULL
-);
-
 CREATE TABLE acore_auth.client
 (
     id              bigint AUTO_INCREMENT NOT NULL,
