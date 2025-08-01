@@ -14,4 +14,6 @@ public interface DashboardPort {
     Map<String, String> getFileConfig(String rute, String transactionId);
 
     void updateFileConfig(String originalFilePath, Map<String, String> replacements, String transactionId);
+
+    EmulatorRoutesDto getEmulatorRoutes(String transactionId);
 }

@@ -113,4 +113,14 @@ public class DashboardController {
                 .status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
+
+
+    @GetMapping("/routes/emulators")
+    public ResponseEntity<GenericResponse<EmulatorRoutesDto>> getEmulatorServerRoutes(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
+        EmulatorRoutesDto emulatorRoutesDto = dashboardPort.getEmulatorRoutes(transactionId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<>(emulatorRoutesDto, transactionId).ok().build());
+    }
 }

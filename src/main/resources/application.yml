@@ -32,25 +32,14 @@ spring:
 server:
   port: 8090
 application:
-  credentials:
-    command:
-      username: 'admin' # Username emulator for the command
-      password: 'admin' # Password emulator for the command
-  account:
-    api-key: s2sftjgo750sulq
-    username: mschitiva70@gmail.com
-    password: 'sebas'
   urls:
-    wow-libre-login: http://localhost:8091/core/api/auth/login
-    wow-libre-server: http://localhost:8091/core/api/realm/key
+    wow-libre-server: http://localhost:8091
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
-server-web:
-  emulator-type: "AzerothCore"
 ---
 spring:
   config:
@@ -73,24 +62,13 @@ spring:
       password: ${DB_WOW_CLIENT_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
 server:
-  port: ${SERVER_PORT}
+  port: ${WOW_CLIENT_SERVER_PORT}
 application:
-  credentials:
-    command:
-      username: ${GM_USERNAME}
-      password: ${GM_PASSWORD}
-  account:
-    api-key: ${API_KEY_CORE}
-    username: ${USERNAME_CORE}
-    password: ${PASSWORD_CORE}
   urls:
-    wow-libre-login: ${HOST_BASE_CORE}/core/api/auth/login
-    wow-libre-server: ${HOST_BASE_CORE}/core/api/realm/key
+    wow-libre-server: ${HOST_BASE_CORE}
   security:
     jwt:
-      secret-key: ${SECRET_JWT}
+      secret-key: ${WOW_CLIENT_SECRET_JWT}
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
-server-web:
-  emulator-type: ${EMULATOR_TYPE}

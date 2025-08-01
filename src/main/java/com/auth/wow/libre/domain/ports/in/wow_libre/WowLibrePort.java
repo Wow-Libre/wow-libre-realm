@@ -4,9 +4,5 @@ import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 
 public interface WowLibrePort {
-    String getJwt(String transactionId);
-
-    LoginResponseDto login(String transactionId);
-
-    ServerKey getApiSecret(String jwt, String transactionId);
+    ServerKey getApiSecret(String apikey, String transactionId);
 }

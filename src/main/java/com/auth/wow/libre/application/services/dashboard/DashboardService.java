@@ -12,6 +12,7 @@ import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
 
+import java.io.*;
 import java.util.*;
 
 @Service
@@ -84,6 +85,66 @@ public class DashboardService implements DashboardPort {
     @Override
     public void updateFileConfig(String originalFilePath, Map<String, String> replacements, String transactionId) {
         saveConfigsServer.updateConfigFile(originalFilePath, replacements);
+    }
+
+    @Override
+    public EmulatorRoutesDto getEmulatorRoutes(String transactionId) {
+
+        EmulatorRoutesDto dto = new EmulatorRoutesDto();
+
+        boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+
+        try {
+            if (isWindows) {
+                dto.setWorldServer(getWindowsProcessPath("worldserver.exe"));
+                dto.setAuthServer(getWindowsProcessPath("authserver.exe"));
+            } else {
+                dto.setWorldServer(getLinuxProcessPath("worldserver"));
+                dto.setAuthServer(getLinuxProcessPath("authserver"));
+            }
+        } catch (IOException | InterruptedException e) {
+            LOGGER.error("Error retrieving process paths [{}] transactionId [{}]", e.getMessage(),
+                    transactionId);
+        }
+
+        return dto;
+
+    }
+
+    private String getWindowsProcessPath(String processName) throws IOException, InterruptedException {
+        Process process = Runtime.getRuntime().exec(
+                new String[]{"cmd.exe", "/c", "wmic process where name=\"" + processName + "\" get ExecutablePath " +
+                        "/value"}
+        );
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        String path = null;
+
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().startsWith("ExecutablePath=")) {
+                path = line.replace("ExecutablePath=", "").trim();
+                break;
+            }
+        }
+
+        process.waitFor();
+        return path;
+    }
+
+    private String getLinuxProcessPath(String processName) throws IOException, InterruptedException {
+        String[] command = {
+                "/bin/sh",
+                "-c",
+                "readlink -f /proc/$(pgrep -n " + processName + ")/exe"
+        };
+
+        Process process = Runtime.getRuntime().exec(command);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String path = reader.readLine();
+        process.waitFor();
+
+        return (path != null) ? path.trim() : null;
     }
 
 }

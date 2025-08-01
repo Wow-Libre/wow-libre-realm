@@ -5,7 +5,6 @@ import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.domain.strategy.commands.*;
-import com.auth.wow.libre.infrastructure.conf.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import jakarta.xml.bind.*;
 import org.slf4j.*;
@@ -20,19 +19,18 @@ public class AccountWarWithin extends Account {
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
-    private final Configurations configurations;
 
 
     public AccountWarWithin(ExecuteCommandsPort executeCommandsPort, ObtainAccountPort obtainAccountPort,
-                            SaveAccountPort saveAccountPort, Configurations configurations) {
+                            SaveAccountPort saveAccountPort) {
         this.executeCommandsPort = executeCommandsPort;
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
-        this.configurations = configurations;
     }
 
     @Override
-    public void create(String username, String password, String email, Long userId, String transactionId) {
+    public void create(String username, String password, String email, Long userId, EmulatorCore emulator,
+                       String transactionId) {
         final boolean emailExist = obtainAccountPort.findByEmail(email).isPresent();
 
         if (emailExist) {
@@ -42,7 +40,7 @@ public class AccountWarWithin extends Account {
 
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WAR_WITHIN,
-                    configurations.getEmulatorType());
+                    emulator.getName());
             executeCommandsPort.execute(commandStrategy.getCreateCommand(email, password), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountWarWithin] [create] The client could not be registered because SOAP communication " +
@@ -65,10 +63,11 @@ public class AccountWarWithin extends Account {
     }
 
     @Override
-    public void changePassword(String username, String password, String email, String transactionId) {
+    public void changePassword(String username, String password, String email, EmulatorCore emulator,
+                               String transactionId) {
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WAR_WITHIN,
-                    configurations.getEmulatorType());
+                    emulator.getName());
             executeCommandsPort.execute(commandStrategy.getChangePasswordCommand(username, password), transactionId);
             executeCommandsPort.execute(commandStrategy.getChangePasswordBattleNetCommand(email, password),
                     transactionId);

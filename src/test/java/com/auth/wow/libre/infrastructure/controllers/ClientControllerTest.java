@@ -2,7 +2,7 @@ package com.auth.wow.libre.infrastructure.controllers;
 
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.shared.*;
-import com.auth.wow.libre.domain.ports.in.client.*;
+import com.auth.wow.libre.domain.ports.in.user.*;
 import com.auth.wow.libre.infrastructure.controller.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ClientControllerTest {
     @Mock
-    private ClientPort clientPort;
+    private UserPort userPort;
 
     @InjectMocks
     private ClientController clientController;
@@ -39,8 +39,9 @@ class ClientControllerTest {
 
         ResponseEntity<GenericResponse<Void>> response = clientController.create(transactionId, request);
 
-        verify(clientPort, times(1)).create(request.getUsername(), request.getPassword(), request.getSalt(),
-                transactionId);
+        verify(userPort, times(1)).create(request.getUsername(), request.getPassword(),
+                request.getSalt(), request.getGameMasterUsername(),
+                request.getGameMasterPassword(), request.getEmulator(), request.getApiKey(), transactionId);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transactionId, Objects.requireNonNull(response.getBody()).getTransactionId());

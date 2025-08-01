@@ -2,7 +2,7 @@ package com.auth.wow.libre.domain.security;
 
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.model.security.*;
-import com.auth.wow.libre.domain.ports.out.client.*;
+import com.auth.wow.libre.domain.ports.out.user.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 class UserDetailsServiceCustomTest {
 
     @Mock
-    private ObtainClient obtainClient;
+    private ObtainUser obtainUser;
 
     @InjectMocks
     private UserDetailsServiceCustom userDetailsServiceCustom;
@@ -28,14 +28,14 @@ class UserDetailsServiceCustomTest {
     @Test
     void testLoadUserByUsername_UserExists() {
         // Arrange
-        ClientEntity mockClient = new ClientEntity();
+        UserEntity mockClient = new UserEntity();
         mockClient.setUsername("testUser");
         mockClient.setPassword("testPass");
         mockClient.setRol("ROLE_USER");
         mockClient.setStatus(true);
         mockClient.setId(1L);
 
-        when(obtainClient.findByUsername("testUser")).thenReturn(Optional.of(mockClient));
+        when(obtainUser.findByUsername("testUser")).thenReturn(Optional.of(mockClient));
 
         // Act
         CustomUserDetails userDetails = userDetailsServiceCustom.loadUserByUsername("testUser");
@@ -50,7 +50,7 @@ class UserDetailsServiceCustomTest {
     @Test
     void testLoadUserByUsername_UserNotFound() {
         // Arrange
-        when(obtainClient.findByUsername("unknownUser")).thenReturn(Optional.empty());
+        when(obtainUser.findByUsername("unknownUser")).thenReturn(Optional.empty());
 
         // Act & Assert
         Exception exception = assertThrows(UnauthorizedException.class, () ->

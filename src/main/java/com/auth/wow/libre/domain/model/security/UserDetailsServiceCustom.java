@@ -1,7 +1,7 @@
 package com.auth.wow.libre.domain.model.security;
 
 import com.auth.wow.libre.domain.model.exception.*;
-import com.auth.wow.libre.domain.ports.out.client.*;
+import com.auth.wow.libre.domain.ports.out.user.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import org.slf4j.*;
 import org.springframework.security.core.*;
@@ -16,23 +16,23 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceCustom.class);
 
 
-    private final ObtainClient obtainClient;
+    private final ObtainUser obtainUser;
 
-    public UserDetailsServiceCustom(ObtainClient obtainClient) {
-        this.obtainClient = obtainClient;
+    public UserDetailsServiceCustom(ObtainUser obtainUser) {
+        this.obtainUser = obtainUser;
     }
 
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<ClientEntity> client = obtainClient.findByUsername(username);
+        Optional<UserEntity> client = obtainUser.findByUsername(username);
 
         if (client.isEmpty()) {
             LOGGER.error("The customer does not exist or their data is invalid.");
             throw new UnauthorizedException("Unauthorized Username", "");
         }
 
-        ClientEntity clientData = client.get();
+        UserEntity clientData = client.get();
 
         return new CustomUserDetails(assignRol(clientData.getRol()), clientData.getPassword(),
                 clientData.getUsername(),

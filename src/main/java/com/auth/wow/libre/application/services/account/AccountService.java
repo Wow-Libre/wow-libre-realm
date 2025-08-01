@@ -2,14 +2,14 @@ package com.auth.wow.libre.application.services.account;
 
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
-import com.auth.wow.libre.domain.ports.in.wow_libre.*;
+import com.auth.wow.libre.domain.ports.in.config.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.domain.strategy.accounts.*;
-import com.auth.wow.libre.infrastructure.conf.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 import com.auth.wow.libre.infrastructure.util.*;
@@ -27,49 +27,44 @@ public class AccountService implements AccountPort {
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
     private final AccountBannedPort accountBannedPort;
-    private final WowLibrePort wowLibrePort;
     private final SaveBannedPort saveBannedPort;
     private final ExecuteCommandsPort executeCommandsPort;
-    private final Configurations configurations;
+    private final ConfigPort configPort;
 
-    public AccountService(ObtainAccountPort obtainAccountPort,
-                          SaveAccountPort saveAccountPort,
-                          AccountBannedPort accountBannedPort,
-                          WowLibrePort wowLibrePort, SaveBannedPort saveBannedPort,
-                          ExecuteCommandsPort executeCommandsPort, Configurations configurations) {
+    public AccountService(ObtainAccountPort obtainAccountPort, SaveAccountPort saveAccountPort,
+                          AccountBannedPort accountBannedPort, SaveBannedPort saveBannedPort,
+                          ExecuteCommandsPort executeCommandsPort,
+                          ConfigPort configPort) {
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
         this.accountBannedPort = accountBannedPort;
-        this.wowLibrePort = wowLibrePort;
         this.saveBannedPort = saveBannedPort;
         this.executeCommandsPort = executeCommandsPort;
-        this.configurations = configurations;
+        this.configPort = configPort;
     }
 
     @Override
-    public Long create(String username, String password, String email,
-                       Long userId, Integer expansionId, byte[] saltPassword,
-                       String transactionId) {
+    public Long create(String username, String password, String email, Long userId, Integer expansionId,
+                       byte[] saltPassword, String transactionId) {
 
-        final String jwt = wowLibrePort.getJwt(transactionId);
-        final ServerKey apiSecret = wowLibrePort.getApiSecret(jwt, transactionId);
+        final String apiKey = configPort.apiKey(transactionId);
+        final String apiSecret = configPort.apiSecret(apiKey, transactionId);
+        final EmulatorCore emulator = configPort.emulator(transactionId);
 
         try {
-            final SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret.keyPassword(), saltPassword);
+            final SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret, saltPassword);
             final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
 
-            Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
-                    obtainAccountPort, saveAccountPort, configurations);
-            account.create(username, decryptedPassword, email, userId, transactionId);
+            Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort, obtainAccountPort,
+                    saveAccountPort);
+            account.create(username, decryptedPassword, email, userId, emulator, transactionId);
             return account.getId();
         } catch (InternalException e) {
             throw new InternalException(e.getMessage(), transactionId);
         } catch (Exception e) {
-            LOGGER.error("[AccountService] [create] It was not possible to create the account on the server, there " +
-                            "was a failure with the encryption. TransactionId{} error: {}",
-                    transactionId, e.getMessage());
-            throw new InternalException(
-                    "It was not possible to create the client, please try later and contact support", transactionId);
+            LOGGER.error("[AccountService] [create] It was not possible to create the account on the server, there " + "was a failure with the encryption. TransactionId{} error: {}", transactionId, e.getMessage());
+            throw new InternalException("It was not possible to create the client, please try later and contact " +
+                    "support", transactionId);
         }
     }
 
@@ -86,16 +81,11 @@ public class AccountService implements AccountPort {
     @Override
     public AccountDetailDto account(Long accountId, String transactionId) {
 
-        return obtainAccountPort.findById(accountId).map(account ->
-                new AccountDetailDto(account.getId(), account.getUsername(), account.getEmail(),
-                        account.getExpansion(), account.isOnline(), account.getFailedLogins(),
-                        account.getJoinDate(),
-                        account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
-                        account.getMuteTime() != null && account.getMuteTime() > 0,
-                        account.getLastLogin(), account.getOs(),
-                        accountBannedPort.getAccountBanned(accountId))
-        ).orElseThrow(() -> new NotFoundException("There is no associated account or it is not available.",
-                transactionId));
+        return obtainAccountPort.findById(accountId).map(account -> new AccountDetailDto(account.getId(),
+                account.getUsername(), account.getEmail(), account.getExpansion(), account.isOnline(),
+                account.getFailedLogins(), account.getJoinDate(), account.getLastIp(), account.getMuteReason(),
+                account.getMuteBy(), account.getMuteTime() != null && account.getMuteTime() > 0,
+                account.getLastLogin(), account.getOs(), accountBannedPort.getAccountBanned(accountId))).orElseThrow(() -> new NotFoundException("There is no associated account or it is not available.", transactionId));
     }
 
     @Override
@@ -105,23 +95,24 @@ public class AccountService implements AccountPort {
         final Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
 
         if (account.isEmpty()) {
-            LOGGER.error("The requested account is not linked to the user {} or the account id {} " +
-                    "- TransactionId {}", accountId, userId, transactionId);
+            LOGGER.error("The requested account is not linked to the user {} or the account id {} " + "- " +
+                    "TransactionId {}", accountId, userId, transactionId);
             throw new InternalException("The requested account is not linked to the user or the account id",
                     transactionId);
         }
+
         final String email = account.get().getEmail();
         final String username = account.get().getUsername();
-
-        final String jwt = wowLibrePort.getJwt(transactionId);
-        final ServerKey apiSecret = wowLibrePort.getApiSecret(jwt, transactionId);
+        final String apiKey = configPort.apiKey(transactionId);
+        final String apiSecret = configPort.apiSecret(apiKey, transactionId);
+        final EmulatorCore emulator = configPort.emulator(transactionId);
 
         try {
-            SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret.keyPassword(), saltPassword);
+            SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret, saltPassword);
             final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
             Account accountChangePassword = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
-                    obtainAccountPort, saveAccountPort, configurations);
-            accountChangePassword.changePassword(username, decryptedPassword, email, transactionId);
+                    obtainAccountPort, saveAccountPort);
+            accountChangePassword.changePassword(username, decryptedPassword, email, emulator, transactionId);
         } catch (Exception e) {
             LOGGER.error("[AccountService][changePassword] Could not update password: {} {}", e.getMessage(),
                     transactionId, e);
@@ -131,15 +122,7 @@ public class AccountService implements AccountPort {
 
     @Override
     public AccountsDto accounts(int size, int page, String filter, String transactionId) {
-        return new AccountsDto(obtainAccountPort.findByAll(size, page, filter).stream().map(account ->
-                new AccountsServerDto(account.getId(), account.getUsername(), account.getEmail(),
-                        account.getExpansion(), account.isOnline(), account.getFailedLogins(),
-                        account.getJoinDate(),
-                        account.getLastIp(), account.getMuteReason(), account.getMuteBy(),
-                        account.getMuteTime() != null && account.getMuteTime() > 0,
-                        account.getLastLogin(), account.getOs(),
-                        getAccountBanned(account) != null)).toList(),
-                obtainAccountPort.count());
+        return new AccountsDto(obtainAccountPort.findByAll(size, page, filter).stream().map(account -> new AccountsServerDto(account.getId(), account.getUsername(), account.getEmail(), account.getExpansion(), account.isOnline(), account.getFailedLogins(), account.getJoinDate(), account.getLastIp(), account.getMuteReason(), account.getMuteBy(), account.getMuteTime() != null && account.getMuteTime() > 0, account.getLastLogin(), account.getOs(), getAccountBanned(account) != null)).toList(), obtainAccountPort.count());
     }
 
     private AccountBanned getAccountBanned(AccountEntity account) {
@@ -162,8 +145,7 @@ public class AccountService implements AccountPort {
             user.setEmail(updateMail);
             saveAccountPort.save(user);
             return user;
-        }).orElseThrow(() -> new InternalException("Cannot find a user" +
-                " with that username", transactionId));
+        }).orElseThrow(() -> new InternalException("Cannot find a user" + " with that username", transactionId));
     }
 
     @Override
@@ -175,14 +157,13 @@ public class AccountService implements AccountPort {
         if (accountModel.isEmpty()) {
             LOGGER.error("The server where your character is " + "currently located is not available {}",
                     transactionId);
-            throw new InternalException("The server where your character is " +
-                    "currently located is not available", transactionId);
+            throw new InternalException("The server where your character is " + "currently located is not available",
+                    transactionId);
         }
 
         AccountEntity account = accountModel.get();
 
-        if (getAccountBanned(account) != null
-                && accountBannedPort.getAccountBanned(account.getId()).active) {
+        if (getAccountBanned(account) != null && accountBannedPort.getAccountBanned(account.getId()).active) {
             LOGGER.error("The client already submits a ban {} AccountId: {}", account.getId(), transactionId);
             throw new InternalException("The client already submits a ban", transactionId);
         }

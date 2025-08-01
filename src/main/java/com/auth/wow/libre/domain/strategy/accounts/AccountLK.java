@@ -5,11 +5,9 @@ import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.domain.strategy.commands.*;
-import com.auth.wow.libre.infrastructure.conf.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import jakarta.xml.bind.*;
 import org.slf4j.*;
-import org.springframework.stereotype.*;
 
 import java.util.*;
 
@@ -20,18 +18,17 @@ public class AccountLK extends Account {
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
-    private final Configurations configurations;
+
 
     public AccountLK(ExecuteCommandsPort executeCommandsPort, ObtainAccountPort obtainAccountPort,
-                     SaveAccountPort saveAccountPort, Configurations configurations) {
+                     SaveAccountPort saveAccountPort) {
         this.executeCommandsPort = executeCommandsPort;
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
-        this.configurations = configurations;
     }
 
     @Override
-    public void create(String username, String password, String email, Long userId,
+    public void create(String username, String password, String email, Long userId, EmulatorCore emulator,
                        String transactionId) {
 
         final boolean usernameExist = obtainAccountPort.findByUsername(username).isPresent();
@@ -43,7 +40,7 @@ public class AccountLK extends Account {
 
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WRATH_OF_THE_LICH_KING,
-                    configurations.getEmulatorType());
+                    emulator.getName());
 
             executeCommandsPort.execute(commandStrategy.getCreateCommand(username, password), transactionId);
         } catch (JAXBException e) {
@@ -67,11 +64,12 @@ public class AccountLK extends Account {
     }
 
     @Override
-    public void changePassword(String username, String password, String email, String transactionId) {
+    public void changePassword(String username, String password, String email, EmulatorCore emulator,
+                               String transactionId) {
 
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WRATH_OF_THE_LICH_KING,
-                    configurations.getEmulatorType());
+                    emulator.getName());
             executeCommandsPort.execute(commandStrategy.getChangePasswordCommand(username, password), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountLK] [changePassword] It was not possible to change the client password.");
