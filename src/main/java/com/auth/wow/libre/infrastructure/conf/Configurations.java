@@ -9,7 +9,7 @@ import org.springframework.context.annotation.*;
 @Data
 public class Configurations {
 
-    @Value("${application.urls.wow-libre-server}")
+    @Value("${application.urls.core}")
     private String hostGetKeyCore;
 
 }
