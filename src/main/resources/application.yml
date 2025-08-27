@@ -33,7 +33,7 @@ server:
   port: 8090
 application:
   urls:
-    wow-libre-server: http://localhost:8091
+    core-base: http://localhost:8091
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
@@ -65,7 +65,7 @@ server:
   port: ${WOW_CLIENT_SERVER_PORT}
 application:
   urls:
-    wow-libre-server: ${HOST_BASE_CORE}
+    core-base: ${HOST_BASE_CORE}
   security:
     jwt:
       secret-key: ${WOW_CLIENT_SECRET_JWT}
