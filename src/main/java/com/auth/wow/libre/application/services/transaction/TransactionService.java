@@ -4,6 +4,7 @@ import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.character_service.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.*;
 
 import java.time.*;
 import java.util.*;
+
+import static com.auth.wow.libre.domain.model.constant.Constants.Errors.*;
 
 @Service
 public class TransactionService implements TransactionPort {
@@ -32,14 +35,16 @@ public class TransactionService implements TransactionPort {
     private final CharacterTransactionPort characterTransactionPort;
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainItemTemplate obtainItemTemplate;
-
+    private final AccountPort accountPort;
 
     public TransactionService(CharactersPort charactersPort, CharacterTransactionPort characterTransactionPort,
-                              ExecuteCommandsPort executeCommandsPort, ObtainItemTemplate obtainItemTemplate) {
+                              ExecuteCommandsPort executeCommandsPort, ObtainItemTemplate obtainItemTemplate,
+                              AccountPort accountPort) {
         this.charactersPort = charactersPort;
         this.characterTransactionPort = characterTransactionPort;
         this.executeCommandsPort = executeCommandsPort;
         this.obtainItemTemplate = obtainItemTemplate;
+        this.accountPort = accountPort;
     }
 
     @Transactional
@@ -170,8 +175,8 @@ public class TransactionService implements TransactionPort {
         try {
             executeCommandsPort.execute(CommandsCore.sendItems(characterName, "", "", items), transactionId);
         } catch (JAXBException e) {
-            LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
-                    "                    \"the execution of the core azeroth/trinity {}", transactionId);
+            LOGGER.error("sendBenefitsGuild It was not possible to claim the premium benefit, something has failed in" +
+                    "the execution of the core azeroth/trinity {}", transactionId);
             throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
                     "the execution of the core azeroth/trinity", transactionId);
         }
@@ -265,4 +270,33 @@ public class TransactionService implements TransactionPort {
 
         return new MachineClaimDto(logo, name, true);
     }
+
+    @Override
+    public void deductTokens(Long userId, Long accountId, Long characterId, Long points, String transactionId) {
+        LOGGER.info("[TransactionService] [deductTokens] accountId {} userId {} characterId {}",
+                accountId, userId, characterId);
+
+        if (accountPort.isOnline(accountId, transactionId)) {
+            LOGGER.error("[TransactionService] [deductTokens] Cannot deduct tokens while character is online");
+            throw new InternalException("Cannot deduct tokens while character is online", transactionId);
+        }
+
+        CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
+
+        if (character == null) {
+            LOGGER.error("[TransactionService] [deductTokens] Could not get character data");
+            throw new InternalException(CONSTANT_ERROR_NOT_POSSIBLE_OBTAIN_CHARACTER, transactionId);
+        }
+
+        if (character.getMoney() < TransactionType.CHANGE_COINS.getCost() * points) {
+            LOGGER.error("[TransactionService] [deductTokens] You don't have enough money to send the money");
+            throw new InternalException("You don't have enough money to send the money", transactionId);
+        }
+
+        charactersPort.updateMoney(character.id,
+                (long) (character.getMoney() - TransactionType.CHANGE_COINS.getCost() * points),
+                transactionId);
+    }
+
+
 }

@@ -21,4 +21,6 @@ public interface TransactionPort {
                            String transactionId);
 
     MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String transactionId);
+
+    void deductTokens(Long userId, Long accountId, Long characterId, Long points, String transactionId);
 }

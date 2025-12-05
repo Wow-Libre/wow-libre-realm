@@ -7,7 +7,7 @@ import jakarta.validation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
 @RestController
 @RequestMapping("/api/transaction")
@@ -80,6 +80,18 @@ public class TransactionController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<>(claimSuccess, transactionId).ok().build());
+    }
+
+    @PostMapping("/deduct-tokens")
+    public ResponseEntity<GenericResponse<Void>> deductTokens(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid DeductTokensDto request) {
+
+        transactionPort.deductTokens(request.getUserId(), request.getAccountId(),
+                request.getCharacterId(), request.getPoints(), transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
 
 
