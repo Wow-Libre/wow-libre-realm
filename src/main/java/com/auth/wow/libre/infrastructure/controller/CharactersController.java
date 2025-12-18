@@ -109,4 +109,17 @@ public class CharactersController {
                 .body(new GenericResponseBuilder<Void>(transactionId)
                         .ok().build());
     }
+
+    @PutMapping("/stats")
+    public ResponseEntity<GenericResponse<Void>> updateStats(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestBody @Valid UpdateStatsRequest request) {
+
+        charactersPort.updateStatsCharacter(request, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId)
+                        .ok().build());
+    }
+
 }

@@ -8,7 +8,6 @@ import com.auth.wow.libre.domain.ports.in.character_inventory.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
-import com.auth.wow.libre.domain.ports.out.character_quest_status.*;
 import com.auth.wow.libre.domain.ports.out.characters.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
@@ -29,25 +28,22 @@ public class CharactersService implements CharactersPort {
     private final CharacterInventoryPort characterInventoryPort;
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainAccountPort obtainAccountPort;
-    private final DeleteCharacterQuest deleteCharacterQuest;
 
     public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
                              CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
-                             ObtainAccountPort obtainAccountPort, DeleteCharacterQuest deleteCharacterQuest) {
+                             ObtainAccountPort obtainAccountPort) {
         this.obtainCharacters = obtainCharacters;
         this.saveCharacters = saveCharacters;
         this.characterInventoryPort = characterInventoryPort;
         this.executeCommandsPort = executeCommandsPort;
         this.obtainAccountPort = obtainAccountPort;
-        this.deleteCharacterQuest = deleteCharacterQuest;
     }
-
 
     @Override
     public CharactersDto getCharacters(Long accountId, String transactionId) {
 
-        final List<CharacterModel> characterAccount =
-                obtainCharacters.getCharactersAndAccountId(accountId, transactionId).stream().map(this::mapToModel).toList();
+        final List<CharacterModel> characterAccount = obtainCharacters
+                .getCharactersAndAccountId(accountId, transactionId).stream().map(this::mapToModel).toList();
 
         CharactersDto charactersDto = new CharactersDto();
         charactersDto.setCharacters(characterAccount.stream()
@@ -62,9 +58,10 @@ public class CharactersService implements CharactersPort {
     public CharactersDto loanApplicationCharacters(Long accountId, int level, int totalTimeSeconds,
                                                    String transactionId) {
 
-        final List<CharacterModel> characterAccount =
-                obtainCharacters.findByAccountAndLevel(accountId, level, transactionId)
-                        .stream().filter(character -> character.getTotalTime() >= totalTimeSeconds).map(this::mapToModel).toList();
+        final List<CharacterModel> characterAccount = obtainCharacters
+                .findByAccountAndLevel(accountId, level, transactionId)
+                .stream().filter(character -> character.getTotalTime() >= totalTimeSeconds).map(this::mapToModel)
+                .toList();
 
         CharactersDto charactersDto = new CharactersDto();
         charactersDto.setCharacters(characterAccount.stream()
@@ -165,9 +162,8 @@ public class CharactersService implements CharactersPort {
 
         CharactersEntity friend = friendItem.get();
 
-
-        Optional<CharacterInventoryModel> characterInventoryModel =
-                characterInventoryPort.findByGuidAndItem(characterId, itemId, transactionId);
+        Optional<CharacterInventoryModel> characterInventoryModel = characterInventoryPort
+                .findByGuidAndItem(characterId, itemId, transactionId);
 
         if (characterInventoryModel.isEmpty()) {
             throw new InternalException("It was not possible to find the item associated with the " +
@@ -209,7 +205,6 @@ public class CharactersService implements CharactersPort {
 
         if (account.isEmpty()) {
             throw new InternalException("Account Invalid Or Not Found", transactionId);
-
         }
 
         if (account.get().isOnline()) {
@@ -232,9 +227,146 @@ public class CharactersService implements CharactersPort {
         character.setMap(teleportDto.getMap());
         character.setZone(teleportDto.getZone());
         saveCharacters.save(character, transactionId);
-        deleteCharacterQuest.deleteAllById(character.getGuid());
     }
 
+    @Override
+    public void updateStatsCharacter(UpdateStatsRequest request, String transactionId) {
+        final Long userId = request.getUserId();
+        final Long accountId = request.getAccountId();
+        final Long characterId = request.getCharacterId();
+        
+        Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
+
+        if (account.isEmpty()) {
+            throw new InternalException("Account Invalid Or Not Found", transactionId);
+        }
+
+        if (account.get().isOnline()) {
+            throw new InternalException("Please log out of your game account", transactionId);
+        }
+
+        Optional<CharactersEntity> charactersEntity = obtainCharacters.getCharacter(characterId, accountId,
+                transactionId);
+
+        if (charactersEntity.isEmpty()) {
+            throw new InternalException("Character Not Found", transactionId);
+        }
+
+        CharactersEntity character = charactersEntity.get();
+
+        Consumables consumables = Consumables.findByName(request.getType());
+
+        switch (consumables) {
+            case DREAM:
+                updateDream(request.getReference(), character);
+                break;
+            case THIRST:
+                updateThirst(request.getReference(), character);
+                break;
+            case HUNGER:
+                updateHunger(request.getReference(), character);
+                break;
+            default:
+                throw new InternalException("Consumable Type Not Found", transactionId);
+        }
+
+        saveCharacters.save(character, transactionId);
+        try {
+            executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), "", "",
+                    Long.valueOf("47241"), 1), transactionId);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updateThirst(String reference, CharactersEntity character) {
+        StoreItems storeItem = StoreItems.findByCode(reference);
+
+
+        if (storeItem == null) {
+            throw new InternalException("Hunger Consumable Not Found", reference);
+        }
+
+        Double money = character.getMoney();
+
+        if (money < storeItem.getCostGold().doubleValue() * 10000) {
+            throw new InternalException("Insufficient funds to use the hunger service", reference);
+        }
+
+        if (character.getLevel() < 79) {
+            character.setXp(character.getXp() + 100);
+        }
+
+        Double cost = storeItem.getCostGold().doubleValue() * 10000;
+        character.setMoney(money - cost);
+        character.setThirst(Math.min(character.getHunger() + storeItem.getMultiplier(), 100));
+    }
+
+    private void updateHunger(String reference, CharactersEntity character) {
+        StoreItems storeItem = StoreItems.findByCode(reference);
+
+
+        if (storeItem == null) {
+            throw new InternalException("Hunger Consumable Not Found", reference);
+        }
+
+        Double money = character.getMoney();
+
+        if (money < storeItem.getCostGold().doubleValue() * 10000) {
+            throw new InternalException("Insufficient funds to use the hunger service", reference);
+        }
+
+        if (storeItem.equals(StoreItems.BEER)) {
+            character.setHunger(Math.min(character.getHunger() + storeItem.getMultiplier(), 100));
+        }
+
+        if (character.getLevel() < 79) {
+            character.setXp(character.getXp() + 100);
+        }
+
+        Double cost = storeItem.getCostGold().doubleValue() * 10000;
+        character.setMoney(money - cost);
+        character.setHunger(Math.min(character.getHunger() + storeItem.getMultiplier(), 100));
+    }
+
+    private void updateDream(String reference, CharactersEntity character) {
+        boolean isHorde = WowRace.getById(character.getRace()).isHorde();
+        Double money = character.getMoney();
+
+        if (money < 100D * 10000) {
+            throw new InternalException("Insufficient funds to use the hotel service", reference);
+        }
+
+        if (StoreItems.HOTEL.getCode().equals(reference)) {
+            // Filtrar hoteles según la facción (horda o alianza)
+            List<HotelLocations> availableHotels = Arrays.stream(HotelLocations.values())
+                    .filter(hotel -> hotel.isHorde() == isHorde)
+                    .toList();
+
+            if (availableHotels.isEmpty()) {
+                throw new InternalException("No hotel locations found for faction", reference);
+            }
+
+            // Seleccionar un hotel aleatorio
+            Random random = new Random();
+            HotelLocations selectedHotel = availableHotels.get(random.nextInt(availableHotels.size()));
+            if (character.getLevel() < 79) {
+                character.setXp(character.getXp() + 500);
+            }
+
+            character.setPositionX(selectedHotel.getX());
+            character.setPositionY(selectedHotel.getY());
+            character.setPositionZ(selectedHotel.getZ());
+            character.setMap(selectedHotel.getArea());
+            character.setOrientation(selectedHotel.getOrientation());
+            character.setZone((selectedHotel.getZona().intValue()));
+            character.setDream(StoreItems.HOTEL.getMultiplier());
+            Double cost = 100D * 10000;
+            character.setMoney(money - cost);
+        } else {
+            throw new InternalException("Dream Consumable Not Found", reference);
+        }
+    }
 
     private CharacterModel mapToModel(CharactersEntity characters) {
         long gold = characters.getMoney().longValue() / 10000;
@@ -296,6 +428,9 @@ public class CharactersService implements CharactersPort {
                 .gold(gold)
                 .copper(copper % 100)
                 .silver(gold / 100)
+                .hunger(characters.getHunger())
+                .dream(characters.getDream())
+                .thirst(characters.getThirst())
                 .build();
     }
 

@@ -104,4 +104,7 @@ public class CharactersEntity implements Serializable {
     @Column(name = "deletedate")
     private Integer deleteDate;
     private Integer zone;
+    private Integer dream;
+    private Integer hunger;
+    private Integer thirst;
 }

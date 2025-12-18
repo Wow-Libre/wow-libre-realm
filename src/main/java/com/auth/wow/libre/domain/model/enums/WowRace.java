@@ -72,4 +72,8 @@ public enum WowRace {
                 .findFirst()
                 .orElse(DEFAULT);
     }
+
+    public boolean isHorde() {
+        return "Horde".equalsIgnoreCase(this.faction);
+    }
 }
