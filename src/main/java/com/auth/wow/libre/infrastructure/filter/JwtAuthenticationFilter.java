@@ -1,35 +1,29 @@
 package com.auth.wow.libre.infrastructure.filter;
 
-import com.auth.wow.libre.application.services.jwt.JwtPortService;
-import com.auth.wow.libre.domain.model.constant.Constants;
-import com.auth.wow.libre.domain.model.exception.GenericErrorException;
-import com.auth.wow.libre.domain.model.shared.GenericResponse;
-import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
+import com.auth.wow.libre.application.services.jwt.*;
+import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.model.shared.*;
+import com.auth.wow.libre.domain.ports.in.jwt.*;
 import com.auth.wow.libre.infrastructure.filter.dto.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.ThreadContext;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import com.fasterxml.jackson.databind.*;
+import io.jsonwebtoken.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import org.apache.commons.lang3.*;
+import org.apache.logging.log4j.*;
+import org.springframework.http.*;
+import org.springframework.lang.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.*;
+import org.springframework.security.core.context.*;
+import org.springframework.security.web.authentication.*;
+import org.springframework.stereotype.*;
+import org.springframework.web.filter.*;
 
-import java.io.IOException;
-import java.util.Collection;
+import java.io.*;
+import java.util.*;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_UNIQUE_ID;
-import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_EMAIL;
+import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
 
 @Component
@@ -46,9 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         GenericResponse<Void> responseBody = new GenericResponse<>();
+        String transactionId = java.util.UUID.randomUUID().toString();
 
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String transactionId = request.getHeader(Constants.HEADER_TRANSACTION_ID);
         ThreadContext.put(CONSTANT_UNIQUE_ID, transactionId);
 
         try {

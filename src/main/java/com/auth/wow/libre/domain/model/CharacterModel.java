@@ -68,7 +68,7 @@ public class CharacterModel {
     public final Long gold;
     public final Long silver;
     public final Long copper;
-    private final Integer dream;
-    private final Integer hunger;
-    private final Integer thirst;
+    public final Integer dream;
+    public final Integer hunger;
+    public final Integer thirst;
 }

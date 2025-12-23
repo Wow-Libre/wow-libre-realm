@@ -51,3 +51,8 @@ CREATE TABLE acore_auth.configs (
     CONSTRAINT uq_config_username UNIQUE (game_master_username),
     CONSTRAINT uq_config_api_key UNIQUE (api_key)
 );
+
+ALTER TABLE acore_characters.characters
+    ADD COLUMN dream integer,
+    ADD COLUMN hunger integer,
+    ADD COLUMN thirst integer;

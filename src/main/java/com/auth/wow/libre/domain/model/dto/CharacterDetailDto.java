@@ -23,6 +23,9 @@ public class CharacterDetailDto {
     public Double money;
     public Integer logoutTime;
     public Integer totalTime;
+    public Integer dream;
+    public Integer hunger;
+    public Integer thirst;
 
 
     public CharacterDetailDto(CharacterModel character) {
@@ -40,6 +43,9 @@ public class CharacterDetailDto {
         this.classLogo = character.classLogo;
         this.logoutTime = character.logoutTime;
         this.totalTime = character.totalTime;
+        this.dream = character.dream;
+        this.hunger = character.hunger;
+        this.thirst = character.thirst;
     }
 
     public CharacterDetailDto(CharacterDetailDto character) {
@@ -57,6 +63,9 @@ public class CharacterDetailDto {
         this.classLogo = character.classLogo;
         this.logoutTime = character.logoutTime;
         this.totalTime = character.totalTime;
+        this.dream = character.dream;
+        this.hunger = character.hunger;
+        this.thirst = character.thirst;
     }
 
 }

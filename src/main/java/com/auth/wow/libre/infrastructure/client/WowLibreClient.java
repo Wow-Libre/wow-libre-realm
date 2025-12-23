@@ -32,7 +32,7 @@ public class WowLibreClient {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         try {
-            ResponseEntity<GenericResponse<String>> response = restTemplate.exchange(String.format("%s/core/api" +
+            ResponseEntity<GenericResponse<String>> response = restTemplate.exchange(String.format("%s/api" +
                                     "/realm/key?api_key=%s",
                             configurations.getHostGetKeyCore(), apiKey),
                     HttpMethod.GET, entity,
