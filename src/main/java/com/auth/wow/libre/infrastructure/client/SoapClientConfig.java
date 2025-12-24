@@ -47,7 +47,7 @@ public class SoapClientConfig {
         webServiceTemplate.setMessageSender(auth);
         webServiceTemplate.setInterceptors(new ClientInterceptor[]{new CustomLoggingInterceptor()});
 
-        webServiceTemplate.setDefaultUri("http://127.0.0.1:7878");
+        webServiceTemplate.setDefaultUri("http://host.docker.internal:7878");
         return webServiceTemplate;
     }
 
@@ -61,7 +61,7 @@ public class SoapClientConfig {
         webServiceTemplate.setMessageSender(auth);
         webServiceTemplate.setInterceptors(new ClientInterceptor[]{new CustomLoggingInterceptor()});
 
-        webServiceTemplate.setDefaultUri("http://127.0.0.1:7878");
+        webServiceTemplate.setDefaultUri("http://host.docker.internal:7878");
         return webServiceTemplate;
     }
 }
