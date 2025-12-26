@@ -1,16 +1,23 @@
 package com.auth.wow.libre.infrastructure.controller;
 
-import com.auth.wow.libre.domain.model.*;
-import com.auth.wow.libre.domain.model.dto.*;
-import com.auth.wow.libre.domain.model.shared.*;
-import com.auth.wow.libre.domain.ports.in.characters.*;
-import jakarta.validation.*;
-import org.springframework.http.*;
+import com.auth.wow.libre.domain.model.CharacterInventoryModel;
+import com.auth.wow.libre.domain.model.TransferItemRequest;
+import com.auth.wow.libre.domain.model.dto.CharacterDetailDto;
+import com.auth.wow.libre.domain.model.dto.CharactersDto;
+import com.auth.wow.libre.domain.model.dto.TeleportDto;
+import com.auth.wow.libre.domain.model.dto.UpdateStatsRequest;
+import com.auth.wow.libre.domain.model.shared.GenericResponse;
+import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
+import com.auth.wow.libre.domain.ports.in.characters.CharactersPort;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.*;
+import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.PARAM_ACCOUNT_ID;
 
 @RestController
 @RequestMapping("/api/characters")
@@ -111,14 +118,14 @@ public class CharactersController {
     }
 
     @PutMapping("/stats")
-    public ResponseEntity<GenericResponse<Void>> updateStats(
+    public ResponseEntity<GenericResponse<Boolean>> updateStats(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid UpdateStatsRequest request) {
 
-        charactersPort.updateStatsCharacter(request, transactionId);
+        boolean isSendPremio = charactersPort.updateStatsCharacter(request, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GenericResponseBuilder<Void>(transactionId)
+                .body(new GenericResponseBuilder<>(isSendPremio, transactionId)
                         .ok().build());
     }
 

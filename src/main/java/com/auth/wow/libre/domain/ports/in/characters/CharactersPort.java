@@ -36,5 +36,5 @@ public interface CharactersPort {
 
     void teleport(TeleportDto teleportDto, String transactionId);
 
-    void updateStatsCharacter(UpdateStatsRequest request, String transactionId);
+    boolean updateStatsCharacter(UpdateStatsRequest request, String transactionId);
 }

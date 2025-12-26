@@ -1,23 +1,30 @@
 package com.auth.wow.libre.application.services.characters;
 
-import com.auth.wow.libre.domain.model.*;
+import com.auth.wow.libre.domain.model.CharacterInventoryModel;
+import com.auth.wow.libre.domain.model.CharacterModel;
+import com.auth.wow.libre.domain.model.FactionsDto;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.enums.*;
-import com.auth.wow.libre.domain.model.exception.*;
-import com.auth.wow.libre.domain.ports.in.character_inventory.*;
-import com.auth.wow.libre.domain.ports.in.characters.*;
-import com.auth.wow.libre.domain.ports.in.comands.*;
-import com.auth.wow.libre.domain.ports.out.account.*;
-import com.auth.wow.libre.domain.ports.out.characters.*;
-import com.auth.wow.libre.infrastructure.entities.auth.*;
-import com.auth.wow.libre.infrastructure.entities.characters.*;
-import jakarta.xml.bind.*;
-import org.slf4j.*;
-import org.springframework.stereotype.*;
-import org.springframework.ws.client.*;
-import org.springframework.ws.soap.client.*;
+import com.auth.wow.libre.domain.model.exception.InternalException;
+import com.auth.wow.libre.domain.ports.in.character_inventory.CharacterInventoryPort;
+import com.auth.wow.libre.domain.ports.in.characters.CharactersPort;
+import com.auth.wow.libre.domain.ports.in.comands.ExecuteCommandsPort;
+import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
+import com.auth.wow.libre.domain.ports.out.characters.ObtainCharacters;
+import com.auth.wow.libre.domain.ports.out.characters.SaveCharacters;
+import com.auth.wow.libre.infrastructure.entities.auth.AccountEntity;
+import com.auth.wow.libre.infrastructure.entities.characters.CharactersEntity;
+import jakarta.xml.bind.JAXBException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.ws.client.WebServiceIOException;
+import org.springframework.ws.soap.client.SoapFaultClientException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class CharactersService implements CharactersPort {
@@ -230,11 +237,11 @@ public class CharactersService implements CharactersPort {
     }
 
     @Override
-    public void updateStatsCharacter(UpdateStatsRequest request, String transactionId) {
+    public boolean updateStatsCharacter(UpdateStatsRequest request, String transactionId) {
         final Long userId = request.getUserId();
         final Long accountId = request.getAccountId();
         final Long characterId = request.getCharacterId();
-        
+
         Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
 
         if (account.isEmpty()) {
@@ -271,12 +278,107 @@ public class CharactersService implements CharactersPort {
         }
 
         saveCharacters.save(character, transactionId);
-        try {
-            executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), "", "",
-                    Long.valueOf("47241"), 1), transactionId);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
+        return sendFeedingReward(character, consumables, transactionId);
+    }
+
+
+    private boolean sendFeedingReward(CharactersEntity character, Consumables consumable, String transactionId) {
+        Random random = new Random();
+        String consumableName = getConsumableName(consumable);
+        String characterName = character.getName();
+
+        int wellBeingScore = calculateWellBeingScore(character);
+
+        RewardInfo reward;
+
+        // Sistema de premios basado en probabilidad y bienestar (más justo para todos)
+        // 5% de probabilidad de premio épico
+        // 15% de probabilidad de premio raro mejorado
+        // 30% de probabilidad de premio raro
+        // 50% de probabilidad de premio normal
+        double randomValue = random.nextDouble() * 100;
+
+        if (randomValue < 5.0) {
+            // Premio Épico (5% probabilidad) - burning-blossom
+            reward = new RewardInfo(
+                    23247L,
+                    3,
+                    "¡Premio Épico por Alimentarte!",
+                    String.format("¡FELICIDADES %s! ¡Has obtenido un PREMIO ÉPICO! " +
+                                    "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial. " +
+                                    "¡Sigue cuidando tu %s para obtener más sorpresas!",
+                            characterName.toUpperCase(), consumableName)
+            );
+        } else if (randomValue < 20.0) {
+            // Premio Raro Mejorado (15% probabilidad) - EMBLEMA DE ESCARCHA
+            reward = new RewardInfo(
+                    49426L,
+                    1,
+                    "¡Premio Raro Mejorado!",
+                    String.format("¡Excelente %s! Has recibido un premio raro mejorado por mantenerte bien alimentado. " +
+                                    "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios épicos.",
+                            characterName, wellBeingScore)
+            );
+        } else if (randomValue < 50.0) {
+            // Premio Raro (30% probabilidad) - INSIGNIA DE LA JUSTICIA
+            reward = new RewardInfo(
+                    29434L,
+                    2,
+                    "¡Premio Raro!",
+                    String.format("¡Bien hecho %s! Por cuidar tu %s, recibes un premio raro. " +
+                                    "¡Sigue alimentándote regularmente para obtener mejores recompensas!",
+                            characterName, consumableName)
+            );
+        } else {
+            // Premio Normal (50% probabilidad) - EMBLEMA DE TRIUNFO
+            reward = new RewardInfo(
+                    47241L,
+                    2,
+                    "¡Premio por Alimentarte!",
+                    String.format("¡Bien %s! Por mantenerte bien alimentado, recibes un premio. " +
+                                    "¡Sigue cuidando tu %s para obtener premios raros y épicos!",
+                            characterName, consumableName)
+            );
         }
+
+        try {
+            executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), reward.subject(),
+                    reward.message(), reward.itemId(), reward.quantity()), transactionId);
+            LOGGER.info("[CharactersService] [sendFeedingReward] Reward sent to character {} - " +
+                            "Item: {} x{} - Type: {} - WellBeing: {}", character.getName(), reward.itemId(),
+                    reward.quantity(), consumable, wellBeingScore);
+            return true;
+        } catch (JAXBException e) {
+            LOGGER.error("[CharactersService] [sendFeedingReward] Failed to send reward to character {} - " +
+                    "TransactionId [{}] - Error: {}", character.getName(), transactionId, e.getMessage(), e);
+            return false;
+        }
+    }
+
+
+    private int calculateWellBeingScore(CharactersEntity character) {
+        int hunger = character.getHunger() != null ? character.getHunger() : 0;
+        int thirst = character.getThirst() != null ? character.getThirst() : 0;
+        int dream = character.getDream() != null ? character.getDream() : 0;
+
+        return hunger + thirst + dream;
+    }
+
+    /**
+     * Record para almacenar la información del premio
+     */
+    private record RewardInfo(Long itemId, Integer quantity, String subject, String message) {
+    }
+
+    /**
+     * Obtiene el nombre amigable del consumible para los mensajes
+     */
+    private String getConsumableName(Consumables consumable) {
+        return switch (consumable) {
+            case HUNGER -> "hambre";
+            case THIRST -> "sed";
+            case DREAM -> "sueño";
+        };
     }
 
     private void updateThirst(String reference, CharactersEntity character) {
@@ -294,7 +396,7 @@ public class CharactersService implements CharactersPort {
         }
 
         if (character.getLevel() < 79) {
-            character.setXp(character.getXp() + 100);
+            character.setXp(character.getXp() + 500);
         }
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
@@ -321,7 +423,7 @@ public class CharactersService implements CharactersPort {
         }
 
         if (character.getLevel() < 79) {
-            character.setXp(character.getXp() + 100);
+            character.setXp(character.getXp() + 500);
         }
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
