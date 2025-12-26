@@ -1,30 +1,23 @@
 package com.auth.wow.libre.application.services.characters;
 
-import com.auth.wow.libre.domain.model.CharacterInventoryModel;
-import com.auth.wow.libre.domain.model.CharacterModel;
-import com.auth.wow.libre.domain.model.FactionsDto;
+import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.model.enums.*;
-import com.auth.wow.libre.domain.model.exception.InternalException;
-import com.auth.wow.libre.domain.ports.in.character_inventory.CharacterInventoryPort;
-import com.auth.wow.libre.domain.ports.in.characters.CharactersPort;
-import com.auth.wow.libre.domain.ports.in.comands.ExecuteCommandsPort;
-import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
-import com.auth.wow.libre.domain.ports.out.characters.ObtainCharacters;
-import com.auth.wow.libre.domain.ports.out.characters.SaveCharacters;
-import com.auth.wow.libre.infrastructure.entities.auth.AccountEntity;
-import com.auth.wow.libre.infrastructure.entities.characters.CharactersEntity;
-import jakarta.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.ws.client.WebServiceIOException;
-import org.springframework.ws.soap.client.SoapFaultClientException;
+import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.ports.in.character_inventory.*;
+import com.auth.wow.libre.domain.ports.in.characters.*;
+import com.auth.wow.libre.domain.ports.in.comands.*;
+import com.auth.wow.libre.domain.ports.out.account.*;
+import com.auth.wow.libre.domain.ports.out.characters.*;
+import com.auth.wow.libre.infrastructure.entities.auth.*;
+import com.auth.wow.libre.infrastructure.entities.characters.*;
+import jakarta.xml.bind.*;
+import org.slf4j.*;
+import org.springframework.stereotype.*;
+import org.springframework.ws.client.*;
+import org.springframework.ws.soap.client.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class CharactersService implements CharactersPort {
@@ -305,7 +298,8 @@ public class CharactersService implements CharactersPort {
                     3,
                     "¡Premio Épico por Alimentarte!",
                     String.format("¡FELICIDADES %s! ¡Has obtenido un PREMIO ÉPICO! " +
-                                    "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial. " +
+                                    "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial" +
+                                    ". " +
                                     "¡Sigue cuidando tu %s para obtener más sorpresas!",
                             characterName.toUpperCase(), consumableName)
             );
@@ -315,8 +309,10 @@ public class CharactersService implements CharactersPort {
                     49426L,
                     1,
                     "¡Premio Raro Mejorado!",
-                    String.format("¡Excelente %s! Has recibido un premio raro mejorado por mantenerte bien alimentado. " +
-                                    "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios épicos.",
+                    String.format("¡Excelente %s! Has recibido un premio raro mejorado por mantenerte bien alimentado" +
+                                    ". " +
+                                    "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios " +
+                                    "épicos.",
                             characterName, wellBeingScore)
             );
         } else if (randomValue < 50.0) {
@@ -401,7 +397,8 @@ public class CharactersService implements CharactersPort {
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
         character.setMoney(money - cost);
-        character.setThirst(Math.min(character.getHunger() + storeItem.getMultiplier(), 100));
+        character.setThirst(Math.min(Optional.ofNullable(character.getThirst()).orElse(0) + storeItem.getMultiplier()
+                , 100));
     }
 
     private void updateHunger(String reference, CharactersEntity character) {
@@ -419,7 +416,7 @@ public class CharactersService implements CharactersPort {
         }
 
         if (storeItem.equals(StoreItems.BEER)) {
-            character.setHunger(Math.min(character.getHunger() + storeItem.getMultiplier(), 100));
+            character.setDrunk(Math.min(character.getDrunk() + storeItem.getMultiplier(), 100));
         }
 
         if (character.getLevel() < 79) {
@@ -428,7 +425,7 @@ public class CharactersService implements CharactersPort {
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
         character.setMoney(money - cost);
-        character.setHunger(Math.min(character.getHunger() + storeItem.getMultiplier(), 100));
+        character.setHunger(Math.min(Optional.of(character.getHunger()).orElse(0) + storeItem.getMultiplier(), 100));
     }
 
     private void updateDream(String reference, CharactersEntity character) {
