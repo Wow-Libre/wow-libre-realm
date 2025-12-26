@@ -425,7 +425,8 @@ public class CharactersService implements CharactersPort {
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
         character.setMoney(money - cost);
-        character.setHunger(Math.min(Optional.of(character.getHunger()).orElse(0) + storeItem.getMultiplier(), 100));
+        character.setHunger(Math.min(Optional.ofNullable(character.getHunger()).orElse(0) + storeItem.getMultiplier()
+                , 100));
     }
 
     private void updateDream(String reference, CharactersEntity character) {
