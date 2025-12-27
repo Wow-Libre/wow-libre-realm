@@ -9,8 +9,10 @@ import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.domain.ports.out.characters.*;
+import com.auth.wow.libre.domain.ports.out.item_template.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.entities.characters.*;
+import com.auth.wow.libre.infrastructure.entities.world.*;
 import jakarta.xml.bind.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
@@ -28,15 +30,17 @@ public class CharactersService implements CharactersPort {
     private final CharacterInventoryPort characterInventoryPort;
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainAccountPort obtainAccountPort;
+    private final ObtainItemTemplate obtainItemTemplate;
 
     public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
                              CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
-                             ObtainAccountPort obtainAccountPort) {
+                             ObtainAccountPort obtainAccountPort, ObtainItemTemplate obtainItemTemplate) {
         this.obtainCharacters = obtainCharacters;
         this.saveCharacters = saveCharacters;
         this.characterInventoryPort = characterInventoryPort;
         this.executeCommandsPort = executeCommandsPort;
         this.obtainAccountPort = obtainAccountPort;
+        this.obtainItemTemplate = obtainItemTemplate;
     }
 
     @Override
@@ -343,6 +347,11 @@ public class CharactersService implements CharactersPort {
             LOGGER.info("[CharactersService] [sendFeedingReward] Reward sent to character {} - " +
                             "Item: {} x{} - Type: {} - WellBeing: {}", character.getName(), reward.itemId(),
                     reward.quantity(), consumable, wellBeingScore);
+            Optional<ItemTemplateEntity> item = obtainItemTemplate.findRandomEntry();
+            if (item.isPresent() && random.nextDouble() < 0.3) {
+                executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), reward.subject(),
+                        reward.message(), reward.itemId(), 1), transactionId);
+            }
             return true;
         } catch (JAXBException e) {
             LOGGER.error("[CharactersService] [sendFeedingReward] Failed to send reward to character {} - " +
