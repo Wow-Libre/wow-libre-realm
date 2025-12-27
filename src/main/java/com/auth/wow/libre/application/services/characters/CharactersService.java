@@ -33,8 +33,8 @@ public class CharactersService implements CharactersPort {
     private final ObtainItemTemplate obtainItemTemplate;
 
     public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
-                             CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
-                             ObtainAccountPort obtainAccountPort, ObtainItemTemplate obtainItemTemplate) {
+            CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
+            ObtainAccountPort obtainAccountPort, ObtainItemTemplate obtainItemTemplate) {
         this.obtainCharacters = obtainCharacters;
         this.saveCharacters = saveCharacters;
         this.characterInventoryPort = characterInventoryPort;
@@ -60,7 +60,7 @@ public class CharactersService implements CharactersPort {
 
     @Override
     public CharactersDto loanApplicationCharacters(Long accountId, int level, int totalTimeSeconds,
-                                                   String transactionId) {
+            String transactionId) {
 
         final List<CharacterModel> characterAccount = obtainCharacters
                 .findByAccountAndLevel(accountId, level, transactionId)
@@ -145,7 +145,7 @@ public class CharactersService implements CharactersPort {
 
     @Override
     public void transferInventoryItem(Long characterId, Long accountId, Long friendId, Long itemId, Integer quantity,
-                                      String transactionId) {
+            String transactionId) {
 
         Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
         if (account.isEmpty() || account.get().isOnline()) {
@@ -185,13 +185,13 @@ public class CharactersService implements CharactersPort {
                     characterInventory.getItemId(), quantity), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("[CharactersService] [transferInventoryItem] It was not possible to send the item linked to " +
-                            "the recipient. TransactionId [{}] - " +
-                            "LocalizedMessage [{}] - Message [{}]",
+                    "the recipient. TransactionId [{}] - " +
+                    "LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("It was not possible to send the item linked to the recipient", transactionId);
         } catch (WebServiceIOException e) {
             LOGGER.error("Could not communicate with the emulator. TransactionId [{}] - " +
-                            "LocalizedMessage [{}] - Message [{}]",
+                    "LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("Could not communicate with the emulator", transactionId);
         }
@@ -278,7 +278,6 @@ public class CharactersService implements CharactersPort {
         return sendFeedingReward(character, consumables, transactionId);
     }
 
-
     private boolean sendFeedingReward(CharactersEntity character, Consumables consumable, String transactionId) {
         Random random = new Random();
         String consumableName = getConsumableName(consumable);
@@ -288,69 +287,98 @@ public class CharactersService implements CharactersPort {
 
         RewardInfo reward;
 
-        // Sistema de premios basado en probabilidad y bienestar (más justo para todos)
-        // 5% de probabilidad de premio épico
-        // 15% de probabilidad de premio raro mejorado
-        // 30% de probabilidad de premio raro
-        // 50% de probabilidad de premio normal
-        double randomValue = random.nextDouble() * 100;
+        // Sistema más aleatorio con influencia moderada del bienestar
+        // El wellBeingScore (0-300) da un pequeño bonus: hasta 12% de mejora en
+        // probabilidades
+        // Esto hace que el bienestar ayude pero no domine el sistema
+        double wellBeingBonus = Math.min(wellBeingScore / 25.0, 12.0); // Máximo 12% de bonus
 
-        if (randomValue < 5.0) {
-            // Premio Épico (5% probabilidad) - burning-blossom
+        // Múltiples valores aleatorios para mayor variabilidad
+        double randomValue1 = random.nextDouble() * 100;
+        double randomValue2 = random.nextDouble() * 100;
+        double randomValue3 = random.nextDouble() * 100;
+
+        // Promedio de los valores aleatorios para más impredecibilidad
+        double baseRandom = (randomValue1 + randomValue2 + randomValue3) / 3.0;
+
+        // Aplicar bonus del bienestar de forma moderada
+        double adjustedValue = baseRandom - wellBeingBonus;
+
+        // Rangos dinámicos más aleatorios (varían ligeramente cada vez)
+        double epicThreshold = 3.0 + random.nextDouble() * 4.0; // 3-7%
+        double rareImprovedThreshold = epicThreshold + 10.0 + random.nextDouble() * 8.0; // Variable
+        double rareThreshold = rareImprovedThreshold + 20.0 + random.nextDouble() * 15.0; // Variable
+
+        if (adjustedValue < epicThreshold) {
+            // Premio Épico - burning-blossom
             reward = new RewardInfo(
                     23247L,
                     3,
                     "¡Premio Épico por Alimentarte!",
                     String.format("¡FELICIDADES %s! ¡Has obtenido un PREMIO ÉPICO! " +
-                                    "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial" +
-                                    ". " +
-                                    "¡Sigue cuidando tu %s para obtener más sorpresas!",
-                            characterName.toUpperCase(), consumableName)
-            );
-        } else if (randomValue < 20.0) {
-            // Premio Raro Mejorado (15% probabilidad) - EMBLEMA DE ESCARCHA
+                            "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial" +
+                            ". " +
+                            "¡Sigue cuidando tu %s para obtener más sorpresas!",
+                            characterName.toUpperCase(), consumableName));
+        } else if (adjustedValue < rareImprovedThreshold) {
+            // Premio Raro Mejorado - EMBLEMA DE ESCARCHA
             reward = new RewardInfo(
                     49426L,
                     1,
                     "¡Premio Raro Mejorado!",
                     String.format("¡Excelente %s! Has recibido un premio raro mejorado por mantenerte bien alimentado" +
-                                    ". " +
-                                    "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios " +
-                                    "épicos.",
-                            characterName, wellBeingScore)
-            );
-        } else if (randomValue < 50.0) {
-            // Premio Raro (30% probabilidad) - INSIGNIA DE LA JUSTICIA
+                            ". " +
+                            "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios " +
+                            "épicos.",
+                            characterName, wellBeingScore));
+        } else if (adjustedValue < rareThreshold) {
+            // Premio Raro - INSIGNIA DE LA JUSTICIA
             reward = new RewardInfo(
                     29434L,
                     2,
                     "¡Premio Raro!",
                     String.format("¡Bien hecho %s! Por cuidar tu %s, recibes un premio raro. " +
-                                    "¡Sigue alimentándote regularmente para obtener mejores recompensas!",
-                            characterName, consumableName)
-            );
+                            "¡Sigue alimentándote regularmente para obtener mejores recompensas!",
+                            characterName, consumableName));
         } else {
-            // Premio Normal (50% probabilidad) - EMBLEMA DE TRIUNFO
+            // Premio Normal - EMBLEMA DE TRIUNFO
             reward = new RewardInfo(
                     47241L,
                     2,
                     "¡Premio por Alimentarte!",
                     String.format("¡Bien %s! Por mantenerte bien alimentado, recibes un premio. " +
-                                    "¡Sigue cuidando tu %s para obtener premios raros y épicos!",
-                            characterName, consumableName)
-            );
+                            "¡Sigue cuidando tu %s para obtener premios raros y épicos!",
+                            characterName, consumableName));
         }
 
         try {
             executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), reward.subject(),
                     reward.message(), reward.itemId(), reward.quantity()), transactionId);
             LOGGER.info("[CharactersService] [sendFeedingReward] Reward sent to character {} - " +
-                            "Item: {} x{} - Type: {} - WellBeing: {}", character.getName(), reward.itemId(),
+                    "Item: {} x{} - Type: {} - WellBeing: {}", character.getName(), reward.itemId(),
                     reward.quantity(), consumable, wellBeingScore);
-            Optional<ItemTemplateEntity> item = obtainItemTemplate.findRandomEntry();
-            if (item.isPresent() && random.nextDouble() < 0.3) {
-                executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), reward.subject(),
-                        reward.message(), reward.itemId(), 1), transactionId);
+
+            // Bonus: Item aleatorio adicional (30% base, con pequeño bonus por bienestar)
+            Optional<ItemTemplateEntity> randomItem = obtainItemTemplate.findRandomEntry();
+            if (randomItem.isPresent()) {
+                // Probabilidad base 30%, con hasta 5% extra por bienestar (máximo 35%)
+                double bonusChance = Math.min(wellBeingScore / 60.0, 5.0);
+                double randomItemChance = 30.0 + bonusChance;
+
+                if (random.nextDouble() * 100 < randomItemChance) {
+                    ItemTemplateEntity item = randomItem.get();
+                    String bonusMessage = String.format(
+                            "¡BONUS ALEATORIO %s! ¡Has recibido un item sorpresa adicional: %s! " +
+                                    "¡Tu bienestar de %d puntos te ha dado suerte extra!",
+                            characterName.toUpperCase(), item.getName() != null ? item.getName() : "Item Especial",
+                            wellBeingScore);
+
+                    executeCommandsPort.execute(CommandsCore.sendItem(character.getName(),
+                            "¡Item Aleatorio Bonus!", bonusMessage, item.getEntry(), 1), transactionId);
+                    LOGGER.info("[CharactersService] [sendFeedingReward] Random bonus item sent to character {} - " +
+                            "Item: {} (Entry: {}) - Chance: {}%", character.getName(),
+                            item.getName(), item.getEntry(), String.format("%.1f", randomItemChance));
+                }
             }
             return true;
         } catch (JAXBException e) {
@@ -359,7 +387,6 @@ public class CharactersService implements CharactersPort {
             return false;
         }
     }
-
 
     private int calculateWellBeingScore(CharactersEntity character) {
         int hunger = character.getHunger() != null ? character.getHunger() : 0;
@@ -389,7 +416,6 @@ public class CharactersService implements CharactersPort {
     private void updateThirst(String reference, CharactersEntity character) {
         StoreItems storeItem = StoreItems.findByCode(reference);
 
-
         if (storeItem == null) {
             throw new InternalException("Hunger Consumable Not Found", reference);
         }
@@ -401,18 +427,17 @@ public class CharactersService implements CharactersPort {
         }
 
         if (character.getLevel() < 79) {
-            character.setXp(character.getXp() + 500);
+            multiplicatorXP(character);
         }
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
         character.setMoney(money - cost);
-        character.setThirst(Math.min(Optional.ofNullable(character.getThirst()).orElse(0) + storeItem.getMultiplier()
-                , 100));
+        character.setThirst(
+                Math.min(Optional.ofNullable(character.getThirst()).orElse(0) + storeItem.getMultiplier(), 100));
     }
 
     private void updateHunger(String reference, CharactersEntity character) {
         StoreItems storeItem = StoreItems.findByCode(reference);
-
 
         if (storeItem == null) {
             throw new InternalException("Hunger Consumable Not Found", reference);
@@ -429,17 +454,16 @@ public class CharactersService implements CharactersPort {
         }
 
         if (character.getLevel() < 79) {
-            character.setXp(character.getXp() + 500);
+            multiplicatorXP(character);
         }
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
         character.setMoney(money - cost);
-        character.setHunger(Math.min(Optional.ofNullable(character.getHunger()).orElse(0) + storeItem.getMultiplier()
-                , 100));
+        character.setHunger(
+                Math.min(Optional.ofNullable(character.getHunger()).orElse(0) + storeItem.getMultiplier(), 100));
     }
 
     private void updateDream(String reference, CharactersEntity character) {
-        boolean isHorde = WowRace.getById(character.getRace()).isHorde();
         Double money = character.getMoney();
 
         if (money < 100D * 10000) {
@@ -448,32 +472,49 @@ public class CharactersService implements CharactersPort {
 
         if (StoreItems.HOTEL.getCode().equals(reference)) {
             // Filtrar hoteles según la facción (horda o alianza)
-            List<HotelLocations> availableHotels = Arrays.stream(HotelLocations.values())
-                    .filter(hotel -> hotel.isHorde() == isHorde)
-                    .toList();
-
-            if (availableHotels.isEmpty()) {
-                throw new InternalException("No hotel locations found for faction", reference);
-            }
 
             // Seleccionar un hotel aleatorio
-            Random random = new Random();
-            HotelLocations selectedHotel = availableHotels.get(random.nextInt(availableHotels.size()));
             if (character.getLevel() < 79) {
-                character.setXp(character.getXp() + 500);
+                multiplicatorXP(character);
             }
 
-            character.setPositionX(selectedHotel.getX());
-            character.setPositionY(selectedHotel.getY());
-            character.setPositionZ(selectedHotel.getZ());
-            character.setMap(selectedHotel.getArea());
-            character.setOrientation(selectedHotel.getOrientation());
-            character.setZone((selectedHotel.getZona().intValue()));
             character.setDream(StoreItems.HOTEL.getMultiplier());
             Double cost = 100D * 10000;
             character.setMoney(money - cost);
         } else {
             throw new InternalException("Dream Consumable Not Found", reference);
+        }
+    }
+
+    private void multiplicatorXP(CharactersEntity character) {
+        Random random = new Random();
+        int multiplier = random.nextInt(4) + 1; // 1..4
+        int xpGain = 500 * multiplier;
+        character.setXp(character.getXp() + xpGain);
+
+        // Probabilidad baja (5-7%) de subir un nivel directamente
+        int currentLevel = character.getLevel() != null ? character.getLevel() : 1;
+        int maxLevel = 80;
+
+        if (currentLevel < maxLevel) {
+            // Probabilidad base 5%, con variación aleatoria de hasta 2% adicional
+            double levelUpChance = 5.0 + random.nextDouble() * 2.0; // 5-7%
+
+            if (random.nextDouble() * 100 < levelUpChance) {
+                int newLevel = currentLevel + 1;
+                character.setLevel(newLevel);
+                character.setXp(0); // Resetear XP al subir nivel
+
+                try {
+                    executeCommandsPort.execute(CommandsCore.sendLevel(character.getName(), newLevel), "");
+                    LOGGER.info("[CharactersService] [multiplicatorXP] Character {} leveled up from {} to {} - " +
+                            "Chance was: {}%", character.getName(), currentLevel, newLevel,
+                            String.format("%.1f", levelUpChance));
+                } catch (Exception e) {
+                    LOGGER.error("[CharactersService] [multiplicatorXP] Failed to level up character {} - " +
+                            "Error: {}", character.getName(), e.getMessage(), e);
+                }
+            }
         }
     }
 
