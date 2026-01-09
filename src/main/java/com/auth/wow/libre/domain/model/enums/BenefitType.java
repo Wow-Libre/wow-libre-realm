@@ -10,6 +10,7 @@ public enum BenefitType {
     CUSTOMIZE,
     CHANGE_FACTION,
     CHANGE_RACE,
+    LEVEL,
     MONEY;
 
     public static BenefitType findByName(String name) {

@@ -112,6 +112,7 @@ public class TransactionService implements TransactionPort {
             case CUSTOMIZE -> CommandsCore.characterCustomize(characterName);
             case CHANGE_FACTION -> CommandsCore.characterChangeFaction(characterName);
             case CHANGE_RACE -> CommandsCore.characterChangeRace(characterName);
+            case LEVEL -> CommandsCore.sendLevel(characterName, 80);
             default -> {
                 LOGGER.error("Benefit Type Not found");
                 yield CommandsCore.sendMail(characterName, "Ups", "We are sorry, an error occurred when claiming " +
