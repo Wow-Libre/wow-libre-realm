@@ -90,16 +90,12 @@ public class GuildService implements GuildPort {
             throw new InternalException("The requested characters does not exist", transactionId);
         }
 
-        final String message = String.format("%s Te da la bienvenida.", guild.name);
-        final String body = guild.motd;
-
         try {
 
             executeCommandsPort.execute(CommandsCore.invite(character.getName(), getGuild.get().name), transactionId);
-            executeCommandsPort.execute(CommandsCore.sendMail(character.getName(), message, body), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
-            LOGGER.error("[GuildService] [attach] It was not possible to link the client to the brotherhood. TransactionId [{}] - " +
-                            "LocalizedMessage [{}] - Message [{}]",
+            LOGGER.error("[GuildService] [attach] It was not possible to link the client to the brotherhood. " +
+                            "TransactionId [{}] -  LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("The request to join the brotherhood could not be made, please check if " +
                     "you  already belong to it", transactionId);
