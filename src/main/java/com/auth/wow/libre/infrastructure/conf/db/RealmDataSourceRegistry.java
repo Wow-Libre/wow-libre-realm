@@ -17,8 +17,8 @@ public class RealmDataSourceRegistry {
 
     private final RealmProperties realmProperties;
 
-    private Map<Object, DataSource> charactersDataSources;
-    private Map<Object, DataSource> worldDataSources;
+    private Map<Object, Object> charactersDataSources;
+    private Map<Object, Object> worldDataSources;
     private DataSource defaultCharactersDataSource;
     private DataSource defaultWorldDataSource;
     private Long defaultRealmId;
@@ -46,16 +46,20 @@ public class RealmDataSourceRegistry {
             if (realm.getCharacters() != null) {
                 DataSource ds = buildDataSource(realm.getCharacters());
                 charactersDataSources.put(id, ds);
+                if (defaultRealmId == null) {
+                    defaultCharactersDataSource = ds;
+                }
             }
             if (realm.getWorld() != null) {
                 DataSource ds = buildDataSource(realm.getWorld());
                 worldDataSources.put(id, ds);
+                if (defaultRealmId == null) {
+                    defaultWorldDataSource = ds;
+                }
             }
 
             if (defaultRealmId == null) {
                 defaultRealmId = id;
-                defaultCharactersDataSource = charactersDataSources.get(id);
-                defaultWorldDataSource = worldDataSources.get(id);
             }
         }
 
@@ -74,11 +78,11 @@ public class RealmDataSourceRegistry {
                 .build();
     }
 
-    public Map<Object, DataSource> getCharactersDataSourcesMap() {
+    public Map<Object, Object> getCharactersDataSourcesMap() {
         return charactersDataSources;
     }
 
-    public Map<Object, DataSource> getWorldDataSourcesMap() {
+    public Map<Object, Object> getWorldDataSourcesMap() {
         return worldDataSources;
     }
 
