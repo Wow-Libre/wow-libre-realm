@@ -22,21 +22,24 @@ spring:
       username: root
       password: Wowlibre96@@
       driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      url: jdbc:mysql://localhost:3306/acore_characters
-      username: root
-      password: Wowlibre96@@
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    three:
-      url: jdbc:mysql://localhost:3306/acore_world
-      username: root
-      password: Wowlibre96@@
-      driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 8090
 application:
   urls:
     core-base: http://localhost:8091
+  realms:
+    - id: 1
+      name: "Reino Principal"
+      characters:
+        url: jdbc:mysql://localhost:3306/acore_characters
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: jdbc:mysql://localhost:3306/acore_world
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
@@ -54,21 +57,24 @@ spring:
       username: ${DB_WOW_CLIENT_USERNAME}
       password: ${DB_WOW_CLIENT_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      url: ${DB_WOW_CLIENT_HOST_CHARACTERS}
-      username: ${DB_WOW_CLIENT_USERNAME}
-      password: ${DB_WOW_CLIENT_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    three:
-      url: ${DB_WOW_CLIENT_HOST_WORLD}
-      username: ${DB_WOW_CLIENT_USERNAME}
-      password: ${DB_WOW_CLIENT_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: ${WOW_CLIENT_SERVER_PORT}
 application:
   urls:
     core-base: ${HOST_BASE_CORE}
+  realms:
+    - id: 1
+      name: "Reino Principal"
+      characters:
+        url: ${DB_WOW_CLIENT_HOST_CHARACTERS}
+        username: ${DB_WOW_CLIENT_USERNAME}
+        password: ${DB_WOW_CLIENT_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: ${DB_WOW_CLIENT_HOST_WORLD}
+        username: ${DB_WOW_CLIENT_USERNAME}
+        password: ${DB_WOW_CLIENT_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
   security:
     jwt:
       secret-key: ${WOW_CLIENT_SECRET_JWT}

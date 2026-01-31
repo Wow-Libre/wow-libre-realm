@@ -10,6 +10,7 @@ public class Constants {
     public static final String CONSTANT_ROL_JWT_PROP = "roles";
     // HEADERS
     public static final String HEADER_TRANSACTION_ID = "transaction_id";
+    public static final String HEADER_REALM_ID = "realm_id";
 
     /* JWT HEADERS */
     public static final String HEADER_EMAIL = "x-email";

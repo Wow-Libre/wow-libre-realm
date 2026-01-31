@@ -4,8 +4,9 @@ import com.auth.wow.libre.application.services.jwt.*;
 import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.security.*;
 import com.auth.wow.libre.domain.ports.in.jwt.*;
-import com.auth.wow.libre.infrastructure.filter.*;
 import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
+import com.auth.wow.libre.infrastructure.filter.JwtAuthenticationFilter;
+import com.auth.wow.libre.infrastructure.filter.RealmFilter;
 import org.springframework.context.annotation.*;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
@@ -31,13 +32,16 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsServiceCustom userDetailsServiceCustom;
     private final JwtPort jwtPort;
+    private final RealmFilter realmFilter;
 
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
                                  UserDetailsServiceCustom userDetailsServiceCustom,
-                                 JwtPortService jwtPort) {
+                                 JwtPortService jwtPort,
+                                 RealmFilter realmFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsServiceCustom = userDetailsServiceCustom;
         this.jwtPort = jwtPort;
+        this.realmFilter = realmFilter;
     }
 
     @Bean
@@ -56,7 +60,8 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.AUTHORIZATION,
-                HEADER_TRANSACTION_ID
+                HEADER_TRANSACTION_ID,
+                HEADER_REALM_ID
         ));
         corsConfiguration.setAllowCredentials(true);
 
@@ -71,7 +76,8 @@ public class SecurityConfiguration {
 
         http.authorizeHttpRequests(
                         endpoints -> endpoints.requestMatchers("/api/auth/login").authenticated()
-                ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
+                ).addFilterBefore(realmFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
                         UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)

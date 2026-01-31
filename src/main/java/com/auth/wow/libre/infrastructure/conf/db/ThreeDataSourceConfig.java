@@ -2,7 +2,6 @@ package com.auth.wow.libre.infrastructure.conf.db;
 
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.jdbc.*;
 import org.springframework.boot.orm.jpa.*;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.*;
@@ -19,27 +18,17 @@ import javax.sql.*;
 )
 public class ThreeDataSourceConfig {
 
-    @Value("${spring.datasource.three.url}")
-    private String dbThreeHost;
-    @Value("${spring.datasource.three.username}")
-    private String dbThreeUsername;
-    @Value("${spring.datasource.three.password}")
-    private String dbThreePassword;
-    @Value("${spring.datasource.three.driver-class-name}")
-    private String dbThreeDriverPrimary;
-
     @Bean(name = "threeDataSource")
-    public DataSource secondaryDataSource() {
-        return DataSourceBuilder.create()
-                .url(dbThreeHost)
-                .username(dbThreeUsername)
-                .password(dbThreePassword)
-                .driverClassName(dbThreeDriverPrimary)
-                .build();
+    public DataSource threeDataSource(RealmDataSourceRegistry registry) {
+        WorldRoutingDataSource routingDataSource = new WorldRoutingDataSource();
+        routingDataSource.setTargetDataSources(registry.getWorldDataSourcesMap());
+        routingDataSource.setDefaultTargetDataSource(registry.getDefaultWorldDataSource());
+        routingDataSource.afterPropertiesSet();
+        return routingDataSource;
     }
 
     @Bean(name = "threeEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean secondaryEntityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean threeEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
             @Qualifier("threeDataSource") DataSource dataSource) {
         return builder
@@ -50,8 +39,8 @@ public class ThreeDataSourceConfig {
     }
 
     @Bean(name = "threeTransactionManager")
-    public PlatformTransactionManager secondaryTransactionManager(
-            @Qualifier("threeEntityManagerFactory") EntityManagerFactory secondaryEntityManagerFactory) {
-        return new JpaTransactionManager(secondaryEntityManagerFactory);
+    public PlatformTransactionManager threeTransactionManager(
+            @Qualifier("threeEntityManagerFactory") EntityManagerFactory threeEntityManagerFactory) {
+        return new JpaTransactionManager(threeEntityManagerFactory);
     }
 }

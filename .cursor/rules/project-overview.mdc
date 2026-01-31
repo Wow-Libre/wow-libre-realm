@@ -1,0 +1,13 @@
+---
+description: Contexto general del proyecto wow-libre-realm
+alwaysApply: true
+---
+
+# Proyecto wow-libre-realm
+
+- **Tipo**: Cliente de conexión a WoW Libre (Spring Boot 3.3.4, Java 17).
+- **Paquete base**: `com.auth.wow.libre`.
+- **Stack**: Spring Boot Web, Security, JPA, MySQL, JWT (jjwt), SOAP (spring-ws), OpenAPI, Lombok, Hibernate Validator, JaCoCo.
+- **Configuración**: `application.yml` con perfiles `local` y `prod`; Jackson en `SNAKE_CASE`; `allow-circular-references: false`.
+- **Calidad**: Qodana (JDK 17, qodana-jvm), New Relic opcional.
+- Al proponer cambios, mantener coherencia con la arquitectura hexagonal y las convenciones existentes.

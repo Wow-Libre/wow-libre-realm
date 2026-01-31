@@ -1,0 +1,14 @@
+---
+description: Excepciones de dominio y manejo global de errores
+globs: "**/domain/model/exception/**/*.java,**/infrastructure/handler/**/*.java"
+alwaysApply: false
+---
+
+# Excepciones y manejo de errores
+
+- **Excepciones de dominio**: Extender `GenericErrorException` (message, transactionId, HttpStatus). Ejemplos: `BadRequestException`, `NotFoundException`, `UnauthorizedException`, `InternalException`.
+- **Constructor típico**: `super(transactionId, message, HttpStatus.XXX)`.
+- **Manejo global**: `ManagerExceptionHandler` (`@RestControllerAdvice`) devuelve siempre `GenericResponse` con `code`, `message`, `transactionId` y `data` cuando aplique.
+- **Casos manejados**: `MethodArgumentNotValidException` → 400 y `NotNullValuesDto`; `HttpMessageNotReadableException` y `MissingServletRequestParameterException` → 400; `GenericErrorException` → status y código de la excepción.
+
+Al añadir nuevas excepciones de dominio, extender `GenericErrorException` y, si hace falta, un nuevo `@ExceptionHandler` que devuelva `ResponseEntity<GenericResponse<...>>`.

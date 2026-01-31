@@ -1,0 +1,18 @@
+---
+description: Convenciones de controladores REST y respuestas API
+globs: "**/infrastructure/controller/**/*.java"
+alwaysApply: false
+---
+
+# Controladores REST
+
+- **Base path**: `@RequestMapping("/api/<recurso>")` (ej. `/api/account`, `/api/characters`).
+- **Cabecera**: Incluir `transaction_id` opcional con `@RequestHeader(name = HEADER_TRANSACTION_ID, required = false)`; usar la constante de `Constants`.
+- **Respuesta**: Siempre `ResponseEntity<GenericResponse<T>>`. Usar `GenericResponseBuilder`:
+  - `new GenericResponseBuilder<>(data, transactionId).created().build()` para 201.
+  - `new GenericResponseBuilder<>(transactionId).ok(data).build()` para 200.
+  - Para 204 (sin cuerpo): `ResponseEntity.status(HttpStatus.NO_CONTENT).build()`.
+- **Validación**: Request body con `@Valid` y DTOs con anotaciones de Hibernate Validator.
+- **Códigos**: CREATED para creación, OK para lecturas/actualizaciones, NOT_FOUND cuando no hay dato, NO_CONTENT cuando la lista/consulta está vacía.
+
+Los controladores son finos: reciben request, llaman al port inyectado y devuelven la respuesta; no contienen lógica de negocio.
