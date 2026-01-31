@@ -75,3 +75,6 @@ application:
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
+soap:
+  client:
+    default-uri: ${SOAP_CLIENT_DEFAULT_URI}
