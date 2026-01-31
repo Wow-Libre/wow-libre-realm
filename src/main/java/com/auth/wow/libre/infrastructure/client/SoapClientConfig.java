@@ -40,28 +40,30 @@ public class SoapClientConfig {
     @Bean(name = "auth_azeroth_core")
     public WebServiceTemplate webServiceAzerothCoreTemplate(@Qualifier("requestMarshaller") Jaxb2Marshaller requestMarshaller,
                                                             @Qualifier("responseUnmarshaller") Jaxb2Marshaller responseUnmarshaller,
-                                                            WebServiceMessageSenderWithAuth auth) {
+                                                            WebServiceMessageSenderWithAuth auth,
+                                                            @Value("${soap.client.default-uri}") String defaultUri) {
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
         webServiceTemplate.setMarshaller(requestMarshaller);
         webServiceTemplate.setUnmarshaller(responseUnmarshaller);
         webServiceTemplate.setMessageSender(auth);
         webServiceTemplate.setInterceptors(new ClientInterceptor[]{new CustomLoggingInterceptor()});
 
-        webServiceTemplate.setDefaultUri("http://172.17.0.1:7878");
+        webServiceTemplate.setDefaultUri(defaultUri);
         return webServiceTemplate;
     }
 
     @Bean(name = "auth_trinity_core")
     public WebServiceTemplate webServiceTrinityTemplate(@Qualifier("requestTrinityMarshaller") Jaxb2Marshaller requestMarshaller,
                                                         @Qualifier("responseTrinityUnmarshaller") Jaxb2Marshaller responseUnmarshaller,
-                                                        WebServiceMessageSenderWithAuth auth) {
+                                                        WebServiceMessageSenderWithAuth auth,
+                                                        @Value("${soap.client.default-uri}") String defaultUri) {
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
         webServiceTemplate.setMarshaller(requestMarshaller);
         webServiceTemplate.setUnmarshaller(responseUnmarshaller);
         webServiceTemplate.setMessageSender(auth);
         webServiceTemplate.setInterceptors(new ClientInterceptor[]{new CustomLoggingInterceptor()});
 
-        webServiceTemplate.setDefaultUri("http://172.17.0.1:7878");
+        webServiceTemplate.setDefaultUri(defaultUri);
         return webServiceTemplate;
     }
 }
