@@ -2,7 +2,7 @@ package com.auth.wow.libre.application.services.user;
 
 import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
-import com.auth.wow.libre.domain.ports.in.config.*;
+import com.auth.wow.libre.domain.ports.in.realmlist.*;
 import com.auth.wow.libre.domain.ports.in.user.*;
 import com.auth.wow.libre.domain.ports.out.user.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
@@ -20,20 +20,19 @@ public class UserService implements UserPort {
     private final ObtainUser obtainUser;
     private final SaveUser saveUser;
     private final PasswordEncoder passwordEncoder;
-    private final ConfigPort configPort;
-
+    private final RealmlistPort realmlistPort;
 
     public UserService(ObtainUser obtainUser, SaveUser saveUser,
-                       PasswordEncoder passwordEncoder, ConfigPort configPort) {
+                       PasswordEncoder passwordEncoder, RealmlistPort realmlistPort) {
         this.obtainUser = obtainUser;
         this.saveUser = saveUser;
         this.passwordEncoder = passwordEncoder;
-        this.configPort = configPort;
+        this.realmlistPort = realmlistPort;
     }
 
     @Transactional
     @Override
-    public void create(String username, String password, byte[] salt, String emulator, String apikey,
+    public void create(String username, String password, String emulator, Long realmId,
                        Integer expansionId, String gmUsername, String gmPassword, String transactionId) {
         LOGGER.info("Create User By Core [Emulator]{} [ExpansionId] {} [Date]: {}", emulator, expansionId, new Date());
 
@@ -45,21 +44,24 @@ public class UserService implements UserPort {
             throw new InternalException("It is not possible to create more than one client", transactionId);
         }
 
-        try {
+        Optional<RealmlistEntity> realmList = realmlistPort.findById(realmId);
 
-            UserEntity user = new UserEntity();
-            user.setUsername(username);
-            user.setStatus(true);
-            user.setPassword(passwordEncoder.encode(password));
-            user.setRol(RolType.WOW_LIBRE.getName());
-            saveUser.save(user);
-
-            configPort.create(gmUsername, gmPassword, apikey, emulator, expansionId, salt, transactionId);
-        } catch (Exception e) {
-            LOGGER.error("[UserService][create] Could not create client {} {} {}", e.getLocalizedMessage(),
-                    e.getCause(), e.getMessage());
-            throw new InternalException("Could not realm config client", transactionId);
+        if (realmList.isEmpty()) {
+            LOGGER.error("[UserService][create] Realm with id {} not found", realmId);
+            throw new InternalException("Realm not found", transactionId);
         }
+
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setStatus(true);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setEmulator(emulator);
+        user.setExpansionId(expansionId);
+        user.setGameMasterPassword(gmPassword);
+        user.setGameMasterUsername(gmUsername);
+        user.setRealmId(realmList.get());
+        user.setRol(RolType.WOW_LIBRE.getName());
+        saveUser.save(user);
     }
 
 

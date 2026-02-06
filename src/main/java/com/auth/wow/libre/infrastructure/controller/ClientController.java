@@ -23,8 +23,8 @@ public class ClientController {
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid CreateClientDto request) {
 
-        userPort.create(request.getUsername(), request.getPassword(), request.getSalt(), request.getEmulator(),
-                request.getApiKey(), request.getExpansionId(), request.getGmUsername(), request.getGmPassword(),
+        userPort.create(request.getUsername(), request.getPassword(), request.getEmulator(),
+                request.getRealmId(), request.getExpansionId(), request.getGmUsername(), request.getGmPassword(),
                 transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)

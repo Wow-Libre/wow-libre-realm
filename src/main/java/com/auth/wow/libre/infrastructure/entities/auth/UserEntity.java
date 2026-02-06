@@ -15,4 +15,18 @@ public class UserEntity {
     private String password;
     private String rol;
     private boolean status;
+    @Column(name = "game_master_username")
+    private String gameMasterUsername;
+    @Column(name = "game_master_password")
+    private String gameMasterPassword;
+    private String emulator;
+    @Column(name = "expansion_id")
+    private Integer expansionId;
+    @JoinColumn(
+            name = "realm_id",
+            referencedColumnName = "id")
+    @ManyToOne(
+            optional = false,
+            fetch = FetchType.LAZY)
+    private RealmlistEntity realmId;
 }

@@ -33,24 +33,17 @@ CREATE TABLE acore_auth.users (
     password VARCHAR(100) NOT NULL,
     rol VARCHAR(30) NOT NULL,
     status BOOLEAN NOT NULL,
-
-
-    CONSTRAINT uq_realm_config_username UNIQUE (username)
-);
-
-CREATE TABLE acore_auth.configs (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     game_master_username VARCHAR(100) NOT NULL,
     game_master_password VARCHAR(100) NOT NULL,
-    status BOOLEAN NOT NULL,
-    api_key VARCHAR(64) NOT NULL,
     emulator VARCHAR(30) NOT NULL,
     expansion_id INT NOT NULL,
-    salt              VARBINARY(16),
+    realm_id BIGINT NOT NULL,
 
-    CONSTRAINT uq_config_username UNIQUE (game_master_username),
-    CONSTRAINT uq_config_api_key UNIQUE (api_key)
+    CONSTRAINT uq_config_username UNIQUE (username),
+    CONSTRAINT config_realm_id_uq UNIQUE (realm_id),
+    CONSTRAINT config_realm_id_fk FOREIGN KEY (realm_id) REFERENCES acore_realmd.realmlist(id)
 );
+
 
 ALTER TABLE acore_characters.characters
     ADD COLUMN dream integer,

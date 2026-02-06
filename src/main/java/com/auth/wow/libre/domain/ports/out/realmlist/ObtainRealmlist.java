@@ -7,4 +7,6 @@ import java.util.*;
 public interface ObtainRealmlist {
 
     List<RealmlistEntity> findByAll();
+
+    Optional<RealmlistEntity> finById(Long id);
 }
