@@ -15,8 +15,6 @@ class CustomUserDetailsTest {
     private final Long userId = 1L;
     private final String username = "testUser";
     private final String password = "securePassword";
-    private final String avatarUrl = "http://example.com/avatar.jpg";
-    private final String language = "en";
     private Collection<? extends GrantedAuthority> authorities;
 
     @BeforeEach
@@ -26,14 +24,14 @@ class CustomUserDetailsTest {
         boolean accountNonLocked = true;
         boolean credentialsNonExpired = true;
         boolean enabled = true;
+        Long realmId = 1L;
         userDetails = new CustomUserDetails(authorities, password, username, accountNonExpired,
-                accountNonLocked, credentialsNonExpired, enabled,
-                userId, avatarUrl, language);
+                accountNonLocked, credentialsNonExpired, enabled, userId, realmId);
     }
 
     @Test
-    void testGetUserId() {
-        assertEquals(userId, userDetails.getUserId());
+    void testGetId() {
+        assertEquals(userId, userDetails.getId());
     }
 
     @Test
@@ -71,13 +69,4 @@ class CustomUserDetailsTest {
         assertTrue(userDetails.isEnabled());
     }
 
-    @Test
-    void testGetAvatarUrl() {
-        assertEquals(avatarUrl, userDetails.getAvatarUrl());
-    }
-
-    @Test
-    void testGetLanguage() {
-        assertEquals(language, userDetails.getLanguage());
-    }
 }

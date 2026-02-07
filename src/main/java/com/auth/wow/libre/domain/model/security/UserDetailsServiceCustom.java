@@ -41,8 +41,7 @@ public class UserDetailsServiceCustom implements UserDetailsService {
                 true,
                 clientData.isStatus(),
                 clientData.getId(),
-                "",
-                "es"
+                clientData.getRealmId().getId()
         );
     }
 
