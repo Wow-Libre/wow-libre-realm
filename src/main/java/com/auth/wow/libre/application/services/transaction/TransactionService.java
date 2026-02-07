@@ -50,7 +50,7 @@ public class TransactionService implements TransactionPort {
     @Transactional
     @Override
     public void sendItems(Long userId, Long accountId, List<ItemQuantityDto> items, String reference,
-                          Double amount, String transactionId) {
+                          Double amount, String emulator, String transactionId) {
 
         LOGGER.info("[TransactionService] [sendItems] accountId {} userId {} items {} reference {} amount {}",
                 accountId, userId, items, reference, amount);
@@ -87,7 +87,7 @@ public class TransactionService implements TransactionPort {
                                     .characterId(character.id).transactionDate(LocalDateTime.now()).build(),
                             transactionId);
                     try {
-                        executeCommandsPort.execute(command, transactionId);
+                        executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
                     } catch (JAXBException ignored) {
                     }
 
@@ -100,6 +100,7 @@ public class TransactionService implements TransactionPort {
     @Override
     public void sendSubscriptionBenefits(Long userId, Long accountId, Long characterId,
                                          List<ItemQuantityDto> items, String benefitType, Double amount,
+                                         String emulator,
                                          String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
@@ -121,7 +122,7 @@ public class TransactionService implements TransactionPort {
         };
 
         try {
-            executeCommandsPort.execute(command, transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
                     "                    \"the execution of the core azeroth/trinity {}", transactionId);
@@ -132,7 +133,8 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public void sendPromotion(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items, String type,
-                              Double amount, Integer minLvl, Integer maxLvl, Integer level, String transactionId) {
+                              Double amount, Integer minLvl, Integer maxLvl, Integer level, String emulator,
+                              String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
 
@@ -152,7 +154,7 @@ public class TransactionService implements TransactionPort {
         };
 
         try {
-            executeCommandsPort.execute(command, transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
                     "                    \"the execution of the core azeroth/trinity {}", transactionId);
@@ -163,7 +165,7 @@ public class TransactionService implements TransactionPort {
 
     @Override
     public void sendBenefitsGuild(Long userId, Long accountId, Long characterId, List<ItemQuantityDto> items,
-                                  String transactionId) {
+                                  String emulator, String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
 
@@ -174,7 +176,8 @@ public class TransactionService implements TransactionPort {
         String characterName = characterDetailDto.name;
 
         try {
-            executeCommandsPort.execute(CommandsCore.sendItems(characterName, "", "", items), transactionId);
+            executeCommandsPort.execute(CommandsCore.sendItems(characterName, "", "", items),
+                    EmulatorCore.valueOf(emulator), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("sendBenefitsGuild It was not possible to claim the premium benefit, something has failed in" +
                     "the execution of the core azeroth/trinity {}", transactionId);
@@ -184,7 +187,8 @@ public class TransactionService implements TransactionPort {
     }
 
     @Override
-    public MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String transactionId) {
+    public MachineClaimDto sendMachine(Long accountId, Long characterId, String type, String emulator,
+                                       String transactionId) {
         MachineType machineType = MachineType.findByName(type);
 
         CharactersDto characterDetailDto = charactersPort.getCharacters(accountId, transactionId);
@@ -262,7 +266,7 @@ public class TransactionService implements TransactionPort {
             try {
                 // Reemplaza el nombre del personaje en el comando generado
                 String personalizedCommand = command.replaceFirst("null", character.name);
-                executeCommandsPort.execute(personalizedCommand, transactionId);
+                executeCommandsPort.execute(personalizedCommand, EmulatorCore.valueOf(emulator), transactionId);
             } catch (Exception e) {
                 LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
                 return new MachineClaimDto(false);

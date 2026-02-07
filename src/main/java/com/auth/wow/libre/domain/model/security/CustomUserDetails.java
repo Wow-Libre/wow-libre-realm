@@ -19,10 +19,14 @@ public class CustomUserDetails implements UserDetails {
     private final boolean enabled;
     @Getter
     private final Long realmId;
+    @Getter
+    private final String emulator;
+    @Getter
+    private final Integer expansionId;
 
     public CustomUserDetails(Collection<? extends GrantedAuthority> authorities, String password, String username,
                              boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired,
-                             boolean enabled, Long id, Long realmId) {
+                             boolean enabled, Long id, Long realmId, String emulator, Integer expansionId) {
         this.authorities = authorities;
         this.password = password;
         this.username = username;
@@ -32,6 +36,8 @@ public class CustomUserDetails implements UserDetails {
         this.enabled = enabled;
         this.id = id;
         this.realmId = realmId;
+        this.emulator = emulator;
+        this.expansionId = expansionId;
     }
 
 

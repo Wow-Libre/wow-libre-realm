@@ -79,8 +79,8 @@ application:
         password: ${DB_WOW_CLIENT_PASSWORD}
         driver-class-name: com.mysql.cj.jdbc.Driver
       soap:
-        username: ${WOW_CLIENT_SOAP_GM_USERNAME:admin}
-        password: ${WOW_CLIENT_SOAP_GM_PASSWORD:admin}
+        username: ${WOW_CLIENT_SOAP_GM_USERNAME}
+        password: ${WOW_CLIENT_SOAP_GM_PASSWORD}
   security:
     jwt:
       secret-key: ${WOW_CLIENT_SECRET_JWT}

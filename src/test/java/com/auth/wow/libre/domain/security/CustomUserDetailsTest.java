@@ -26,7 +26,7 @@ class CustomUserDetailsTest {
         boolean enabled = true;
         Long realmId = 1L;
         userDetails = new CustomUserDetails(authorities, password, username, accountNonExpired,
-                accountNonLocked, credentialsNonExpired, enabled, userId, realmId);
+                accountNonLocked, credentialsNonExpired, enabled, userId, realmId, "emulator", 1);
     }
 
     @Test

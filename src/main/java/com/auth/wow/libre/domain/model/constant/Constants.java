@@ -11,6 +11,8 @@ public class Constants {
     // HEADERS
     public static final String HEADER_TRANSACTION_ID = "transaction_id";
     public static final String HEADER_REALM_ID = "x-realm_id";
+    public static final String HEADER_EMULATOR = "x-emulator";
+    public static final String HEADER_EXPANSION_ID = "x-expansion_id";
 
     /* JWT HEADERS */
     public static final String PARAM_ACCOUNT_ID = "account_id";

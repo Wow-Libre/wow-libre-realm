@@ -22,10 +22,11 @@ public class TransactionController {
     @PostMapping("/purchase")
     public ResponseEntity<GenericResponse<Void>> sendItems(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid CreateTransactionItemsDto request) {
 
         transactionPort.sendItems(request.getUserId(), request.getAccountId(), request.getItems(),
-                request.getReference(), request.getAmount(), transactionId);
+                request.getReference(), request.getAmount(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
@@ -73,6 +74,7 @@ public class TransactionController {
     @PostMapping("/claim-machine")
     public ResponseEntity<GenericResponse<MachineClaimDto>> claimGuildBenefits(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid MachineDto request) {
 
         MachineClaimDto claimSuccess = transactionPort.sendMachine(request.getAccountId(),

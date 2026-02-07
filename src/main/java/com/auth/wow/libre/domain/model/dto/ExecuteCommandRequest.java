@@ -7,6 +7,4 @@ import lombok.*;
 public class ExecuteCommandRequest {
     @NotNull
     private String message;
-    @NotNull
-    private byte[] salt;
 }

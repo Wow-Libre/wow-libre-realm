@@ -42,7 +42,7 @@ public class AccountLK extends Account {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WRATH_OF_THE_LICH_KING,
                     emulator.getName());
 
-            executeCommandsPort.execute(commandStrategy.getCreateCommand(username, password), transactionId);
+            executeCommandsPort.execute(commandStrategy.getCreateCommand(username, password), emulator, transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountLK] [create] The client could not be registered because SOAP communication is " +
                     "unavailable or because SOAP access is invalid.");
@@ -66,11 +66,11 @@ public class AccountLK extends Account {
     @Override
     public void changePassword(String username, String password, String email, EmulatorCore emulator,
                                String transactionId) {
-
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WRATH_OF_THE_LICH_KING,
                     emulator.getName());
-            executeCommandsPort.execute(commandStrategy.getChangePasswordCommand(username, password), transactionId);
+            executeCommandsPort.execute(commandStrategy.getChangePasswordCommand(username, password), emulator,
+                    transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountLK] [changePassword] It was not possible to change the client password.");
             throw new InternalException("It was not possible to register the client to the system", transactionId);

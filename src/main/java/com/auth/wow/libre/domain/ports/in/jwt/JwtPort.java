@@ -13,6 +13,10 @@ public interface JwtPort {
 
     Long extractRealmId(String token);
 
+    Long extractExpansionId(String token);
+
+    String extractEmulator(String token);
+
     boolean isTokenValid(String token);
 
     String generateRefreshToken(CustomUserDetails userDetails);

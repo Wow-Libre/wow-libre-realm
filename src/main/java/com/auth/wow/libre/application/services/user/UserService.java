@@ -33,7 +33,7 @@ public class UserService implements UserPort {
     @Transactional
     @Override
     public void create(String username, String password, String emulator, Long realmId,
-                       Integer expansionId, String gmUsername, String gmPassword, String transactionId) {
+                       Integer expansionId, String transactionId) {
         LOGGER.info("Create User By Core [Emulator]{} [ExpansionId] {} [Date]: {}", emulator, expansionId, new Date());
 
         Optional<UserEntity> findUsername = obtainUser.findByUsername(username);
@@ -57,8 +57,6 @@ public class UserService implements UserPort {
         user.setPassword(passwordEncoder.encode(password));
         user.setEmulator(emulator);
         user.setExpansionId(expansionId);
-        user.setGameMasterPassword(gmPassword);
-        user.setGameMasterUsername(gmUsername);
         user.setRealmId(realmList.get());
         user.setRol(RolType.WOW_LIBRE.getName());
         saveUser.save(user);

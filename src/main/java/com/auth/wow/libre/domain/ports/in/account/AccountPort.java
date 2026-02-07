@@ -5,7 +5,7 @@ import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
 
 public interface AccountPort {
     Long create(String username, String password, String email, Long userId,
-                Integer expansion, byte[] salt, String transactionId);
+                Integer expansion, String emulator, String transactionId);
 
     Long countOnline(String transactionId);
 
@@ -13,8 +13,8 @@ public interface AccountPort {
 
     AccountDetailDto account(Long accountId, String transactionId);
 
-    void changePassword(Long accountId, Long userId, String password, byte[] saltPassword, Integer expansionId,
-                        String transactionId);
+    void changePassword(Long accountId, Long userId, String password, Integer expansionId,
+                        String emulator, String transactionId);
 
     AccountsDto accounts(int size, int page, String filter, String transactionId);
 

@@ -18,27 +18,15 @@ public class CommandsService implements ExecuteCommandsPort {
         this.trinityClient = trinityClient;
     }
 
-    @Override
-    public void execute(String messageEncrypt, byte[] salt, String transactionId) {
-
-        try {
-            execute(messageEncrypt, transactionId);
-        } catch (Exception e) {
-            throw new InternalException("An error has occurred with encryption or the SOAP system is not available " +
-                    "from the emulator", transactionId);
-        }
-
-    }
 
     @Override
-    public void execute(String command, String transactionId) throws JAXBException {
+    public void execute(String command, EmulatorCore core, String transactionId) throws JAXBException {
 
-        EmulatorCore core = configPort.emulator(transactionId);
 
         switch (core) {
             case TRINITY_CORE -> trinityClient.executeCommand(command);
             case AZEROTH_CORE -> azerothClient.executeCommand(command);
-            default -> throw new UnsupportedOperationException("No client defined for core: " + core.getName());
+            default -> throw new InternalException("No client defined for core: " + core.getName(), transactionId);
         }
     }
 }

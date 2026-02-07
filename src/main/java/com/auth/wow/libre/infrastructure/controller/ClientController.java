@@ -24,8 +24,7 @@ public class ClientController {
             @RequestBody @Valid CreateClientDto request) {
 
         userPort.create(request.getUsername(), request.getPassword(), request.getEmulator(),
-                request.getRealmId(), request.getExpansionId(), request.getGmUsername(), request.getGmPassword(),
-                transactionId);
+                request.getRealmId(), request.getExpansionId(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());

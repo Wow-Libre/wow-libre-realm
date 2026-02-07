@@ -33,8 +33,6 @@ CREATE TABLE acore_auth.users (
     password VARCHAR(100) NOT NULL,
     rol VARCHAR(30) NOT NULL,
     status BOOLEAN NOT NULL,
-    game_master_username VARCHAR(100) NOT NULL,
-    game_master_password VARCHAR(100) NOT NULL,
     emulator VARCHAR(30) NOT NULL,
     expansion_id INT NOT NULL,
     realm_id BIGINT NOT NULL,

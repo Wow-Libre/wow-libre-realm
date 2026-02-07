@@ -58,8 +58,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = authHeader.substring(7);
             final String email = jwtPort.extractUsername(jwt);
             final String realmId = String.valueOf(jwtPort.extractRealmId(jwt));
+            final String expansionId = String.valueOf(jwtPort.extractExpansionId(jwt));
+            final String emulator = jwtPort.extractEmulator(jwt);
 
             requestWrapper.setHeader(HEADER_REALM_ID, realmId);
+            requestWrapper.setHeader(HEADER_EXPANSION_ID, expansionId);
+            requestWrapper.setHeader(HEADER_EMULATOR, emulator);
+            
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 if (jwtPort.isTokenValid(jwt)) {

@@ -40,6 +40,16 @@ public class JwtPortService implements JwtPort {
         return extractClaim(token, claims -> claims.get(HEADER_REALM_ID, Long.class));
     }
 
+    @Override
+    public Long extractExpansionId(String token) {
+        return extractClaim(token, claims -> claims.get(HEADER_EXPANSION_ID, Long.class));
+    }
+
+    @Override
+    public String extractEmulator(String token) {
+        return extractClaim(token, claims -> claims.get(HEADER_EMULATOR, String.class));
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -49,6 +59,9 @@ public class JwtPortService implements JwtPort {
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put(CONSTANT_ROL_JWT_PROP, userDetails.getAuthorities());
+        extraClaims.put(HEADER_REALM_ID, userDetails.getRealmId());
+        extraClaims.put(HEADER_EXPANSION_ID, userDetails.getExpansionId());
+        extraClaims.put(HEADER_EMULATOR, userDetails.getEmulator());
 
         return generateToken(extraClaims, userDetails);
     }

@@ -2,6 +2,7 @@ package com.auth.wow.libre.infrastructure.controllers;
 
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.infrastructure.controller.*;
@@ -34,7 +35,8 @@ class AccountControllerTest {
     void testCreateAccount() {
         when(accountPort.create(any(), any(), any(), any(), any(), any(), any())).thenReturn(1L);
         CreateAccountDto request = new CreateAccountDto("user", "pass", "email", 1L, 2, new byte[16]);
-        ResponseEntity<GenericResponse<Long>> response = accountController.create("12345", request);
+        ResponseEntity<GenericResponse<Long>> response = accountController.create("12345",
+                EmulatorCore.AZEROTH_CORE.getName(), request);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -90,7 +92,8 @@ class AccountControllerTest {
         request.setSalt(new byte[16]);
         request.setUserId(22L);
 
-        ResponseEntity<GenericResponse<Void>> response = accountController.changePassword("12345", request);
+        ResponseEntity<GenericResponse<Void>> response = accountController.changePassword("12345",
+                EmulatorCore.AZEROTH_CORE.getName(), request);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());

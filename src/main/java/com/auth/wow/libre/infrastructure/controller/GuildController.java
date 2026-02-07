@@ -51,11 +51,12 @@ public class GuildController {
     @PutMapping(path = "/attach")
     public ResponseEntity<GenericResponse<Void>> attach(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestParam(name = "account_id") final Long accountId,
             @RequestParam(name = "guild_id") final Long guildId,
             @RequestParam(name = "character_id") final Long characterId) {
 
-        guildPort.attach(guildId, accountId, characterId, transactionId);
+        guildPort.attach(guildId, accountId, characterId, emulator, transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -66,10 +67,11 @@ public class GuildController {
     @DeleteMapping(path = "/member")
     public ResponseEntity<GenericResponse<Void>> unInviteGuild(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestParam(name = "character_id") final Long characterId,
             @RequestParam(name = "account_id") final Long accountId) {
 
-        guildPort.unInviteGuild(accountId, characterId, transactionId);
+        guildPort.unInviteGuild(accountId, characterId, emulator, transactionId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
