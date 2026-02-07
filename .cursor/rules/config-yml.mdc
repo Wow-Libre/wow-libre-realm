@@ -11,5 +11,6 @@ alwaysApply: false
 - **Naming**: Claves en `kebab-case` (ej. `default-uri`, `secret-key`). Jackson está en `SNAKE_CASE` para JSON; la config sigue kebab-case.
 - **Estructura**: `spring.*` para Boot/JPA/datasource; `application.*` para URLs, seguridad y reinos; `soap.client.*` para el cliente SOAP.
 - **Datasources**: `spring.datasource.primary` es AUTH (único). Characters y World son por reino: `application.realms[].id`, `application.realms[].characters` y `application.realms[].world` (url, username, password, driver-class-name). Añadir más reinos añadiendo ítems a `application.realms`.
+- **SOAP por reino**: Cada reino puede definir `application.realms[].soap` con `username` y `password` (credenciales GM para Basic Auth hacia el emulador). Si no se define, las llamadas SOAP para ese reino fallarán.
 
 Consistencia con la jerarquía actual evita conflictos y facilita el despliegue por entorno.

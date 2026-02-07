@@ -40,6 +40,9 @@ application:
         username: root
         password: Wowlibre96@@
         driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        username: admin
+        password: admin
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
@@ -75,6 +78,9 @@ application:
         username: ${DB_WOW_CLIENT_USERNAME}
         password: ${DB_WOW_CLIENT_PASSWORD}
         driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        username: ${WOW_CLIENT_SOAP_GM_USERNAME:admin}
+        password: ${WOW_CLIENT_SOAP_GM_PASSWORD:admin}
   security:
     jwt:
       secret-key: ${WOW_CLIENT_SECRET_JWT}

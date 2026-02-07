@@ -20,6 +20,14 @@ public class RealmProperties {
         private String name;
         private DatasourceConfig characters;
         private DatasourceConfig world;
+        /** Credenciales GM para SOAP (Basic Auth) hacia el emulador de este reino. */
+        private SoapCredentials soap;
+    }
+
+    @Data
+    public static class SoapCredentials {
+        private String username;
+        private String password;
     }
 
     @Data
