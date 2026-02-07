@@ -23,7 +23,7 @@ public class RealmListController {
     public ResponseEntity<GenericResponse<List<RealmlistDto>>> realmList(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
 
-        List<RealmlistDto> realmlist = realmlistPort.findByAll();
+        List<RealmlistDto> realmlist = realmlistPort.findByAllNotLinked();
 
         return ResponseEntity
                 .status(HttpStatus.OK)

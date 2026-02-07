@@ -20,6 +20,16 @@ public class JpaRealmlistAdapter implements ObtainRealmlist {
     }
 
     @Override
+    public List<RealmlistEntity> findByAllLinked() {
+        return realmlistRepository.findRealmsWithLinkedUsers();
+    }
+
+    @Override
+    public List<RealmlistEntity> findByAllNotLinked() {
+        return realmlistRepository.findRealmsWithNoLinkedUsers();
+    }
+
+    @Override
     public Optional<RealmlistEntity> finById(Long id) {
         return realmlistRepository.findById(id);
     }

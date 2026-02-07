@@ -28,6 +28,26 @@ public class RealmlistService implements RealmlistPort {
     }
 
     @Override
+    public List<RealmlistDto> findByAllLinked() {
+        return obtainRealmlist.findByAllLinked().stream()
+                .map(data -> new RealmlistDto(
+                        data.getId(),
+                        data.getName()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RealmlistDto> findByAllNotLinked() {
+        return obtainRealmlist.findByAllNotLinked().stream()
+                .map(data -> new RealmlistDto(
+                        data.getId(),
+                        data.getName()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<RealmlistEntity> findById(Long id) {
         return obtainRealmlist.finById(id);
     }
