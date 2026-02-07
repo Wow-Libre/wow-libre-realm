@@ -84,6 +84,7 @@ public class TransactionService implements TransactionPort {
                                     .transactionType(TransactionType.SEND_ITEMS)
                                     .successful(true)
                                     .status(true)
+                                    .emulator(emulator)
                                     .characterId(character.id).transactionDate(LocalDateTime.now()).build(),
                             transactionId);
                     try {

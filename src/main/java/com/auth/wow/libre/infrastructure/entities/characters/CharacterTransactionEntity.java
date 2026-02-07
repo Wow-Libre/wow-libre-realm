@@ -30,4 +30,5 @@ public class CharacterTransactionEntity {
     private LocalDateTime transactionDate;
     @Column(name = "transaction_type")
     private String transactionType;
+    private String emulator;
 }

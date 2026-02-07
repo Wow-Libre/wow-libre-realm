@@ -43,7 +43,7 @@ public class CharacterSkillService implements CharacterSkillsPort {
 
     @Override
     public void professionAnnouncement(Long userId, Long characterId, Long accountId, Long skillId, String message,
-                                       String transactionId) {
+                                       String emulator, String transactionId) {
 
         CharacterDetailDto characterDetailDto = charactersPort.getCharacter(characterId, accountId, transactionId);
 
@@ -74,6 +74,7 @@ public class CharacterSkillService implements CharacterSkillsPort {
                 .indebtedness(true)
                 .amount(TransactionType.ANNOUNCEMENT.getCost())
                 .transactionType(TransactionType.ANNOUNCEMENT)
+                .emulator(emulator)
                 .build(), transactionId);
 
     }

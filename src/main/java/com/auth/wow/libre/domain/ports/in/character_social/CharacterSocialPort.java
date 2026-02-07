@@ -8,8 +8,8 @@ public interface CharacterSocialPort {
     void deleteFriend(Long characterId, Long accountId, Long friendGuid, Long userId, String transactionId);
 
     void sendMoney(Long characterId, Long accountId, Long userId, Long friendGuid, Long money, Double cost,
-                   String transactionId);
+                   String emulator, String transactionId);
 
     void sendLevel(Long characterId, Long accountId, Long userId, Long friendGuid, int level, Double cost,
-                   String transactionId);
+                   String emulator, String transactionId);
 }

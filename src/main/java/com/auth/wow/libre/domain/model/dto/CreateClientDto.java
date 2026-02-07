@@ -15,8 +15,4 @@ public class CreateClientDto {
     private String emulator;
     @NotNull
     private Integer expansionId;
-    @NotNull
-    private String gmUsername;
-    @NotNull
-    private String gmPassword;
 }

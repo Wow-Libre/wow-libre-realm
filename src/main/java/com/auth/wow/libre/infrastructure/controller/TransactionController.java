@@ -35,11 +35,12 @@ public class TransactionController {
     @PostMapping("/subscription-benefits")
     public ResponseEntity<GenericResponse<Void>> subscriptionBenefits(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid SubscriptionBenefitsDto request) {
 
         transactionPort.sendSubscriptionBenefits(request.getUserId(), request.getAccountId(),
                 request.getCharacterId(), request.getItems(),
-                request.getBenefitType(), request.getAmount(), transactionId);
+                request.getBenefitType(), request.getAmount(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
@@ -48,12 +49,13 @@ public class TransactionController {
     @PostMapping("/claim-promotions")
     public ResponseEntity<GenericResponse<Void>> claimPromotions(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid PromotionsDto request) {
 
         transactionPort.sendPromotion(request.getUserId(), request.getAccountId(),
                 request.getCharacterId(), request.getItems(),
                 request.getType(), request.getAmount(), request.getMinLvl(), request.getMaxLvl(), request.getLevel(),
-                transactionId);
+                emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
@@ -62,10 +64,11 @@ public class TransactionController {
     @PostMapping("/claim-guild-benefits")
     public ResponseEntity<GenericResponse<Void>> claimGuildBenefits(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid BenefitsGuildDto request) {
 
         transactionPort.sendBenefitsGuild(request.getUserId(), request.getAccountId(),
-                request.getCharacterId(), request.getItems(), transactionId);
+                request.getCharacterId(), request.getItems(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
@@ -78,7 +81,7 @@ public class TransactionController {
             @RequestBody @Valid MachineDto request) {
 
         MachineClaimDto claimSuccess = transactionPort.sendMachine(request.getAccountId(),
-                request.getCharacterId(), request.getType(), transactionId);
+                request.getCharacterId(), request.getType(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<>(claimSuccess, transactionId).ok().build());

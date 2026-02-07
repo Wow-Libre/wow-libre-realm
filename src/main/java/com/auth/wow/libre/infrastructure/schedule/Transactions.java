@@ -30,8 +30,8 @@ public class Transactions {
 
     @Scheduled(cron = " */40 * * * * *")
     @Transactional
-    public void sendCreditLoans() {
-        String transactionId = "";
+    public void processItemShippingTransaction() {
+        final String transactionId = UUID.randomUUID().toString();
         List<CharacterTransactionEntity> characterTransaction =
                 characterTransactionPort.findByTransactionType(TransactionType.SEND_ITEMS, transactionId);
 
@@ -63,7 +63,8 @@ public class Transactions {
                         cost -= deduction;
                     }
                 }
-                executeCommandsPort.execute(transaction.getCommand(), transactionId);
+                executeCommandsPort.execute(transaction.getCommand(), EmulatorCore.valueOf(transaction.getEmulator())
+                        , transactionId);
                 transaction.setStatus(false);
                 characterTransactionPort.update(transaction, transactionId);
             } catch (JAXBException e) {
@@ -88,7 +89,8 @@ public class Transactions {
         CharacterTransactionEntity transaction = characterTransaction.get();
 
         try {
-            executeCommandsPort.execute(transaction.getCommand(), transactionId);
+            executeCommandsPort.execute(transaction.getCommand(), EmulatorCore.valueOf(transaction.getEmulator()),
+                    transactionId);
             transaction.setStatus(false);
             characterTransactionPort.update(transaction, transactionId);
         } catch (JAXBException e) {

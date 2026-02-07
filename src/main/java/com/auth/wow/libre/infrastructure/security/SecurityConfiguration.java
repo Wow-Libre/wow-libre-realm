@@ -4,9 +4,8 @@ import com.auth.wow.libre.application.services.jwt.*;
 import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.security.*;
 import com.auth.wow.libre.domain.ports.in.jwt.*;
+import com.auth.wow.libre.infrastructure.filter.*;
 import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
-import com.auth.wow.libre.infrastructure.filter.JwtAuthenticationFilter;
-import com.auth.wow.libre.infrastructure.filter.RealmFilter;
 import org.springframework.context.annotation.*;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
@@ -89,6 +88,7 @@ public class SecurityConfiguration {
                                 "/api/account/create/user",
                                 "/api/dashboard/stats",
                                 "/api/dashboard/announcements",
+                                "/api/realmlist",
 
                                 // SWAGGER (siguen sin autenticación)
                                 "/v2/api-docs", "/swagger-resources",
