@@ -62,5 +62,19 @@ public class UserService implements UserPort {
         saveUser.save(user);
     }
 
+    @Override
+    public void delete(String username, String transactionId) {
+        Optional<UserEntity> findUsername = obtainUser.findByUsername(username);
+
+        if (findUsername.isEmpty()) {
+            LOGGER.error("[UserService][delete] User with username {} not found", username);
+            throw new InternalException("User with username not found", transactionId);
+        }
+
+        UserEntity user = findUsername.get();
+        user.setStatus(false);
+        saveUser.save(user);
+    }
+
 
 }

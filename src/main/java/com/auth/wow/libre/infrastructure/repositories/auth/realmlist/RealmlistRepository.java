@@ -19,6 +19,7 @@ public interface RealmlistRepository extends CrudRepository<RealmlistEntity, Lon
     /**
      * Reinos que no tienen ningún usuario vinculado.
      */
-    @Query("SELECT r FROM RealmlistEntity r WHERE NOT EXISTS (SELECT 1 FROM UserEntity u WHERE u.realmId.id = r.id)")
+    @Query("SELECT r FROM RealmlistEntity r WHERE NOT EXISTS (SELECT 1 FROM UserEntity u WHERE u.realmId.id = r.id " +
+            "and u.status = true)")
     List<RealmlistEntity> findRealmsWithNoLinkedUsers();
 }

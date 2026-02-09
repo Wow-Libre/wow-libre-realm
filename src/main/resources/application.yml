@@ -43,6 +43,21 @@ application:
       soap:
         username: admin
         password: admin
+    - id: 2
+      name: "Reino Secundario"
+      characters:
+        url: jdbc:mysql://localhost:3306/acore_characters
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: jdbc:mysql://localhost:3306/acore_world
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        username: admin
+        password: admin
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158

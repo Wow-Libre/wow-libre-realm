@@ -29,4 +29,16 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
+
+    @DeleteMapping
+    public ResponseEntity<GenericResponse<Void>> delete(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_USERNAME) final String username) {
+
+        userPort.delete(username, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
+
 }

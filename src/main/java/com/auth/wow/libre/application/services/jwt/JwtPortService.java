@@ -62,7 +62,6 @@ public class JwtPortService implements JwtPort {
         extraClaims.put(HEADER_REALM_ID, userDetails.getRealmId());
         extraClaims.put(HEADER_EXPANSION_ID, userDetails.getExpansionId());
         extraClaims.put(HEADER_EMULATOR, userDetails.getEmulator());
-
         return generateToken(extraClaims, userDetails);
     }
 
