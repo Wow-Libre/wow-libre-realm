@@ -2,19 +2,23 @@ package com.auth.wow.libre.infrastructure.conf.db;
 
 import com.auth.wow.libre.domain.model.GameMasterCredentials;
 import com.auth.wow.libre.infrastructure.conf.RealmProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 /**
- * Devuelve las credenciales GM para SOAP del reino actual (o del reino indicado).
- * Lee de application.realms[].soap (username/password) por reino.
+ * Devuelve credenciales y URI SOAP del reino. Lee application.realms[].soap (username, password, uri) por reino.
+ * Si un reino no define uri, se usa soap.client.default-uri.
  */
 @Component
 public class RealmSoapCredentialsProvider {
 
     private final RealmProperties realmProperties;
     private final RealmDataSourceRegistry registry;
+
+    @Value("${soap.client.default-uri:http://127.0.0.1:7878}")
+    private String defaultSoapUri;
 
     public RealmSoapCredentialsProvider(RealmProperties realmProperties,
                                         RealmDataSourceRegistry registry) {
@@ -38,6 +42,22 @@ public class RealmSoapCredentialsProvider {
                 })
                 .orElseThrow(() -> new IllegalStateException(
                         "No realm config found for realm id: " + effectiveRealmId));
+    }
+
+    /**
+     * URI del servicio SOAP para el reino. Si el reino no define soap.uri, se usa soap.client.default-uri.
+     */
+    public String getUri(Long realmId) {
+        Long effectiveRealmId = realmId != null ? realmId : registry.getDefaultRealmId();
+        return findRealmConfig(effectiveRealmId)
+                .map(realm -> {
+                    RealmProperties.SoapCredentials soap = realm.getSoap();
+                    if (soap != null && soap.getUri() != null && !soap.getUri().isBlank()) {
+                        return soap.getUri().trim();
+                    }
+                    return defaultSoapUri;
+                })
+                .orElse(defaultSoapUri);
     }
 
     private Optional<RealmProperties.RealmConfig> findRealmConfig(Long realmId) {

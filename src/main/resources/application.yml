@@ -41,6 +41,7 @@ application:
         password: Wowlibre96@@
         driver-class-name: com.mysql.cj.jdbc.Driver
       soap:
+        uri: http://172.17.0.1:7878
         username: sebastian
         password: sebastian
     - id: 2
@@ -56,6 +57,7 @@ application:
         password: Wowlibre96@@
         driver-class-name: com.mysql.cj.jdbc.Driver
       soap:
+        uri: http://172.17.0.2:7878
         username: admin
         password: admin
   security:
@@ -94,6 +96,7 @@ application:
         password: ${DB_WOW_CLIENT_PASSWORD}
         driver-class-name: com.mysql.cj.jdbc.Driver
       soap:
+        uri: ${WOW_CLIENT_SOAP_URI}
         username: ${WOW_CLIENT_SOAP_GM_USERNAME}
         password: ${WOW_CLIENT_SOAP_GM_PASSWORD}
   security:

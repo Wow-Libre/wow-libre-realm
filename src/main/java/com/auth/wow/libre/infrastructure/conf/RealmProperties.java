@@ -28,6 +28,8 @@ public class RealmProperties {
     public static class SoapCredentials {
         private String username;
         private String password;
+        /** URI del servicio SOAP de este reino (ej. http://host:7878). Si no se define, se usa soap.client.default-uri. */
+        private String uri;
     }
 
     @Data
