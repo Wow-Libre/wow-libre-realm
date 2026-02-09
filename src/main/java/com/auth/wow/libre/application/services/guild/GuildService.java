@@ -93,7 +93,7 @@ public class GuildService implements GuildPort {
 
         try {
             executeCommandsPort.execute(CommandsCore.invite(character.getName(), getGuild.get().name),
-                    EmulatorCore.valueOf(emulator), transactionId);
+                    EmulatorCore.getByName(emulator), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("[GuildService] [attach] It was not possible to link the client to the brotherhood. " +
                             "TransactionId [{}] -  LocalizedMessage [{}] - Message [{}]",
@@ -130,7 +130,7 @@ public class GuildService implements GuildPort {
         }
 
         try {
-            executeCommandsPort.execute(CommandsCore.unInvite(character.getName()), EmulatorCore.valueOf(emulator),
+            executeCommandsPort.execute(CommandsCore.unInvite(character.getName()), EmulatorCore.getByName(emulator),
                     transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("It was not possible to link the client to the brotherhood. TransactionId [{}] - " +

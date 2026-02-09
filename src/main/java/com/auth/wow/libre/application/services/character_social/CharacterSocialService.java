@@ -144,7 +144,7 @@ public class CharacterSocialService implements CharacterSocialPort {
             final String command = CommandsCore.sendMoney(friend.getName(), "You have received a golden gift!", body,
                     String.valueOf(goldSend));
 
-            executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
             charactersPort.updateMoney(characterId, (long) (character.getMoney() - (goldSend + cost)),
                     transactionId);
 
@@ -219,7 +219,7 @@ public class CharacterSocialService implements CharacterSocialPort {
         try {
 
             final String command = CommandsCore.sendLevel(friend.getName(), friend.getLevel() + level);
-            executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
 
             characterTransactionPort.create(CharacterTransactionModel.builder()
                     .amount(cost)

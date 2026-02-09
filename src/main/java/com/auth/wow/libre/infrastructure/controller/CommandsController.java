@@ -27,7 +27,7 @@ public class CommandsController {
             @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid ExecuteCommandRequest request) throws JAXBException {
 
-        executeCommandsPort.execute(request.getMessage(), EmulatorCore.valueOf(emulator), transactionId);
+        executeCommandsPort.execute(request.getMessage(), EmulatorCore.getByName(emulator), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());

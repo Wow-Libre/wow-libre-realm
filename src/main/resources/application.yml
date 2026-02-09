@@ -41,8 +41,8 @@ application:
         password: Wowlibre96@@
         driver-class-name: com.mysql.cj.jdbc.Driver
       soap:
-        username: admin
-        password: admin
+        username: sebastian
+        password: sebastian
     - id: 2
       name: "Reino Secundario"
       characters:

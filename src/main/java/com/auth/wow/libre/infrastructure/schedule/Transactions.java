@@ -28,7 +28,7 @@ public class Transactions {
         this.executeCommandsPort = executeCommandsPort;
     }
 
-    @Scheduled(cron = " */40 * * * * *")
+    @Scheduled(cron = " */10 * * * * *")
     @Transactional
     public void processItemShippingTransaction() {
         final String transactionId = UUID.randomUUID().toString();
@@ -63,7 +63,8 @@ public class Transactions {
                         cost -= deduction;
                     }
                 }
-                executeCommandsPort.execute(transaction.getCommand(), EmulatorCore.valueOf(transaction.getEmulator())
+                System.out.println("Ejecutando comando: " + transaction.getCommand() + " para el emulador: " + transaction.getEmulator());
+                executeCommandsPort.execute(transaction.getCommand(), EmulatorCore.getByName(transaction.getEmulator())
                         , transactionId);
                 transaction.setStatus(false);
                 characterTransactionPort.update(transaction, transactionId);
@@ -89,7 +90,7 @@ public class Transactions {
         CharacterTransactionEntity transaction = characterTransaction.get();
 
         try {
-            executeCommandsPort.execute(transaction.getCommand(), EmulatorCore.valueOf(transaction.getEmulator()),
+            executeCommandsPort.execute(transaction.getCommand(), EmulatorCore.getByName(transaction.getEmulator()),
                     transactionId);
             transaction.setStatus(false);
             characterTransactionPort.update(transaction, transactionId);

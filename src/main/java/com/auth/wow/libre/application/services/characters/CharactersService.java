@@ -182,7 +182,7 @@ public class CharactersService implements CharactersPort {
 
         try {
             executeCommandsPort.execute(CommandsCore.sendItem(friend.getName(), "", "",
-                    characterInventory.getItemId(), quantity), EmulatorCore.valueOf(emulator), transactionId);
+                    characterInventory.getItemId(), quantity), EmulatorCore.getByName(emulator), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("[CharactersService] [transferInventoryItem] It was not possible to send the item linked to " +
                             "the recipient. TransactionId [{}] - " +
@@ -353,7 +353,7 @@ public class CharactersService implements CharactersPort {
         }
 
         try {
-            EmulatorCore emulatorCore = EmulatorCore.valueOf(emulator);
+            EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
 
             executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), reward.subject(),
                             reward.message(), reward.itemId(), reward.quantity()), emulatorCore,
@@ -503,7 +503,7 @@ public class CharactersService implements CharactersPort {
 
                 try {
                     executeCommandsPort.execute(CommandsCore.sendLevel(character.getName(), newLevel),
-                            EmulatorCore.valueOf(emulator), "");
+                            EmulatorCore.getByName(emulator), "");
                     LOGGER.info("[CharactersService] [multiplicatorXP] Character {} leveled up from {} to {} - " +
                                     "Chance was: {}%", character.getName(), currentLevel, newLevel,
                             String.format("%.1f", levelUpChance));

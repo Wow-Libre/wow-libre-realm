@@ -88,7 +88,7 @@ public class TransactionService implements TransactionPort {
                                     .characterId(character.id).transactionDate(LocalDateTime.now()).build(),
                             transactionId);
                     try {
-                        executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
+                        executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
                     } catch (JAXBException ignored) {
                     }
 
@@ -123,7 +123,7 @@ public class TransactionService implements TransactionPort {
         };
 
         try {
-            executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
                     "                    \"the execution of the core azeroth/trinity {}", transactionId);
@@ -155,7 +155,7 @@ public class TransactionService implements TransactionPort {
         };
 
         try {
-            executeCommandsPort.execute(command, EmulatorCore.valueOf(emulator), transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
                     "                    \"the execution of the core azeroth/trinity {}", transactionId);
@@ -178,7 +178,7 @@ public class TransactionService implements TransactionPort {
 
         try {
             executeCommandsPort.execute(CommandsCore.sendItems(characterName, "", "", items),
-                    EmulatorCore.valueOf(emulator), transactionId);
+                    EmulatorCore.getByName(emulator), transactionId);
         } catch (JAXBException e) {
             LOGGER.error("sendBenefitsGuild It was not possible to claim the premium benefit, something has failed in" +
                     "the execution of the core azeroth/trinity {}", transactionId);
@@ -267,7 +267,7 @@ public class TransactionService implements TransactionPort {
             try {
                 // Reemplaza el nombre del personaje en el comando generado
                 String personalizedCommand = command.replaceFirst("null", character.name);
-                executeCommandsPort.execute(personalizedCommand, EmulatorCore.valueOf(emulator), transactionId);
+                executeCommandsPort.execute(personalizedCommand, EmulatorCore.getByName(emulator), transactionId);
             } catch (Exception e) {
                 LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
                 return new MachineClaimDto(false);

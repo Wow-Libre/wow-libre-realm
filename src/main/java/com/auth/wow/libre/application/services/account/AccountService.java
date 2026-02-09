@@ -41,7 +41,7 @@ public class AccountService implements AccountPort {
     public Long create(String username, String password, String email, Long userId, Integer expansionId,
                        String emulator, String transactionId) {
 
-        final EmulatorCore emulatorCore = EmulatorCore.valueOf(emulator);
+        final EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
 
         try {
 
@@ -93,7 +93,7 @@ public class AccountService implements AccountPort {
 
         final String email = account.get().getEmail();
         final String username = account.get().getUsername();
-        final EmulatorCore emulatorCore = EmulatorCore.valueOf(emulator);
+        final EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
 
         try {
             Account accountChangePassword = RegisterFactory.getExpansion(expansionId, executeCommandsPort,

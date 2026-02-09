@@ -24,4 +24,11 @@ public enum EmulatorCore {
                 .findFirst()
                 .orElse(null);
     }
+
+    public static EmulatorCore getByName(String name) {
+        return Arrays.stream(values())
+                .filter(core -> core.name.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
 }
