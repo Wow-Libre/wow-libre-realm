@@ -38,7 +38,7 @@ application:
         password: Wowlibre96@@
         driver-class-name: com.mysql.cj.jdbc.Driver
       soap:
-        uri: http://172.17.0.1:7878
+        uri: http://127.0.0.1:7878
         username: sebastian
         password: sebastian
     - id: 2

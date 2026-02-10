@@ -12,7 +12,5 @@ public class ChangePasswordAccountDto {
     @NotNull
     private Long userId;
     @NotNull
-    private byte[] salt;
-    @NotNull
     private Integer expansionId;
 }
