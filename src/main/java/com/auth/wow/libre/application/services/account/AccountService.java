@@ -40,11 +40,8 @@ public class AccountService implements AccountPort {
     @Override
     public Long create(String username, String password, String email, Long userId, Integer expansionId,
                        String emulator, String transactionId) {
-
         final EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
-
         try {
-
             Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort, obtainAccountPort,
                     saveAccountPort);
             account.create(username, password, email, userId, emulatorCore, transactionId);
