@@ -89,8 +89,8 @@ class AccountControllerTest {
         ChangePasswordAccountDto request = new ChangePasswordAccountDto();
         request.setPassword("newPass");
         request.setAccountId(1L);
-        request.setSalt(new byte[16]);
         request.setUserId(22L);
+        request.setExpansionId(2);
 
         ResponseEntity<GenericResponse<Void>> response = accountController.changePassword("12345",
                 EmulatorCore.AZEROTH_CORE.getName(), request);

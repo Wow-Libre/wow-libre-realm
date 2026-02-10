@@ -104,10 +104,10 @@ class GuildServiceTest {
         when(charactersPort.getCharacter(any(), any()))
                 .thenReturn(getCharacterDetailDto());
         // Llamada al método
-        guildService.attach(1L, 1L, 1L, "txn123");
+        guildService.attach(1L, 1L, 1L, "AzerothCore", "txn123");
 
         // Verificaciones
-        verify(executeCommandsPort, times(2)).execute(any(), any());
+        verify(executeCommandsPort, times(1)).execute(any(), any(), any());
     }
 
     private static GuildEntity getGuildEntity(int leaderGuid, boolean publicAccess) {
@@ -141,7 +141,7 @@ class GuildServiceTest {
                 .thenReturn(getCharacterDetailDto());
         // Llamada al método
         InternalException thrown = assertThrows(InternalException.class, () ->
-                guildService.attach(1L, 1L, 1L, "txn123")
+                guildService.attach(1L, 1L, 1L, "AzerothCore", "txn123")
         );
 
         // Verificaciones
@@ -155,7 +155,7 @@ class GuildServiceTest {
 
         // Llamada al método
         NotFoundException thrown = assertThrows(NotFoundException.class, () ->
-                guildService.attach(1L, 1L, 1L, "txn123")
+                guildService.attach(1L, 1L, 1L, "AzerothCore", "txn123")
         );
 
         // Verificaciones
@@ -170,7 +170,7 @@ class GuildServiceTest {
                 .thenReturn(getCharacterDetailDto());
 
         InternalException thrown = assertThrows(InternalException.class, () ->
-                guildService.attach(1L, 1L, 1L, "txn123")
+                guildService.attach(1L, 1L, 1L, "AzerothCore", "txn123")
         );
 
         assertEquals("The brotherhood is currently not public", thrown.getMessage());
@@ -185,10 +185,10 @@ class GuildServiceTest {
         GuildMemberModel mockGuildMember = new GuildMemberModel(1L, 1L, 1);
         when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(mockGuildMember);
 
-        guildService.unInviteGuild(1L, 1L, "txn123");
+        guildService.unInviteGuild(1L, 1L, "AzerothCore", "txn123");
 
         // Verificaciones
-        verify(executeCommandsPort, times(1)).execute(any(), any());
+        verify(executeCommandsPort, times(1)).execute(any(), any(), any());
     }
 
     @Test
@@ -226,7 +226,7 @@ class GuildServiceTest {
         when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(mockGuildMember);
 
         InternalException thrown = assertThrows(InternalException.class, () -> guildService.unInviteGuild(1L, 1L,
-                "txn123"));
+                "AzerothCore", "txn123"));
         assertEquals("You cannot leave the guild without leaving a guild master.", thrown.getMessage());
     }
 
@@ -238,7 +238,7 @@ class GuildServiceTest {
         when(guildMemberPort.guildMemberByCharacterId(1L, "txn123")).thenReturn(null);
 
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> guildService.unInviteGuild(1L, 1L,
-                "txn123"));
+                "AzerothCore", "txn123"));
         assertEquals("The requested guild does not exist", thrown.getMessage());
 
     }
@@ -250,7 +250,7 @@ class GuildServiceTest {
 
         // Llamada al método y verificación de la excepción
         InternalException thrown = assertThrows(InternalException.class, () ->
-                guildService.unInviteGuild(1L, 1L, "txn123"));
+                guildService.unInviteGuild(1L, 1L, "AzerothCore", "txn123"));
 
         assertEquals("The requested characters does not exist", thrown.getMessage());
     }

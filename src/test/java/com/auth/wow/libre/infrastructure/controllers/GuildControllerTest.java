@@ -88,19 +88,21 @@ class GuildControllerTest {
 
     @Test
     void testAttach_Success() {
+        String emulator = "AzerothCore";
         ResponseEntity<GenericResponse<Void>> response =
-                guildController.attach(TRANSACTION_ID, ACCOUNT_ID, GUILD_ID, CHARACTER_ID);
+                guildController.attach(TRANSACTION_ID, emulator, ACCOUNT_ID, GUILD_ID, CHARACTER_ID);
 
-        verify(guildPort, times(1)).attach(GUILD_ID, ACCOUNT_ID, CHARACTER_ID, TRANSACTION_ID);
+        verify(guildPort, times(1)).attach(GUILD_ID, ACCOUNT_ID, CHARACTER_ID, emulator, TRANSACTION_ID);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
     void testUnInviteGuild_Success() {
+        String emulator = "AzerothCore";
         ResponseEntity<GenericResponse<Void>> response =
-                guildController.unInviteGuild(TRANSACTION_ID, CHARACTER_ID, ACCOUNT_ID);
+                guildController.unInviteGuild(TRANSACTION_ID, emulator, CHARACTER_ID, ACCOUNT_ID);
 
-        verify(guildPort, times(1)).unInviteGuild(ACCOUNT_ID, CHARACTER_ID, TRANSACTION_ID);
+        verify(guildPort, times(1)).unInviteGuild(ACCOUNT_ID, CHARACTER_ID, emulator, TRANSACTION_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

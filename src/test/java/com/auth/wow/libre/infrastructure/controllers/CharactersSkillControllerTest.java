@@ -72,9 +72,10 @@ class CharactersSkillControllerTest {
     @Test
     void testAnnouncement_Success() {
         String transactionId = "12345";
+        String emulator = "AzerothCore";
 
         ResponseEntity<GenericResponse<Void>> response =
-                charactersSkillController.announcement(transactionId, announcementDto);
+                charactersSkillController.announcement(transactionId, emulator, announcementDto);
 
         verify(characterSkillsPort, times(1)).professionAnnouncement(
                 announcementDto.getUserId(),
@@ -82,6 +83,7 @@ class CharactersSkillControllerTest {
                 announcementDto.getAccountId(),
                 announcementDto.getSkillId(),
                 announcementDto.getMessage(),
+                emulator,
                 transactionId);
 
         assertNotNull(response);

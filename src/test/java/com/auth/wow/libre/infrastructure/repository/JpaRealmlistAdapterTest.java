@@ -43,4 +43,57 @@ class JpaRealmlistAdapterTest {
         assertTrue(result.isEmpty());
         verify(realmlistRepository, times(1)).findAll();
     }
+
+    @Test
+    void findByAllLinked_ShouldReturnRealmsWithLinkedUsers() {
+        RealmlistEntity realm1 = new RealmlistEntity();
+        realm1.setId(1L);
+        realm1.setName("Linked Realm");
+        when(realmlistRepository.findRealmsWithLinkedUsers()).thenReturn(List.of(realm1));
+
+        List<RealmlistEntity> result = jpaRealmlistAdapter.findByAllLinked();
+
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).getId());
+        assertEquals("Linked Realm", result.get(0).getName());
+        verify(realmlistRepository, times(1)).findRealmsWithLinkedUsers();
+    }
+
+    @Test
+    void findByAllNotLinked_ShouldReturnRealmsWithNoLinkedUsers() {
+        RealmlistEntity realm1 = new RealmlistEntity();
+        realm1.setId(2L);
+        realm1.setName("Not Linked Realm");
+        when(realmlistRepository.findRealmsWithNoLinkedUsers()).thenReturn(List.of(realm1));
+
+        List<RealmlistEntity> result = jpaRealmlistAdapter.findByAllNotLinked();
+
+        assertEquals(1, result.size());
+        assertEquals(2L, result.get(0).getId());
+        assertEquals("Not Linked Realm", result.get(0).getName());
+        verify(realmlistRepository, times(1)).findRealmsWithNoLinkedUsers();
+    }
+
+    @Test
+    void finById_ShouldReturnOptionalWithEntity_WhenExists() {
+        RealmlistEntity realm = new RealmlistEntity();
+        realm.setId(1L);
+        when(realmlistRepository.findById(1L)).thenReturn(Optional.of(realm));
+
+        Optional<RealmlistEntity> result = jpaRealmlistAdapter.finById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getId());
+        verify(realmlistRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void finById_ShouldReturnEmpty_WhenNotExists() {
+        when(realmlistRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Optional<RealmlistEntity> result = jpaRealmlistAdapter.finById(999L);
+
+        assertTrue(result.isEmpty());
+        verify(realmlistRepository, times(1)).findById(999L);
+    }
 }

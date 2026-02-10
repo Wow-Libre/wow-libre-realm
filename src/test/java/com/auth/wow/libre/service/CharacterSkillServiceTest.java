@@ -42,9 +42,8 @@ class CharacterSkillServiceTest {
         when(charactersPort.getCharacter(CHARACTER_ID, ACCOUNT_ID, TRANSACTION_ID)).thenReturn(null);
 
         Exception exception = assertThrows(InternalException.class, () ->
-                characterSkillService.professionAnnouncement(USER_ID, CHARACTER_ID, ACCOUNT_ID, SKILL_ID, "Test " +
-                                "Message",
-                        TRANSACTION_ID)
+                characterSkillService.professionAnnouncement(USER_ID, CHARACTER_ID, ACCOUNT_ID, SKILL_ID, "Test Message",
+                        "AzerothCore", TRANSACTION_ID)
         );
 
         assertEquals("The character with the associated account could not be found.", exception.getMessage());

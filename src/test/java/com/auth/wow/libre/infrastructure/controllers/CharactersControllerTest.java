@@ -127,11 +127,12 @@ class CharactersControllerTest {
         request.setItemId(ITEM_ID);
         request.setQuantity(2);
 
+        String emulator = "AzerothCore";
         ResponseEntity<GenericResponse<Void>> response =
-                charactersController.transferInventoryItem(TRANSACTION_ID, request);
+                charactersController.transferInventoryItem(TRANSACTION_ID, emulator, request);
 
         verify(charactersPort, times(1)).transferInventoryItem(CHARACTER_ID, ACCOUNT_ID, FRIEND_ID, ITEM_ID, 2,
-                TRANSACTION_ID);
+                emulator, TRANSACTION_ID);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
