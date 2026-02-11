@@ -1,30 +1,23 @@
 package com.auth.wow.libre.infrastructure.filter;
 
-import com.auth.wow.libre.domain.model.constant.Constants;
-import com.auth.wow.libre.domain.model.exception.UnauthorizedException;
-import com.auth.wow.libre.domain.model.security.CustomUserDetails;
-import com.auth.wow.libre.domain.model.security.JwtDto;
-import com.auth.wow.libre.domain.model.security.UserModel;
-import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.ThreadContext;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import com.auth.wow.libre.domain.model.constant.*;
+import com.auth.wow.libre.domain.model.exception.*;
+import com.auth.wow.libre.domain.model.security.*;
+import com.auth.wow.libre.domain.ports.in.jwt.*;
+import com.fasterxml.jackson.databind.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import org.apache.logging.log4j.*;
+import org.springframework.http.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.*;
+import org.springframework.security.web.authentication.*;
+import org.springframework.security.web.util.matcher.*;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_UNIQUE_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -55,7 +48,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException {
 
-        String transactionId = request.getHeader(Constants.HEADER_TRANSACTION_ID);
+        final String transactionId = request.getHeader(Constants.HEADER_TRANSACTION_ID);
 
         Map<String, Object> body = new HashMap<>();
         ThreadContext.put(CONSTANT_UNIQUE_ID, transactionId);
@@ -112,10 +105,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private JwtDto generateToken(Authentication authResult) {
         CustomUserDetails customUserDetails = ((CustomUserDetails) authResult.getPrincipal());
-        String token = jwtPort.generateToken(customUserDetails);
-        Date expiration = jwtPort.extractExpiration(token);
-        String refreshToken = jwtPort.generateRefreshToken(customUserDetails);
-        return new JwtDto(token, refreshToken, expiration, customUserDetails.getAvatarUrl(),
-                customUserDetails.getLanguage());
+        final String token = jwtPort.generateToken(customUserDetails);
+        final Date expiration = jwtPort.extractExpiration(token);
+        final String refreshToken = jwtPort.generateRefreshToken(customUserDetails);
+        return new JwtDto(token, refreshToken, expiration);
     }
 }

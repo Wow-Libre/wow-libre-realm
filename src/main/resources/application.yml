@@ -22,21 +22,44 @@ spring:
       username: root
       password: Wowlibre96@@
       driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      url: jdbc:mysql://localhost:3306/acore_characters
-      username: root
-      password: Wowlibre96@@
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    three:
-      url: jdbc:mysql://localhost:3306/acore_world
-      username: root
-      password: Wowlibre96@@
-      driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 8090
 application:
   urls:
     core-base: http://localhost:8091
+  realms:
+    - id: 1
+      name: "Reino Principal"
+      characters:
+        url: jdbc:mysql://localhost:3306/acore_characters
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: jdbc:mysql://localhost:3306/acore_world
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        uri: http://127.0.0.1:7878
+        username: sebastian
+        password: sebastian
+    - id: 2
+      name: "Reino Secundario"
+      characters:
+        url: jdbc:mysql://localhost:3306/acore_characters
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: jdbc:mysql://localhost:3306/acore_world
+        username: root
+        password: Wowlibre96@@
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        uri: http://172.17.0.2:7878
+        username: admin
+        password: admin
   security:
     jwt:
       secret-key: A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158
@@ -54,21 +77,44 @@ spring:
       username: ${DB_WOW_CLIENT_USERNAME}
       password: ${DB_WOW_CLIENT_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      url: ${DB_WOW_CLIENT_HOST_CHARACTERS}
-      username: ${DB_WOW_CLIENT_USERNAME}
-      password: ${DB_WOW_CLIENT_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    three:
-      url: ${DB_WOW_CLIENT_HOST_WORLD}
-      username: ${DB_WOW_CLIENT_USERNAME}
-      password: ${DB_WOW_CLIENT_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: ${WOW_CLIENT_SERVER_PORT}
 application:
   urls:
     core-base: ${HOST_BASE_CORE}
+  realms:
+    - id: 1
+      name: "Path Of Heroes"
+      characters:
+        url: ${DB_WOW_CLIENT_HOST_CHARACTERS}
+        username: ${DB_WOW_CLIENT_USERNAME}
+        password: ${DB_WOW_CLIENT_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: ${DB_WOW_CLIENT_HOST_WORLD}
+        username: ${DB_WOW_CLIENT_USERNAME}
+        password: ${DB_WOW_CLIENT_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        uri: ${WOW_CLIENT_SOAP_URI}
+        username: ${WOW_CLIENT_SOAP_GM_USERNAME}
+        password: ${WOW_CLIENT_SOAP_GM_PASSWORD}
+    - id: 2
+      name: "Blacktemple"
+      characters:
+        url: ${DB_WOW_CLIENT_HOST_CHARACTERS_REALM_2}
+        username: ${DB_WOW_CLIENT_USERNAME_REALM_2}
+        password: ${DB_WOW_CLIENT_PASSWORD_REALM_2}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      world:
+        url: ${DB_WOW_CLIENT_HOST_WORLD_REALM_2}
+        username: ${DB_WOW_CLIENT_USERNAME_REALM_2}
+        password: ${DB_WOW_CLIENT_PASSWORD_REALM_2}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      soap:
+        uri: ${WOW_CLIENT_SOAP_URI_REALM_2}
+        username: ${WOW_CLIENT_SOAP_GM_USERNAME_REALM_2}
+        password: ${WOW_CLIENT_SOAP_GM_PASSWORD_REALM_2}
   security:
     jwt:
       secret-key: ${WOW_CLIENT_SECRET_JWT}

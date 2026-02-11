@@ -20,4 +20,5 @@ public class CharacterTransactionModel {
     public final Long userId;
     public final String reference;
     public final boolean successful;
+    public final String emulator;
 }

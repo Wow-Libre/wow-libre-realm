@@ -1,23 +1,16 @@
 package com.auth.wow.libre.infrastructure.controller;
 
-import com.auth.wow.libre.domain.model.CharacterInventoryModel;
-import com.auth.wow.libre.domain.model.TransferItemRequest;
-import com.auth.wow.libre.domain.model.dto.CharacterDetailDto;
-import com.auth.wow.libre.domain.model.dto.CharactersDto;
-import com.auth.wow.libre.domain.model.dto.TeleportDto;
-import com.auth.wow.libre.domain.model.dto.UpdateStatsRequest;
-import com.auth.wow.libre.domain.model.shared.GenericResponse;
-import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
-import com.auth.wow.libre.domain.ports.in.characters.CharactersPort;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.auth.wow.libre.domain.model.*;
+import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.shared.*;
+import com.auth.wow.libre.domain.ports.in.characters.*;
+import jakarta.validation.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_TRANSACTION_ID;
-import static com.auth.wow.libre.domain.model.constant.Constants.PARAM_ACCOUNT_ID;
+import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
 @RestController
 @RequestMapping("/api/characters")
@@ -93,11 +86,12 @@ public class CharactersController {
     @PostMapping("/inventory/transfer")
     public ResponseEntity<GenericResponse<Void>> transferInventoryItem(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid TransferItemRequest request) {
 
         charactersPort.transferInventoryItem(request.getCharacterId(),
                 request.getAccountId(), request.getFriendId(), request.getItemId(), request.getQuantity(),
-                transactionId);
+                emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId)
@@ -120,9 +114,10 @@ public class CharactersController {
     @PutMapping("/stats")
     public ResponseEntity<GenericResponse<Boolean>> updateStats(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid UpdateStatsRequest request) {
 
-        boolean isSendPremio = charactersPort.updateStatsCharacter(request, transactionId);
+        boolean isSendPremio = charactersPort.updateStatsCharacter(request, emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<>(isSendPremio, transactionId)

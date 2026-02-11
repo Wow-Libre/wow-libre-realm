@@ -50,10 +50,11 @@ public class CharactersSocialController {
     @PostMapping("/send/money")
     public ResponseEntity<GenericResponse<CharactersDto>> sendMoney(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid SendMoneyDto request) {
 
         characterSocialPort.sendMoney(request.getCharacterId(), request.getAccountId(), request.getUserId(),
-                request.getFriendId(), request.getMoney(), request.getCost(), transactionId);
+                request.getFriendId(), request.getMoney(), request.getCost(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -61,10 +62,11 @@ public class CharactersSocialController {
     @PostMapping("/send/level")
     public ResponseEntity<GenericResponse<CharactersDto>> sendLevel(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid SendLevelDto request) {
 
         characterSocialPort.sendLevel(request.getCharacterId(), request.getAccountId(), request.getUserId(),
-                request.getFriendId(), request.getLevel(), request.getCost(), transactionId);
+                request.getFriendId(), request.getLevel(), request.getCost(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

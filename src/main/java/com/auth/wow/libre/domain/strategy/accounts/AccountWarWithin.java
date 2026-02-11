@@ -41,7 +41,7 @@ public class AccountWarWithin extends Account {
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WAR_WITHIN,
                     emulator.getName());
-            executeCommandsPort.execute(commandStrategy.getCreateCommand(email, password), transactionId);
+            executeCommandsPort.execute(commandStrategy.getCreateCommand(email, password), emulator, transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountWarWithin] [create] The client could not be registered because SOAP communication " +
                     "is  unavailable or because SOAP access is invalid. transactionId {}", transactionId);
@@ -68,8 +68,9 @@ public class AccountWarWithin extends Account {
         try {
             final CommandStrategy commandStrategy = CommandStrategyFactory.getStrategy(Expansion.WAR_WITHIN,
                     emulator.getName());
-            executeCommandsPort.execute(commandStrategy.getChangePasswordCommand(username, password), transactionId);
-            executeCommandsPort.execute(commandStrategy.getChangePasswordBattleNetCommand(email, password),
+            executeCommandsPort.execute(commandStrategy.getChangePasswordCommand(username, password), emulator,
+                    transactionId);
+            executeCommandsPort.execute(commandStrategy.getChangePasswordBattleNetCommand(email, password), emulator,
                     transactionId);
         } catch (JAXBException e) {
             LOGGER.error("[AccountWarWithin] [changePassword] It was not possible to change the client password.");

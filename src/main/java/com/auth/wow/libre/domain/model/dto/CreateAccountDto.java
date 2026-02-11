@@ -18,6 +18,4 @@ public class CreateAccountDto {
     private Long userId;
     @NotNull
     private Integer expansionId;
-    @NotNull
-    private byte[] salt;
 }

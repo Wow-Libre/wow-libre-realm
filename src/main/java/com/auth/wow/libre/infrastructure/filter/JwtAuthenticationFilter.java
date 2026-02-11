@@ -56,9 +56,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ResponseWrapper responseWrapper = new ResponseWrapper(response);
 
             final String jwt = authHeader.substring(7);
-            final String email = jwtPort.extractUsername(jwt);
+            final String username = jwtPort.extractUsername(jwt);
+            final String realmId = String.valueOf(jwtPort.extractRealmId(jwt));
+            final String expansionId = String.valueOf(jwtPort.extractExpansionId(jwt));
+            final String emulator = jwtPort.extractEmulator(jwt);
 
-            requestWrapper.setHeader(HEADER_EMAIL, email);
+            requestWrapper.setHeader(HEADER_REALM_ID, realmId);
+            requestWrapper.setHeader(HEADER_EXPANSION_ID, expansionId);
+            requestWrapper.setHeader(HEADER_EMULATOR, emulator);
+            requestWrapper.setHeader(HEADER_USERNAME, username);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -66,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Collection<GrantedAuthority> authority = jwtPort.extractRoles(jwt);
 
                     UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(email, null,
+                            new UsernamePasswordAuthenticationToken(username, null,
                                     authority);
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

@@ -25,6 +25,7 @@ class TransactionControllerTest {
     private TransactionController transactionController;
 
     private final String transactionId = "12345";
+    private final String emulator = EmulatorCore.AZEROTH_CORE.getName();
     private final Long userId = 1L;
     private final Long accountId = 10L;
     private final Long characterId = 20L;
@@ -39,10 +40,10 @@ class TransactionControllerTest {
         request.setAmount(100.0);
 
         ResponseEntity<GenericResponse<Void>> response =
-                transactionController.sendItems(transactionId, request);
+                transactionController.sendItems(transactionId, emulator, request);
 
         verify(transactionPort, times(1)).sendItems(userId, accountId, request.getItems(),
-                request.getReference(), request.getAmount(), transactionId);
+                request.getReference(), request.getAmount(), emulator, transactionId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -56,10 +57,10 @@ class TransactionControllerTest {
         request.setBenefitType("EXP_BOOST");
         request.setAmount(50.0);
         ResponseEntity<GenericResponse<Void>> response =
-                transactionController.subscriptionBenefits(transactionId, request);
+                transactionController.subscriptionBenefits(transactionId, emulator, request);
 
         verify(transactionPort, times(1)).sendSubscriptionBenefits(userId, accountId, characterId, request.getItems(),
-                request.getBenefitType(), request.getAmount(), transactionId);
+                request.getBenefitType(), request.getAmount(), emulator, transactionId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -78,11 +79,11 @@ class TransactionControllerTest {
         request.setType(PromotionType.ITEM.name());
 
         ResponseEntity<GenericResponse<Void>> response =
-                transactionController.claimPromotions(transactionId, request);
+                transactionController.claimPromotions(transactionId, emulator, request);
 
         verify(transactionPort, times(1)).sendPromotion(userId, accountId, characterId, request.getItems(),
                 request.getType(), request.getAmount(), request.getMinLvl(), request.getMaxLvl(), request.getLevel(),
-                transactionId);
+                emulator, transactionId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -95,10 +96,10 @@ class TransactionControllerTest {
         request.setUserId(userId);
 
         ResponseEntity<GenericResponse<Void>> response =
-                transactionController.claimGuildBenefits(transactionId, request);
+                transactionController.claimGuildBenefits(transactionId, emulator, request);
 
         verify(transactionPort, times(1)).sendBenefitsGuild(userId, accountId, characterId, request.getItems(),
-                transactionId);
+                emulator, transactionId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -111,13 +112,13 @@ class TransactionControllerTest {
 
         MachineClaimDto expectedClaim = new MachineClaimDto(true);
 
-        when(transactionPort.sendMachine(accountId, characterId, request.getType(), transactionId))
+        when(transactionPort.sendMachine(accountId, characterId, request.getType(), emulator, transactionId))
                 .thenReturn(expectedClaim);
 
         ResponseEntity<GenericResponse<MachineClaimDto>> response =
-                transactionController.claimGuildBenefits(transactionId, request);
+                transactionController.claimGuildBenefits(transactionId, emulator, request);
 
-        verify(transactionPort, times(1)).sendMachine(accountId, characterId, request.getType(), transactionId);
+        verify(transactionPort, times(1)).sendMachine(accountId, characterId, request.getType(), emulator, transactionId);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(expectedClaim, response.getBody().getData());

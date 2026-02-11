@@ -33,8 +33,8 @@ public class CharactersService implements CharactersPort {
     private final ObtainItemTemplate obtainItemTemplate;
 
     public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
-            CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
-            ObtainAccountPort obtainAccountPort, ObtainItemTemplate obtainItemTemplate) {
+                             CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
+                             ObtainAccountPort obtainAccountPort, ObtainItemTemplate obtainItemTemplate) {
         this.obtainCharacters = obtainCharacters;
         this.saveCharacters = saveCharacters;
         this.characterInventoryPort = characterInventoryPort;
@@ -60,7 +60,7 @@ public class CharactersService implements CharactersPort {
 
     @Override
     public CharactersDto loanApplicationCharacters(Long accountId, int level, int totalTimeSeconds,
-            String transactionId) {
+                                                   String transactionId) {
 
         final List<CharacterModel> characterAccount = obtainCharacters
                 .findByAccountAndLevel(accountId, level, transactionId)
@@ -145,7 +145,7 @@ public class CharactersService implements CharactersPort {
 
     @Override
     public void transferInventoryItem(Long characterId, Long accountId, Long friendId, Long itemId, Integer quantity,
-            String transactionId) {
+                                      String emulator, String transactionId) {
 
         Optional<AccountEntity> account = obtainAccountPort.findById(accountId);
         if (account.isEmpty() || account.get().isOnline()) {
@@ -182,16 +182,16 @@ public class CharactersService implements CharactersPort {
 
         try {
             executeCommandsPort.execute(CommandsCore.sendItem(friend.getName(), "", "",
-                    characterInventory.getItemId(), quantity), transactionId);
+                    characterInventory.getItemId(), quantity), EmulatorCore.getByName(emulator), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("[CharactersService] [transferInventoryItem] It was not possible to send the item linked to " +
-                    "the recipient. TransactionId [{}] - " +
-                    "LocalizedMessage [{}] - Message [{}]",
+                            "the recipient. TransactionId [{}] - " +
+                            "LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("It was not possible to send the item linked to the recipient", transactionId);
         } catch (WebServiceIOException e) {
             LOGGER.error("Could not communicate with the emulator. TransactionId [{}] - " +
-                    "LocalizedMessage [{}] - Message [{}]",
+                            "LocalizedMessage [{}] - Message [{}]",
                     transactionId, e.getLocalizedMessage(), e.getMessage());
             throw new InternalException("Could not communicate with the emulator", transactionId);
         }
@@ -234,7 +234,7 @@ public class CharactersService implements CharactersPort {
     }
 
     @Override
-    public boolean updateStatsCharacter(UpdateStatsRequest request, String transactionId) {
+    public boolean updateStatsCharacter(UpdateStatsRequest request, String emulator, String transactionId) {
         final Long userId = request.getUserId();
         final Long accountId = request.getAccountId();
         final Long characterId = request.getCharacterId();
@@ -262,23 +262,24 @@ public class CharactersService implements CharactersPort {
 
         switch (consumables) {
             case DREAM:
-                updateDream(request.getReference(), character);
+                updateDream(request.getReference(), character, emulator);
                 break;
             case THIRST:
-                updateThirst(request.getReference(), character);
+                updateThirst(request.getReference(), character, emulator);
                 break;
             case HUNGER:
-                updateHunger(request.getReference(), character);
+                updateHunger(request.getReference(), character, emulator);
                 break;
             default:
                 throw new InternalException("Consumable Type Not Found", transactionId);
         }
 
         saveCharacters.save(character, transactionId);
-        return sendFeedingReward(character, consumables, transactionId);
+        return sendFeedingReward(character, consumables, emulator, transactionId);
     }
 
-    private boolean sendFeedingReward(CharactersEntity character, Consumables consumable, String transactionId) {
+    private boolean sendFeedingReward(CharactersEntity character, Consumables consumable, String emulator,
+                                      String transactionId) {
         Random random = new Random();
         String consumableName = getConsumableName(consumable);
         String characterName = character.getName();
@@ -316,9 +317,9 @@ public class CharactersService implements CharactersPort {
                     3,
                     "¡Premio Épico por Alimentarte!",
                     String.format("¡FELICIDADES %s! ¡Has obtenido un PREMIO ÉPICO! " +
-                            "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial" +
-                            ". " +
-                            "¡Sigue cuidando tu %s para obtener más sorpresas!",
+                                    "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial" +
+                                    ". " +
+                                    "¡Sigue cuidando tu %s para obtener más sorpresas!",
                             characterName.toUpperCase(), consumableName));
         } else if (adjustedValue < rareImprovedThreshold) {
             // Premio Raro Mejorado - EMBLEMA DE ESCARCHA
@@ -327,9 +328,9 @@ public class CharactersService implements CharactersPort {
                     1,
                     "¡Premio Raro Mejorado!",
                     String.format("¡Excelente %s! Has recibido un premio raro mejorado por mantenerte bien alimentado" +
-                            ". " +
-                            "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios " +
-                            "épicos.",
+                                    ". " +
+                                    "¡Tu bienestar actual es de %d puntos! Sigue cuidándote para obtener premios " +
+                                    "épicos.",
                             characterName, wellBeingScore));
         } else if (adjustedValue < rareThreshold) {
             // Premio Raro - INSIGNIA DE LA JUSTICIA
@@ -338,7 +339,7 @@ public class CharactersService implements CharactersPort {
                     2,
                     "¡Premio Raro!",
                     String.format("¡Bien hecho %s! Por cuidar tu %s, recibes un premio raro. " +
-                            "¡Sigue alimentándote regularmente para obtener mejores recompensas!",
+                                    "¡Sigue alimentándote regularmente para obtener mejores recompensas!",
                             characterName, consumableName));
         } else {
             // Premio Normal - EMBLEMA DE TRIUNFO
@@ -347,15 +348,18 @@ public class CharactersService implements CharactersPort {
                     2,
                     "¡Premio por Alimentarte!",
                     String.format("¡Bien %s! Por mantenerte bien alimentado, recibes un premio. " +
-                            "¡Sigue cuidando tu %s para obtener premios raros y épicos!",
+                                    "¡Sigue cuidando tu %s para obtener premios raros y épicos!",
                             characterName, consumableName));
         }
 
         try {
+            EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
+
             executeCommandsPort.execute(CommandsCore.sendItem(character.getName(), reward.subject(),
-                    reward.message(), reward.itemId(), reward.quantity()), transactionId);
+                            reward.message(), reward.itemId(), reward.quantity()), emulatorCore,
+                    transactionId);
             LOGGER.info("[CharactersService] [sendFeedingReward] Reward sent to character {} - " +
-                    "Item: {} x{} - Type: {} - WellBeing: {}", character.getName(), reward.itemId(),
+                            "Item: {} x{} - Type: {} - WellBeing: {}", character.getName(), reward.itemId(),
                     reward.quantity(), consumable, wellBeingScore);
 
             // Bonus: Item aleatorio adicional (30% base, con pequeño bonus por bienestar)
@@ -374,9 +378,9 @@ public class CharactersService implements CharactersPort {
                             wellBeingScore);
 
                     executeCommandsPort.execute(CommandsCore.sendItem(character.getName(),
-                            "¡Item Aleatorio Bonus!", bonusMessage, item.getEntry(), 1), transactionId);
+                            "¡Item Aleatorio Bonus!", bonusMessage, item.getEntry(), 1), emulatorCore, transactionId);
                     LOGGER.info("[CharactersService] [sendFeedingReward] Random bonus item sent to character {} - " +
-                            "Item: {} (Entry: {}) - Chance: {}%", character.getName(),
+                                    "Item: {} (Entry: {}) - Chance: {}%", character.getName(),
                             item.getName(), item.getEntry(), String.format("%.1f", randomItemChance));
                 }
             }
@@ -413,12 +417,8 @@ public class CharactersService implements CharactersPort {
         };
     }
 
-    private void updateThirst(String reference, CharactersEntity character) {
+    private void updateThirst(String reference, CharactersEntity character, String emulator) {
         StoreItems storeItem = StoreItems.findByCode(reference);
-
-        if (storeItem == null) {
-            throw new InternalException("Hunger Consumable Not Found", reference);
-        }
 
         Double money = character.getMoney();
 
@@ -427,7 +427,7 @@ public class CharactersService implements CharactersPort {
         }
 
         if (character.getLevel() < 79) {
-            multiplicatorXP(character);
+            multiplicatorXP(character, emulator);
         }
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
@@ -436,12 +436,8 @@ public class CharactersService implements CharactersPort {
                 Math.min(Optional.ofNullable(character.getThirst()).orElse(0) + storeItem.getMultiplier(), 100));
     }
 
-    private void updateHunger(String reference, CharactersEntity character) {
+    private void updateHunger(String reference, CharactersEntity character, String emulator) {
         StoreItems storeItem = StoreItems.findByCode(reference);
-
-        if (storeItem == null) {
-            throw new InternalException("Hunger Consumable Not Found", reference);
-        }
 
         Double money = character.getMoney();
 
@@ -454,7 +450,7 @@ public class CharactersService implements CharactersPort {
         }
 
         if (character.getLevel() < 79) {
-            multiplicatorXP(character);
+            multiplicatorXP(character, emulator);
         }
 
         Double cost = storeItem.getCostGold().doubleValue() * 10000;
@@ -463,7 +459,7 @@ public class CharactersService implements CharactersPort {
                 Math.min(Optional.ofNullable(character.getHunger()).orElse(0) + storeItem.getMultiplier(), 100));
     }
 
-    private void updateDream(String reference, CharactersEntity character) {
+    private void updateDream(String reference, CharactersEntity character, String emulator) {
         Double money = character.getMoney();
 
         if (money < 100D * 10000) {
@@ -475,7 +471,7 @@ public class CharactersService implements CharactersPort {
 
             // Seleccionar un hotel aleatorio
             if (character.getLevel() < 79) {
-                multiplicatorXP(character);
+                multiplicatorXP(character, emulator);
             }
 
             character.setDream(StoreItems.HOTEL.getMultiplier());
@@ -486,7 +482,7 @@ public class CharactersService implements CharactersPort {
         }
     }
 
-    private void multiplicatorXP(CharactersEntity character) {
+    private void multiplicatorXP(CharactersEntity character, String emulator) {
         Random random = new Random();
         int multiplier = random.nextInt(4) + 1; // 1..4
         int xpGain = 500 * multiplier;
@@ -506,9 +502,10 @@ public class CharactersService implements CharactersPort {
                 character.setXp(0); // Resetear XP al subir nivel
 
                 try {
-                    executeCommandsPort.execute(CommandsCore.sendLevel(character.getName(), newLevel), "");
+                    executeCommandsPort.execute(CommandsCore.sendLevel(character.getName(), newLevel),
+                            EmulatorCore.getByName(emulator), "");
                     LOGGER.info("[CharactersService] [multiplicatorXP] Character {} leveled up from {} to {} - " +
-                            "Chance was: {}%", character.getName(), currentLevel, newLevel,
+                                    "Chance was: {}%", character.getName(), currentLevel, newLevel,
                             String.format("%.1f", levelUpChance));
                 } catch (Exception e) {
                     LOGGER.error("[CharactersService] [multiplicatorXP] Failed to level up character {} - " +

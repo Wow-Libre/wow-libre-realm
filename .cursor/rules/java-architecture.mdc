@@ -1,0 +1,27 @@
+---
+description: Arquitectura hexagonal y capas del proyecto Java
+globs: "**/*.java"
+alwaysApply: false
+---
+
+# Arquitectura hexagonal (ports & adapters)
+
+El código vive en tres capas bajo `com.auth.wow.libre`:
+
+1. **domain/** — Lógica de negocio pura, sin Spring
+   - `model/`: entidades, DTOs, enums, excepciones, constantes, `GenericResponse`, builders.
+   - `ports/in/`: interfaces de entrada (casos de uso); los servicios de aplicación las implementan.
+   - `ports/out/`: interfaces de salida (repositorios, clientes); la infraestructura las implementa.
+   - `strategy/`: patrones estrategia (p. ej. `RegisterFactory`, comandos por versión del juego).
+
+2. **application/services/** — Servicios de aplicación
+   - Implementan los ports `in` y orquestan llamadas a ports `out`.
+   - Un paquete por dominio (account, characters, guild, jwt, etc.).
+
+3. **infrastructure/** — Adaptadores
+   - `controller/`: REST; delegan en ports `in`.
+   - `handler/`: `ManagerExceptionHandler` y manejo global de errores.
+   - `client/`: configuración SOAP, WebServiceTemplate, marshallers.
+   - Adaptadores que implementan los ports `out` (repositorios, clientes externos).
+
+**Reglas**: No referenciar infraestructura desde domain. Los controladores solo usan ports `in` inyectados. Mantener DTOs y respuestas en `domain.model.dto` y `domain.model.shared`.

@@ -1,24 +1,28 @@
 package com.auth.wow.libre.domain.ports.in.jwt;
 
 
-import com.auth.wow.libre.domain.model.security.CustomUserDetails;
-import org.springframework.security.core.GrantedAuthority;
+import com.auth.wow.libre.domain.model.security.*;
+import org.springframework.security.core.*;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 public interface JwtPort {
-  String generateToken(CustomUserDetails userDetails);
+    String generateToken(CustomUserDetails userDetails);
 
-  String extractUsername(String token);
-  Long extractUserId(String token);
+    String extractUsername(String token);
 
-  boolean isTokenValid(String token);
+    Long extractRealmId(String token);
 
-  String generateRefreshToken(CustomUserDetails userDetails);
+    Long extractExpansionId(String token);
 
-  Date extractExpiration(String token);
+    String extractEmulator(String token);
 
-  Collection<GrantedAuthority>  extractRoles(String token);
+    boolean isTokenValid(String token);
+
+    String generateRefreshToken(CustomUserDetails userDetails);
+
+    Date extractExpiration(String token);
+
+    Collection<GrantedAuthority> extractRoles(String token);
 
 }

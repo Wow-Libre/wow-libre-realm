@@ -2,7 +2,6 @@ package com.auth.wow.libre.infrastructure.conf.db;
 
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.jdbc.*;
 import org.springframework.boot.orm.jpa.*;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.*;
@@ -10,6 +9,7 @@ import org.springframework.orm.jpa.*;
 import org.springframework.transaction.*;
 
 import javax.sql.*;
+
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.auth.wow.libre.infrastructure.repositories.characters",
@@ -18,23 +18,13 @@ import javax.sql.*;
 )
 public class SecondaryDataSourceConfig {
 
-    @Value("${spring.datasource.secondary.url}")
-    private String dbSecondaryHost;
-    @Value("${spring.datasource.secondary.username}")
-    private String dbSecondaryUsername;
-    @Value("${spring.datasource.secondary.password}")
-    private String dbSecondaryPassword;
-    @Value("${spring.datasource.secondary.driver-class-name}")
-    private String dbSecondaryDriverPrimary;
-
     @Bean(name = "secondaryDataSource")
-    public DataSource secondaryDataSource() {
-        return DataSourceBuilder.create()
-                .url(dbSecondaryHost)
-                .username(dbSecondaryUsername)
-                .password(dbSecondaryPassword)
-                .driverClassName(dbSecondaryDriverPrimary)
-                .build();
+    public DataSource secondaryDataSource(RealmDataSourceRegistry registry) {
+        CharactersRoutingDataSource routingDataSource = new CharactersRoutingDataSource();
+        routingDataSource.setTargetDataSources(registry.getCharactersDataSourcesMap());
+        routingDataSource.setDefaultTargetDataSource(registry.getDefaultCharactersDataSource());
+        routingDataSource.afterPropertiesSet();
+        return routingDataSource;
     }
 
     @Bean(name = "secondaryEntityManagerFactory")

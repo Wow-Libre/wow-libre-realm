@@ -7,16 +7,13 @@ import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.account.*;
 import com.auth.wow.libre.domain.ports.in.account_banned.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
-import com.auth.wow.libre.domain.ports.in.config.*;
 import com.auth.wow.libre.domain.ports.out.account.*;
 import com.auth.wow.libre.domain.strategy.accounts.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import com.auth.wow.libre.infrastructure.repositories.auth.account.*;
-import com.auth.wow.libre.infrastructure.util.*;
 import org.slf4j.*;
 import org.springframework.stereotype.*;
 
-import javax.crypto.*;
 import java.time.*;
 import java.util.*;
 
@@ -29,35 +26,25 @@ public class AccountService implements AccountPort {
     private final AccountBannedPort accountBannedPort;
     private final SaveBannedPort saveBannedPort;
     private final ExecuteCommandsPort executeCommandsPort;
-    private final ConfigPort configPort;
 
     public AccountService(ObtainAccountPort obtainAccountPort, SaveAccountPort saveAccountPort,
                           AccountBannedPort accountBannedPort, SaveBannedPort saveBannedPort,
-                          ExecuteCommandsPort executeCommandsPort,
-                          ConfigPort configPort) {
+                          ExecuteCommandsPort executeCommandsPort) {
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
         this.accountBannedPort = accountBannedPort;
         this.saveBannedPort = saveBannedPort;
         this.executeCommandsPort = executeCommandsPort;
-        this.configPort = configPort;
     }
 
     @Override
     public Long create(String username, String password, String email, Long userId, Integer expansionId,
-                       byte[] saltPassword, String transactionId) {
-
-        final String apiKey = configPort.apiKey(transactionId);
-        final String apiSecret = configPort.apiSecret(apiKey, transactionId);
-        final EmulatorCore emulator = configPort.emulator(transactionId);
-
+                       String emulator, String transactionId) {
+        final EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
         try {
-            final SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret, saltPassword);
-            final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
-
             Account account = RegisterFactory.getExpansion(expansionId, executeCommandsPort, obtainAccountPort,
                     saveAccountPort);
-            account.create(username, decryptedPassword, email, userId, emulator, transactionId);
+            account.create(username, password, email, userId, emulatorCore, transactionId);
             return account.getId();
         } catch (InternalException e) {
             throw new InternalException(e.getMessage(), transactionId);
@@ -89,8 +76,8 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void changePassword(Long accountId, Long userId, String password, byte[] saltPassword, Integer expansionId,
-                               String transactionId) {
+    public void changePassword(Long accountId, Long userId, String password, Integer expansionId,
+                               String emulator, String transactionId) {
 
         final Optional<AccountEntity> account = obtainAccountPort.findByIdAndUserId(accountId, userId);
 
@@ -103,16 +90,12 @@ public class AccountService implements AccountPort {
 
         final String email = account.get().getEmail();
         final String username = account.get().getUsername();
-        final String apiKey = configPort.apiKey(transactionId);
-        final String apiSecret = configPort.apiSecret(apiKey, transactionId);
-        final EmulatorCore emulator = configPort.emulator(transactionId);
+        final EmulatorCore emulatorCore = EmulatorCore.getByName(emulator);
 
         try {
-            SecretKey derivedKey = KeyDerivationUtil.deriveKeyFromPassword(apiSecret, saltPassword);
-            final String decryptedPassword = EncryptionUtil.decrypt(password, derivedKey);
             Account accountChangePassword = RegisterFactory.getExpansion(expansionId, executeCommandsPort,
                     obtainAccountPort, saveAccountPort);
-            accountChangePassword.changePassword(username, decryptedPassword, email, emulator, transactionId);
+            accountChangePassword.changePassword(username, password, email, emulatorCore, transactionId);
         } catch (Exception e) {
             LOGGER.error("[AccountService][changePassword] Could not update password: {} {}", e.getMessage(),
                     transactionId, e);

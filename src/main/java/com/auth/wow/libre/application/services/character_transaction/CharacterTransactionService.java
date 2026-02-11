@@ -55,6 +55,7 @@ public class CharacterTransactionService implements CharacterTransactionPort {
         createTransaction.setTransactionType(transaction.transactionType.name());
         createTransaction.setReference(transaction.reference != null ? transaction.reference :
                 randomString.nextString());
+        createTransaction.setEmulator(transaction.emulator);
         saveCharacterTransaction.save(createTransaction, transactionId);
     }
 

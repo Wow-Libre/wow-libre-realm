@@ -22,10 +22,11 @@ public class AccountController {
     @PostMapping(path = "/create")
     public ResponseEntity<GenericResponse<Long>> create(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid CreateAccountDto request) {
 
         Long accountId = accountPort.create(request.getUsername(), request.getPassword(), request.getEmail(),
-                request.getUserId(), request.getExpansionId(), request.getSalt(), transactionId);
+                request.getUserId(), request.getExpansionId(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponseBuilder<>(accountId, transactionId).created().build());
@@ -51,10 +52,11 @@ public class AccountController {
     @PostMapping(path = "/change-password")
     public ResponseEntity<GenericResponse<Void>> changePassword(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid ChangePasswordAccountDto request) {
 
         accountPort.changePassword(request.getAccountId(), request.getUserId(), request.getPassword(),
-                request.getSalt(), request.getExpansionId(), transactionId);
+                request.getExpansionId(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());

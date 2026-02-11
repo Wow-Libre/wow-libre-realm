@@ -31,13 +31,16 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsServiceCustom userDetailsServiceCustom;
     private final JwtPort jwtPort;
+    private final RealmFilter realmFilter;
 
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
                                  UserDetailsServiceCustom userDetailsServiceCustom,
-                                 JwtPortService jwtPort) {
+                                 JwtPortService jwtPort,
+                                 RealmFilter realmFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsServiceCustom = userDetailsServiceCustom;
         this.jwtPort = jwtPort;
+        this.realmFilter = realmFilter;
     }
 
     @Bean
@@ -56,7 +59,8 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.AUTHORIZATION,
-                HEADER_TRANSACTION_ID
+                HEADER_TRANSACTION_ID,
+                HEADER_REALM_ID
         ));
         corsConfiguration.setAllowCredentials(true);
 
@@ -71,7 +75,8 @@ public class SecurityConfiguration {
 
         http.authorizeHttpRequests(
                         endpoints -> endpoints.requestMatchers("/api/auth/login").authenticated()
-                ).addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
+                ).addFilterBefore(realmFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AuthenticationFilter(authenticationProvider(), jwtPort),
                         UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -83,6 +88,7 @@ public class SecurityConfiguration {
                                 "/api/account/create/user",
                                 "/api/dashboard/stats",
                                 "/api/dashboard/announcements",
+                                "/api/realmlist",
 
                                 // SWAGGER (siguen sin autenticación)
                                 "/v2/api-docs", "/swagger-resources",

@@ -42,10 +42,11 @@ public class CharactersSkillController {
     @PostMapping("/announcement")
     public ResponseEntity<GenericResponse<Void>> announcement(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
             @RequestBody @Valid AnnouncementDto request) {
 
         characterSkillsPort.professionAnnouncement(request.getUserId(), request.getCharacterId(),
-                request.getAccountId(), request.getSkillId(), request.getMessage(), transactionId);
+                request.getAccountId(), request.getSkillId(), request.getMessage(), emulator, transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>

@@ -10,15 +10,9 @@ public class CreateClientDto {
     @NotNull
     private String password;
     @NotNull
-    private byte[] salt;
-    @NotNull
-    private String apiKey;
+    private Long realmId;
     @NotNull
     private String emulator;
     @NotNull
     private Integer expansionId;
-    @NotNull
-    private String gmUsername;
-    @NotNull
-    private String gmPassword;
 }

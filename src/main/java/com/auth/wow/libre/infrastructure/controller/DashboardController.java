@@ -70,37 +70,6 @@ public class DashboardController {
                 .body(new GenericResponseBuilder<Map<String, String>>(transactionId).ok(response).build());
     }
 
-    @PostMapping("/reboot")
-    public ResponseEntity<GenericResponse<Void>> rebootSystem(
-            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestParam(required = false, defaultValue = "false") boolean isWindows) {
-
-        try {
-            final ProcessBuilder processBuilder;
-
-            if (isWindows || System.getProperty("os.name").toLowerCase().contains("win")) {
-                final String systemRoot = System.getenv("SystemRoot");
-                final String shutdownPath = systemRoot + "\\System32\\shutdown.exe";
-                processBuilder = new ProcessBuilder(shutdownPath, "/r", "/t", "0");
-            } else {
-                processBuilder = new ProcessBuilder("/bin/bash", "-c", "sudo /sbin/reboot");
-            }
-
-            Process process = processBuilder.start();
-            process.waitFor();
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new GenericResponseBuilder<Void>(transactionId).build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new GenericResponseBuilder<Void>(transactionId).build());
-        }
-    }
-
 
     @PutMapping(path = "/emulator-config")
     public ResponseEntity<GenericResponse<Void>> emulatorConfiguration(

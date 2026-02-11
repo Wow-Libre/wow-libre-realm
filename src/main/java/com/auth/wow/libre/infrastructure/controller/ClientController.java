@@ -23,11 +23,22 @@ public class ClientController {
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @RequestBody @Valid CreateClientDto request) {
 
-        userPort.create(request.getUsername(), request.getPassword(), request.getSalt(), request.getEmulator(),
-                request.getApiKey(), request.getExpansionId(), request.getGmUsername(), request.getGmPassword(),
-                transactionId);
+        userPort.create(request.getUsername(), request.getPassword(), request.getEmulator(),
+                request.getRealmId(), request.getExpansionId(), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
     }
+
+    @DeleteMapping
+    public ResponseEntity<GenericResponse<Void>> delete(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
+            @RequestHeader(name = HEADER_USERNAME) final String username) {
+
+        userPort.delete(username, transactionId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<Void>(transactionId).ok().build());
+    }
+
 }

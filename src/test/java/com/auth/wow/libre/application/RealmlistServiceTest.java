@@ -1,6 +1,7 @@
 package com.auth.wow.libre.application;
 
 import com.auth.wow.libre.application.services.realmlist.*;
+import com.auth.wow.libre.domain.model.dto.*;
 import com.auth.wow.libre.domain.ports.out.realmlist.*;
 import com.auth.wow.libre.infrastructure.entities.auth.*;
 import org.junit.jupiter.api.*;
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RealmlistServiceTest {
-    
+
     @Mock
     private ObtainRealmlist obtainRealmlist;
 
@@ -41,19 +42,53 @@ class RealmlistServiceTest {
 
     @Test
     void testFindByAll_Success() {
-        // Simular respuesta del mock
         when(obtainRealmlist.findByAll()).thenReturn(realmlistMock);
 
-        // Ejecutar el método del servicio
-        List<RealmlistEntity> result = realmlistService.findByAll();
+        List<RealmlistDto> result = realmlistService.findByAll();
 
-        // Validar resultados
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Realm 1", result.get(0).getName());
-        assertEquals("Realm 2", result.get(1).getName());
+        assertEquals(1L, result.get(0).id());
+        assertEquals("Realm 1", result.get(0).name());
+        assertEquals(2L, result.get(1).id());
+        assertEquals("Realm 2", result.get(1).name());
+        verify(obtainRealmlist, times(1)).findByAll();
+    }
 
-        // Verificar que el mock fue llamado una vez
+    @Test
+    void testFindByAllLinked_Success() {
+        when(obtainRealmlist.findByAllLinked()).thenReturn(realmlistMock);
+
+        List<RealmlistDto> result = realmlistService.findByAllLinked();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Realm 1", result.get(0).name());
+        verify(obtainRealmlist, times(1)).findByAllLinked();
+    }
+
+    @Test
+    void testFindByAllNotLinked_Success() {
+        List<RealmlistEntity> oneRealm = List.of(realmlistMock.get(0));
+        when(obtainRealmlist.findByAllNotLinked()).thenReturn(oneRealm);
+
+        List<RealmlistDto> result = realmlistService.findByAllNotLinked();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).id());
+        assertEquals("Realm 1", result.get(0).name());
+        verify(obtainRealmlist, times(1)).findByAllNotLinked();
+    }
+
+    @Test
+    void testFindByAll_EmptyList() {
+        when(obtainRealmlist.findByAll()).thenReturn(List.of());
+
+        List<RealmlistDto> result = realmlistService.findByAll();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
         verify(obtainRealmlist, times(1)).findByAll();
     }
 }

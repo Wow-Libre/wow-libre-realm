@@ -2,6 +2,7 @@ package com.auth.wow.libre.application.services.guild;
 
 import com.auth.wow.libre.domain.model.*;
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.exception.*;
 import com.auth.wow.libre.domain.ports.in.characters.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
@@ -70,7 +71,7 @@ public class GuildService implements GuildPort {
     }
 
     @Override
-    public void attach(Long guildId, Long accountId, Long characterId, String transactionId) {
+    public void attach(Long guildId, Long accountId, Long characterId, String emulator, String transactionId) {
 
         Optional<GuildModel> getGuild = obtainGuild.getGuild(guildId).map(this::mapToModel);
 
@@ -91,8 +92,8 @@ public class GuildService implements GuildPort {
         }
 
         try {
-
-            executeCommandsPort.execute(CommandsCore.invite(character.getName(), getGuild.get().name), transactionId);
+            executeCommandsPort.execute(CommandsCore.invite(character.getName(), getGuild.get().name),
+                    EmulatorCore.getByName(emulator), transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("[GuildService] [attach] It was not possible to link the client to the brotherhood. " +
                             "TransactionId [{}] -  LocalizedMessage [{}] - Message [{}]",
@@ -108,7 +109,7 @@ public class GuildService implements GuildPort {
     }
 
     @Override
-    public void unInviteGuild(Long accountId, Long characterId, String transactionId) {
+    public void unInviteGuild(Long accountId, Long characterId, String emulator, String transactionId) {
 
 
         CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
@@ -129,8 +130,8 @@ public class GuildService implements GuildPort {
         }
 
         try {
-
-            executeCommandsPort.execute(CommandsCore.unInvite(character.getName()), transactionId);
+            executeCommandsPort.execute(CommandsCore.unInvite(character.getName()), EmulatorCore.getByName(emulator),
+                    transactionId);
         } catch (SoapFaultClientException | JAXBException e) {
             LOGGER.error("It was not possible to link the client to the brotherhood. TransactionId [{}] - " +
                             "LocalizedMessage [{}] - Message [{}]",

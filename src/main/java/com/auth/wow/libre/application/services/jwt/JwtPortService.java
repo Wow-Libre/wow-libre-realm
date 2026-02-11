@@ -1,23 +1,22 @@
 package com.auth.wow.libre.application.services.jwt;
 
-import com.auth.wow.libre.domain.model.security.CustomUserDetails;
-import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
-import com.auth.wow.libre.infrastructure.conf.JwtProperties;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.auth.wow.libre.domain.model.security.*;
+import com.auth.wow.libre.domain.ports.in.jwt.*;
+import com.auth.wow.libre.infrastructure.conf.*;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.io.*;
+import io.jsonwebtoken.security.*;
+import lombok.extern.slf4j.*;
+import org.springframework.security.core.*;
+import org.springframework.security.core.authority.*;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.*;
 
-import java.security.Key;
+import java.security.*;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.*;
+import java.util.stream.*;
 
 import static com.auth.wow.libre.domain.model.constant.Constants.*;
 
@@ -37,8 +36,18 @@ public class JwtPortService implements JwtPort {
     }
 
     @Override
-    public Long extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get(HEADER_USER_ID, Long.class));
+    public Long extractRealmId(String token) {
+        return extractClaim(token, claims -> claims.get(HEADER_REALM_ID, Long.class));
+    }
+
+    @Override
+    public Long extractExpansionId(String token) {
+        return extractClaim(token, claims -> claims.get(HEADER_EXPANSION_ID, Long.class));
+    }
+
+    @Override
+    public String extractEmulator(String token) {
+        return extractClaim(token, claims -> claims.get(HEADER_EMULATOR, String.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -50,7 +59,9 @@ public class JwtPortService implements JwtPort {
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put(CONSTANT_ROL_JWT_PROP, userDetails.getAuthorities());
-
+        extraClaims.put(HEADER_REALM_ID, userDetails.getRealmId());
+        extraClaims.put(HEADER_EXPANSION_ID, userDetails.getExpansionId());
+        extraClaims.put(HEADER_EMULATOR, userDetails.getEmulator());
         return generateToken(extraClaims, userDetails);
     }
 

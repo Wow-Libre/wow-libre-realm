@@ -106,8 +106,7 @@ public class CharacterSocialService implements CharacterSocialPort {
     @Transactional
     @Override
     public void sendMoney(Long characterId, Long accountId, Long userId, Long friendGuid, Long money,
-                          Double costRequest,
-                          String transactionId) {
+                          Double costRequest, String emulator, String transactionId) {
         verifierAccount(accountId, userId, transactionId);
 
         CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
@@ -145,7 +144,7 @@ public class CharacterSocialService implements CharacterSocialPort {
             final String command = CommandsCore.sendMoney(friend.getName(), "You have received a golden gift!", body,
                     String.valueOf(goldSend));
 
-            executeCommandsPort.execute(command, transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
             charactersPort.updateMoney(characterId, (long) (character.getMoney() - (goldSend + cost)),
                     transactionId);
 
@@ -160,6 +159,7 @@ public class CharacterSocialService implements CharacterSocialPort {
                     .accountId(accountId)
                     .userId(userId)
                     .successful(true)
+                    .emulator(emulator)
                     .build(), transactionId);
 
         } catch (JAXBException e) {
@@ -174,7 +174,7 @@ public class CharacterSocialService implements CharacterSocialPort {
 
     @Override
     public void sendLevel(Long characterId, Long accountId, Long userId, Long friendGuid, int level, Double costRequest,
-                          String transactionId) {
+                          String emulator, String transactionId) {
         verifierAccount(accountId, userId, transactionId);
 
         CharacterDetailDto character = charactersPort.getCharacter(characterId, accountId, transactionId);
@@ -219,7 +219,7 @@ public class CharacterSocialService implements CharacterSocialPort {
         try {
 
             final String command = CommandsCore.sendLevel(friend.getName(), friend.getLevel() + level);
-            executeCommandsPort.execute(command, transactionId);
+            executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
 
             characterTransactionPort.create(CharacterTransactionModel.builder()
                     .amount(cost)
@@ -232,6 +232,7 @@ public class CharacterSocialService implements CharacterSocialPort {
                     .accountId(accountId)
                     .userId(userId)
                     .successful(true)
+                    .emulator(emulator)
                     .build(), transactionId);
 
             charactersPort.updateMoney(characterId, (long) (character.getMoney() - cost), transactionId);

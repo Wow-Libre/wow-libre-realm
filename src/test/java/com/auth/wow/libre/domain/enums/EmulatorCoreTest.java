@@ -31,4 +31,17 @@ class EmulatorCoreTest {
         assertEquals(2, EmulatorCore.MANGOS.getId());
         assertEquals("Mangos", EmulatorCore.MANGOS.getName());
     }
+
+    @Test
+    void testGetByName_ValidName() {
+        assertEquals(EmulatorCore.TRINITY_CORE, EmulatorCore.getByName("TrinityCore"));
+        assertEquals(EmulatorCore.AZEROTH_CORE, EmulatorCore.getByName("AzerothCore"));
+        assertEquals(EmulatorCore.MANGOS, EmulatorCore.getByName("Mangos"));
+    }
+
+    @Test
+    void testGetByName_InvalidOrNull() {
+        assertNull(EmulatorCore.getByName("Unknown"));
+        assertNull(EmulatorCore.getByName(null));
+    }
 }

@@ -71,12 +71,13 @@ class CharactersSocialControllerTest {
         sendMoneyDto.setFriendId(friendId);
         sendMoneyDto.setMoney(500L);
         sendMoneyDto.setFriendId(friendId);
+        String emulator = "AzerothCore";
         ResponseEntity<GenericResponse<CharactersDto>> response =
-                charactersSocialController.sendMoney(transactionId, sendMoneyDto);
+                charactersSocialController.sendMoney(transactionId, emulator, sendMoneyDto);
 
         verify(characterSocialPort, times(1)).sendMoney(
                 characterId, accountId, userId, friendId, sendMoneyDto.getMoney(), sendMoneyDto.getCost(),
-                transactionId);
+                emulator, transactionId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -91,12 +92,13 @@ class CharactersSocialControllerTest {
         sendLevelDto.setUserId(userId);
         sendLevelDto.setFriendId(friendId);
 
+        String emulator = "AzerothCore";
         ResponseEntity<GenericResponse<CharactersDto>> response =
-                charactersSocialController.sendLevel(transactionId, sendLevelDto);
+                charactersSocialController.sendLevel(transactionId, emulator, sendLevelDto);
 
         verify(characterSocialPort, times(1)).sendLevel(
                 characterId, accountId, userId, friendId, sendLevelDto.getLevel(), sendLevelDto.getCost(),
-                transactionId);
+                emulator, transactionId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

@@ -32,9 +32,9 @@ public interface CharactersPort {
     List<CharacterInventoryModel> inventory(Long characterId, Long accountId, String transactionId);
 
     void transferInventoryItem(Long characterId, Long accountId, Long friendId, Long itemId, Integer count,
-                               String transactionId);
+                               String emulator, String transactionId);
 
     void teleport(TeleportDto teleportDto, String transactionId);
 
-    boolean updateStatsCharacter(UpdateStatsRequest request, String transactionId);
+    boolean updateStatsCharacter(UpdateStatsRequest request, String emulator, String transactionId);
 }

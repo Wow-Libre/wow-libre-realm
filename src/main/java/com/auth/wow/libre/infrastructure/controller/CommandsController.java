@@ -1,9 +1,11 @@
 package com.auth.wow.libre.infrastructure.controller;
 
 import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.enums.*;
 import com.auth.wow.libre.domain.model.shared.*;
 import com.auth.wow.libre.domain.ports.in.comands.*;
 import jakarta.validation.*;
+import jakarta.xml.bind.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +24,14 @@ public class CommandsController {
     @PostMapping
     public ResponseEntity<GenericResponse<Void>> commands(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
-            @RequestBody @Valid ExecuteCommandRequest request)  {
+            @RequestHeader(name = HEADER_EMULATOR) final String emulator,
+            @RequestBody @Valid ExecuteCommandRequest request) throws JAXBException {
 
-        executeCommandsPort.execute(request.getMessage(), request.getSalt(), transactionId);
+        executeCommandsPort.execute(request.getMessage(), EmulatorCore.getByName(emulator), transactionId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponseBuilder<Void>(transactionId).created().build());
     }
-
 
 
 }
