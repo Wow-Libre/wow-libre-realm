@@ -8,6 +8,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+soap:
+  client:
+    default-uri: ${SOAP_CLIENT_DEFAULT_URI:http://172.17.0.1:7878}
 ---
 spring:
   config:
@@ -118,3 +121,6 @@ application:
       expiration: 604800000  # 7 day
       refresh-token:
         expiration: 1209600000 # 14 días
+soap:
+  client:
+    default-uri: ${SOAP_CLIENT_DEFAULT_URI}
