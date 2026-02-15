@@ -26,7 +26,7 @@ public class PremiumController {
                 .ok(isPremium).build());
     }
 
-    @PostMapping
+    @PostMapping("/{accountId}")
     public ResponseEntity<GenericResponse<Void>> createPremium(
             @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId,
             @PathVariable Long accountId, @RequestParam boolean active) {
