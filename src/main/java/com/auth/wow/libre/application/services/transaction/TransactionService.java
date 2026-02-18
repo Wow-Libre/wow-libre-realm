@@ -16,6 +16,7 @@ import org.slf4j.*;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
+import java.security.SecureRandom;
 import java.time.*;
 import java.util.*;
 
@@ -36,7 +37,7 @@ public class TransactionService implements TransactionPort {
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainItemTemplate obtainItemTemplate;
     private final AccountPort accountPort;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     public TransactionService(CharactersPort charactersPort, CharacterTransactionPort characterTransactionPort,
                               ExecuteCommandsPort executeCommandsPort, ObtainItemTemplate obtainItemTemplate,

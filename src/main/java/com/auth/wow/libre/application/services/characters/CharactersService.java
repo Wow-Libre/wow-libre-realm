@@ -19,13 +19,14 @@ import org.springframework.stereotype.*;
 import org.springframework.ws.client.*;
 import org.springframework.ws.soap.client.*;
 
+import java.security.SecureRandom;
 import java.util.*;
-import java.util.concurrent.*;
 
 @Service
 public class CharactersService implements CharactersPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(CharactersService.class);
 
+    private final SecureRandom secureRandom = new SecureRandom();
     private final ObtainCharacters obtainCharacters;
     private final SaveCharacters saveCharacters;
     private final CharacterInventoryPort characterInventoryPort;
@@ -290,10 +291,10 @@ public class CharactersService implements CharactersPort {
 
         double wellBeingBonus = Math.min(wellBeingScore / 25.0, 12.0); // Máximo 12% de bonus
 
-        // Múltiples valores aleatorios para mayor variabilidad
-        double randomValue1 = ThreadLocalRandom.current().nextDouble(0.0, 100.0);
-        double randomValue2 = ThreadLocalRandom.current().nextDouble(0.0, 100.0);
-        double randomValue3 = ThreadLocalRandom.current().nextDouble(0.0, 100.0);
+        // Múltiples valores aleatorios para mayor variabilidad (SecureRandom para evitar predicción de recompensas)
+        double randomValue1 = secureRandom.nextDouble() * 100.0;
+        double randomValue2 = secureRandom.nextDouble() * 100.0;
+        double randomValue3 = secureRandom.nextDouble() * 100.0;
 
         // Promedio de los valores aleatorios para más impredecibilidad
         double baseRandom = (randomValue1 + randomValue2 + randomValue3) / 3.0;
@@ -302,10 +303,10 @@ public class CharactersService implements CharactersPort {
         double adjustedValue = baseRandom - wellBeingBonus;
 
         // Rangos dinámicos más aleatorios (varían ligeramente cada vez)
-        double epicThreshold = 3.0 + ThreadLocalRandom.current().nextDouble(0.0, 4.0); // 3-7%
-        double rareImprovedThreshold = epicThreshold + 10.0 + ThreadLocalRandom.current().nextDouble(0.0, 8.0); //
+        double epicThreshold = 3.0 + secureRandom.nextDouble() * 4.0; // 3-7%
+        double rareImprovedThreshold = epicThreshold + 10.0 + secureRandom.nextDouble() * 8.0; //
         // Variable
-        double rareThreshold = rareImprovedThreshold + 20.0 + ThreadLocalRandom.current().nextDouble(0.0, 15.0); //
+        double rareThreshold = rareImprovedThreshold + 20.0 + secureRandom.nextDouble() * 15.0; //
         // Variable
 
         if (adjustedValue < epicThreshold) {
@@ -367,7 +368,7 @@ public class CharactersService implements CharactersPort {
                 double bonusChance = Math.min(wellBeingScore / 60.0, 5.0);
                 double randomItemChance = 30.0 + bonusChance;
 
-                if (ThreadLocalRandom.current().nextDouble(0.0, 100.0) < randomItemChance) {
+                if (secureRandom.nextDouble() * 100.0 < randomItemChance) {
                     ItemTemplateEntity item = randomItem.get();
                     String bonusMessage = String.format(
                             "¡BONUS ALEATORIO %s! ¡Has recibido un item sorpresa adicional: %s! " +
@@ -478,7 +479,7 @@ public class CharactersService implements CharactersPort {
     }
 
     private void multiplicatorXP(CharactersEntity character, String emulator) {
-        int multiplier = ThreadLocalRandom.current().nextInt(1, 5); // 1..4
+        int multiplier = secureRandom.nextInt(4) + 1; // 1..4
         int xpGain = 500 * multiplier;
         character.setXp(character.getXp() + xpGain);
 
@@ -487,9 +488,9 @@ public class CharactersService implements CharactersPort {
         int maxLevel = 80;
 
         if (currentLevel < maxLevel) {
-            double levelUpChance = 5.0 + ThreadLocalRandom.current().nextDouble(0.0, 2.0); // 5-7%
+            double levelUpChance = 5.0 + secureRandom.nextDouble() * 2.0; // 5-7%
 
-            if (ThreadLocalRandom.current().nextDouble(0.0, 100.0) < levelUpChance) {
+            if (secureRandom.nextDouble() * 100.0 < levelUpChance) {
                 int newLevel = currentLevel + 1;
                 character.setLevel(newLevel);
                 character.setXp(0);
