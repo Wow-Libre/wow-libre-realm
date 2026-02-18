@@ -34,16 +34,16 @@ Es código abierto y está pensado para que administradores y desarrolladores in
 
 ## Stack técnico
 
-| Tecnología        | Uso                                      |
-|-------------------|------------------------------------------|
-| **Java 17**       | Lenguaje                                 |
-| **Spring Boot 3.5** | Web, Security, JPA, Validación         |
-| **Spring WS**     | Cliente SOAP (AzerothCore / TrinityCore) |
-| **MySQL**         | Persistencia (auth, characters, world)   |
-| **JWT (JJWT)**    | Autenticación API                        |
-| **SpringDoc OpenAPI** | Documentación Swagger/OpenAPI      |
-| **Lombok**        | Reducción de boilerplate                 |
-| **Jacoco**        | Cobertura de tests                       |
+| Tecnología            | Uso                                      |
+| --------------------- | ---------------------------------------- |
+| **Java 17**           | Lenguaje                                 |
+| **Spring Boot 3.5**   | Web, Security, JPA, Validación           |
+| **Spring WS**         | Cliente SOAP (AzerothCore / TrinityCore) |
+| **MySQL**             | Persistencia (auth, characters, world)   |
+| **JWT (JJWT)**        | Autenticación API                        |
+| **SpringDoc OpenAPI** | Documentación Swagger/OpenAPI            |
+| **Lombok**            | Reducción de boilerplate                 |
+| **Jacoco**            | Cobertura de tests                       |
 
 ---
 
@@ -114,45 +114,45 @@ mysql --version
 
 ### Variables de entorno
 
-Las únicas variables que lee la aplicación son las definidas en `src/main/resources/application.yml`. En **producción** (`--spring.profiles.active=prod`) todas las que aparecen abajo son **obligatorias** (no tienen valor por defecto en el perfil prod).
+La aplicación **solo** lee las variables que aparecen en `src/main/resources/application.yml`. No usa ninguna otra variable de entorno (por ejemplo `API_KEY_*`, `GM_USERNAME`, `GOOGLE_*`, etc.); si defines más en el `.env` o en el sistema, este servicio las ignora.
+
+En **producción** (`--spring.profiles.active=prod`) las variables listadas abajo son **obligatorias** (el perfil prod no define valores por defecto).
 
 #### Perfil prod — Reino 1
 
-| Variable | Uso en `application.yml` |
-|----------|---------------------------|
-| `DB_WOW_CLIENT_HOST_AUTH` | `spring.datasource.primary.url` (acore_auth) |
-| `DB_WOW_CLIENT_USERNAME` | Usuario MySQL (auth, characters, world) |
-| `DB_WOW_CLIENT_PASSWORD` | Contraseña MySQL |
-| `DB_WOW_CLIENT_HOST_CHARACTERS` | URL JDBC acore_characters (reino 1) |
-| `DB_WOW_CLIENT_HOST_WORLD` | URL JDBC acore_world (reino 1) |
-| `WOW_CLIENT_SERVER_PORT` | `server.port` |
-| `HOST_BASE_CORE` | `application.urls.core-base` |
-| `WOW_CLIENT_SOAP_URI` | SOAP reino 1 — URI |
-| `WOW_CLIENT_SOAP_GM_USERNAME` | SOAP reino 1 — usuario GM |
-| `WOW_CLIENT_SOAP_GM_PASSWORD` | SOAP reino 1 — contraseña GM |
-| `WOW_CLIENT_SECRET_JWT` | `application.security.jwt.secret-key` |
+| Variable                        | Uso en `application.yml`                     |
+| ------------------------------- | -------------------------------------------- |
+| `DB_WOW_CLIENT_HOST_AUTH`       | `spring.datasource.primary.url` (acore_auth) |
+| `DB_WOW_CLIENT_USERNAME`        | Usuario MySQL (auth, characters, world)      |
+| `DB_WOW_CLIENT_PASSWORD`        | Contraseña MySQL                             |
+| `DB_WOW_CLIENT_HOST_CHARACTERS` | URL JDBC acore_characters (reino 1)          |
+| `DB_WOW_CLIENT_HOST_WORLD`      | URL JDBC acore_world (reino 1)               |
+| `WOW_CLIENT_SERVER_PORT`        | `server.port`                                |
+| `HOST_BASE_CORE`                | `application.urls.core-base`                 |
+| `WOW_CLIENT_SOAP_URI`           | SOAP reino 1 — URI                           |
+| `WOW_CLIENT_SOAP_GM_USERNAME`   | SOAP reino 1 — usuario GM                    |
+| `WOW_CLIENT_SOAP_GM_PASSWORD`   | SOAP reino 1 — contraseña GM                 |
+| `WOW_CLIENT_SECRET_JWT`         | `application.security.jwt.secret-key`        |
 
 #### Perfil prod — Reino 2 (opcional)
 
 Si tienes el segundo reino configurado en el YAML, debes definir:
 
-| Variable | Uso |
-|----------|-----|
+| Variable                                | Uso                               |
+| --------------------------------------- | --------------------------------- |
 | `DB_WOW_CLIENT_HOST_CHARACTERS_REALM_2` | URL JDBC acore_characters reino 2 |
-| `DB_WOW_CLIENT_HOST_WORLD_REALM_2` | URL JDBC acore_world reino 2 |
-| `DB_WOW_CLIENT_USERNAME_REALM_2` | Usuario MySQL reino 2 |
-| `DB_WOW_CLIENT_PASSWORD_REALM_2` | Contraseña MySQL reino 2 |
-| `WOW_CLIENT_SOAP_URI_REALM_2` | URI SOAP reino 2 |
-| `WOW_CLIENT_SOAP_GM_USERNAME_REALM_2` | Usuario GM SOAP reino 2 |
-| `WOW_CLIENT_SOAP_GM_PASSWORD_REALM_2` | Contraseña GM SOAP reino 2 |
+| `DB_WOW_CLIENT_HOST_WORLD_REALM_2`      | URL JDBC acore_world reino 2      |
+| `DB_WOW_CLIENT_USERNAME_REALM_2`        | Usuario MySQL reino 2             |
+| `DB_WOW_CLIENT_PASSWORD_REALM_2`        | Contraseña MySQL reino 2          |
+| `WOW_CLIENT_SOAP_URI_REALM_2`           | URI SOAP reino 2                  |
+| `WOW_CLIENT_SOAP_GM_USERNAME_REALM_2`   | Usuario GM SOAP reino 2           |
+| `WOW_CLIENT_SOAP_GM_PASSWORD_REALM_2`   | Contraseña GM SOAP reino 2        |
 
 #### SOAP URI por defecto (común)
 
-| Variable | Uso |
-|----------|-----|
+| Variable                  | Uso                                                                                                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `SOAP_CLIENT_DEFAULT_URI` | `soap.client.default-uri`. En el bloque por defecto del YAML tiene valor por defecto `http://172.17.0.1:7878`; en el perfil prod se usa esta variable sin default, así que en prod debe estar definida. |
-
-No se usan en `application.yml` variables como `API_KEY_WOW_LIBRE`, `USERNAME_WOW_LIBRE`, `PASSWORD_WOW_LIBRE`, `GOOGLE_*`, `GM_USERNAME`, `GM_PASSWORD` ni `SERVER_WEB_NAME`. Si tu despliegue (p. ej. Docker) las define, es por otro motivo ajeno a este YAML.
 
 ---
 
@@ -261,14 +261,14 @@ A continuación, un **docker-compose de referencia** para desplegar toda la solu
 
 **Servicios:**
 
-| Servicio | Imagen | Puerto | Descripción |
-|----------|--------|--------|-------------|
-| **wow-libre-core** | wowlibre96/wow-libre-core:latest | 8091 | API central WoW Libre |
-| **wow-libre-realm** | wowlibre96/wow-libre-realm:latest | 8090 | Este cliente (reino/emulador) |
-| **nginx** | nginx:alpine | 80, 443 | Reverso proxy y TLS |
-| **mysql** | mysql:8.0 | 3307→3306 | Base de datos |
+| Servicio            | Imagen                            | Puerto    | Descripción                   |
+| ------------------- | --------------------------------- | --------- | ----------------------------- |
+| **wow-libre-core**  | wowlibre96/wow-libre-core:latest  | 8091      | API central WoW Libre         |
+| **wow-libre-realm** | wowlibre96/wow-libre-realm:latest | 8090      | Este cliente (reino/emulador) |
+| **nginx**           | nginx:alpine                      | 80, 443   | Reverso proxy y TLS           |
+| **mysql**           | mysql:8.0                         | 3307→3306 | Base de datos                 |
 
-Ambos servicios WoW Libre usan el mismo archivo **`.env`** en la raíz del proyecto. Define ahí las variables que exige el perfil `prod` de cada aplicación (ver sección [Variables de entorno](#variables-de-entorno)).
+Ambos servicios WoW Libre pueden usar el mismo archivo **`.env`**. Para **wow-libre-realm** (este proyecto) define **solo** las variables listadas en la sección [Variables de entorno](#variables-de-entorno) — son las únicas que lee `application.yml`. Para wow-libre-core usa las que documente ese otro proyecto.
 
 **`docker-compose.yml` de referencia:**
 
@@ -339,8 +339,8 @@ volumes:
 
 **Uso:**
 
-1. Crea un `.env` en la misma carpeta que el `docker-compose.yml` con las variables del perfil prod (para **wow-libre-realm** las listadas en este README; para **wow-libre-core** las que documente ese proyecto).
-2. Crea la carpeta `nginx` y tu configuración en `./nginx/` (por ejemplo `default.conf`) para que Nginx enrute a `wow-libre-realm` y/o `wow-libre-core`.
+1. Crea un `.env` en la misma carpeta que el `docker-compose.yml`. Para **wow-libre-realm** incluye **únicamente** las variables de la sección [Variables de entorno](#variables-de-entorno) (las del `application.yml`). Para **wow-libre-core** las que indique su documentación.
+2. Crea la carpeta `nginx` y tu configuración en `./nginx/` (por ejemplo `default.conf`). Abajo tienes un **ejemplo** que puedes copiar y adaptar.
 3. Si usas certificados Let's Encrypt, monta el volumen tal como está; si no, adapta o quita ese volumen.
 4. Ejecuta:
 
@@ -348,7 +348,58 @@ volumes:
 docker compose up -d
 ```
 
-**Nota:** El servicio **wow-libre-realm** corresponde a este repositorio (wow-libre-client). Las variables que debe recibir vía `.env` son las mismas que exige `application.yml` con perfil `prod`. `host.docker.internal:host-gateway` permite que el contenedor acceda al host (por ejemplo para conectar al SOAP del emulador si corre en la máquina host).
+**Ejemplo de configuración Nginx** (`./nginx/default.conf`):
+
+Sustituye `api.tu-dominio.com` por tu dominio y las rutas de los certificados SSL por las tuyas (o usa otro método para TLS). Este ejemplo enruta `/core/` al central y `/realm/` a este cliente (wow-libre-realm).
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name api.tu-dominio.com;
+
+    ssl_certificate /etc/letsencrypt/live/api.tu-dominio.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.tu-dominio.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Central WoW Libre (core)
+    location /core/ {
+        proxy_pass http://wow-libre-core:8091/core/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header transaction_id $http_transaction_id;
+        proxy_set_header Authorization $http_authorization;
+    }
+
+    # Cliente reino / emulador (este proyecto)
+    location /realm/ {
+        proxy_pass http://wow-libre-realm:8090/realm/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header transaction_id $http_transaction_id;
+        proxy_set_header Authorization $http_authorization;
+    }
+
+    # Health check
+    location / {
+        return 200 "API Gateway OK\n";
+        add_header Content-Type text/plain;
+    }
+}
+
+server {
+    listen 80;
+    server_name api.tu-dominio.com;
+    return 301 https://$host$request_uri;
+}
+```
+
+Si tu aplicación no usa el prefijo `/realm/`, puedes enrutar directamente por path (por ejemplo `location /api/` con `proxy_pass http://wow-libre-realm:8090/api/;`) o exponer el puerto 8090 sin Nginx en desarrollo.
+
+**Nota:** El servicio **wow-libre-realm** es este repositorio (wow-libre-client). En el `.env` solo deben estar las variables que aparecen en `application.yml` (ver tablas de Variables de entorno). `host.docker.internal:host-gateway` permite que el contenedor acceda al host (p. ej. para conectar al SOAP del emulador).
 
 ---
 
@@ -356,20 +407,20 @@ docker compose up -d
 
 Los controladores exponen una API REST bajo prefijos como `/api/...`. Resumen por recurso:
 
-| Recurso | Ruta base | Uso breve |
-|---------|-----------|-----------|
-| Cuentas | `/api/account` | Crear cuenta, cambiar contraseña, listar, obtener por ID |
-| Personajes | `/api/characters` | Listar, detalle, inventario, transferencia, teleport, stats |
-| Transacciones | `/api/transaction` | Compra, beneficios suscripción, promociones, gremio, máquina, deducir tokens |
-| Gremios | `/api/guilds` | Listar, detalle, adjuntar, miembros, editar |
-| Social | `/api/social` | Amigos, enviar dinero/nivel |
-| Profesiones | `/api/professions` | Listar, anuncios |
-| Premium | `/api/premium` | Estado y gestión por cuenta |
-| Dashboard | `/api/dashboard` | Stats, email, ban, configuración emulador, rutas |
-| Reinos | `/api/realmlist` | Lista de reinos |
-| Cliente | `/api/client` | Alta/baja de clientes (admin) |
-| Comandos | `/commands` | Ejecución de comandos (SOAP) |
-| Banco / correo | `/api/bank`, `/api/mails` | Pagos, correo de personaje |
+| Recurso        | Ruta base                 | Uso breve                                                                    |
+| -------------- | ------------------------- | ---------------------------------------------------------------------------- |
+| Cuentas        | `/api/account`            | Crear cuenta, cambiar contraseña, listar, obtener por ID                     |
+| Personajes     | `/api/characters`         | Listar, detalle, inventario, transferencia, teleport, stats                  |
+| Transacciones  | `/api/transaction`        | Compra, beneficios suscripción, promociones, gremio, máquina, deducir tokens |
+| Gremios        | `/api/guilds`             | Listar, detalle, adjuntar, miembros, editar                                  |
+| Social         | `/api/social`             | Amigos, enviar dinero/nivel                                                  |
+| Profesiones    | `/api/professions`        | Listar, anuncios                                                             |
+| Premium        | `/api/premium`            | Estado y gestión por cuenta                                                  |
+| Dashboard      | `/api/dashboard`          | Stats, email, ban, configuración emulador, rutas                             |
+| Reinos         | `/api/realmlist`          | Lista de reinos                                                              |
+| Cliente        | `/api/client`             | Alta/baja de clientes (admin)                                                |
+| Comandos       | `/commands`               | Ejecución de comandos (SOAP)                                                 |
+| Banco / correo | `/api/bank`, `/api/mails` | Pagos, correo de personaje                                                   |
 
 La documentación interactiva **Swagger/OpenAPI** (SpringDoc) suele estar disponible en:
 
