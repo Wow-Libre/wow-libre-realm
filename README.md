@@ -113,56 +113,45 @@ mysql --version
 
 ### Variables de entorno
 
-En **producción** (`--spring.profiles.active=prod`) se usan estas variables (nombres según `application.yml`):
+Las únicas variables que lee la aplicación son las definidas en `src/main/resources/application.yml`. En **producción** (`--spring.profiles.active=prod`) todas las que aparecen abajo son **obligatorias** (no tienen valor por defecto en el perfil prod).
 
-#### Base de datos (requerido)
+#### Perfil prod — Reino 1
 
-| Variable | Descripción |
-|----------|-------------|
-| `DB_WOW_CLIENT_HOST_AUTH` | URL JDBC de `acore_auth` |
-| `DB_WOW_CLIENT_HOST_CHARACTERS` | URL JDBC de `acore_characters` (reino 1) |
-| `DB_WOW_CLIENT_HOST_WORLD` | URL JDBC de `acore_world` (reino 1) |
-| `DB_WOW_CLIENT_USERNAME` | Usuario MySQL |
+| Variable | Uso en `application.yml` |
+|----------|---------------------------|
+| `DB_WOW_CLIENT_HOST_AUTH` | `spring.datasource.primary.url` (acore_auth) |
+| `DB_WOW_CLIENT_USERNAME` | Usuario MySQL (auth, characters, world) |
 | `DB_WOW_CLIENT_PASSWORD` | Contraseña MySQL |
+| `DB_WOW_CLIENT_HOST_CHARACTERS` | URL JDBC acore_characters (reino 1) |
+| `DB_WOW_CLIENT_HOST_WORLD` | URL JDBC acore_world (reino 1) |
+| `WOW_CLIENT_SERVER_PORT` | `server.port` |
+| `HOST_BASE_CORE` | `application.urls.core-base` |
+| `WOW_CLIENT_SOAP_URI` | SOAP reino 1 — URI |
+| `WOW_CLIENT_SOAP_GM_USERNAME` | SOAP reino 1 — usuario GM |
+| `WOW_CLIENT_SOAP_GM_PASSWORD` | SOAP reino 1 — contraseña GM |
+| `WOW_CLIENT_SECRET_JWT` | `application.security.jwt.secret-key` |
 
-Para un **segundo reino** (opcional):  
-`DB_WOW_CLIENT_HOST_CHARACTERS_REALM_2`, `DB_WOW_CLIENT_HOST_WORLD_REALM_2`,  
-`DB_WOW_CLIENT_USERNAME_REALM_2`, `DB_WOW_CLIENT_PASSWORD_REALM_2`.
+#### Perfil prod — Reino 2 (opcional)
 
-#### Servidor y red
+Si tienes el segundo reino configurado en el YAML, debes definir:
 
-| Variable | Descripción |
-|----------|-------------|
-| `WOW_CLIENT_SERVER_PORT` | Puerto HTTP de la app (ej. 8090) |
-| `HOST_BASE_CORE` | URL base del core/central WoW Libre (integraciones) |
+| Variable | Uso |
+|----------|-----|
+| `DB_WOW_CLIENT_HOST_CHARACTERS_REALM_2` | URL JDBC acore_characters reino 2 |
+| `DB_WOW_CLIENT_HOST_WORLD_REALM_2` | URL JDBC acore_world reino 2 |
+| `DB_WOW_CLIENT_USERNAME_REALM_2` | Usuario MySQL reino 2 |
+| `DB_WOW_CLIENT_PASSWORD_REALM_2` | Contraseña MySQL reino 2 |
+| `WOW_CLIENT_SOAP_URI_REALM_2` | URI SOAP reino 2 |
+| `WOW_CLIENT_SOAP_GM_USERNAME_REALM_2` | Usuario GM SOAP reino 2 |
+| `WOW_CLIENT_SOAP_GM_PASSWORD_REALM_2` | Contraseña GM SOAP reino 2 |
 
-#### SOAP (emulador)
+#### SOAP URI por defecto (común)
 
-| Variable | Descripción |
-|----------|-------------|
-| `SOAP_CLIENT_DEFAULT_URI` | URI del servicio SOAP (ej. `http://172.17.0.1:7878`) |
-| `WOW_CLIENT_SOAP_URI` | URI SOAP reino 1 |
-| `WOW_CLIENT_SOAP_GM_USERNAME` | Usuario GM para SOAP reino 1 |
-| `WOW_CLIENT_SOAP_GM_PASSWORD` | Contraseña GM reino 1 |
+| Variable | Uso |
+|----------|-----|
+| `SOAP_CLIENT_DEFAULT_URI` | `soap.client.default-uri`. En el bloque por defecto del YAML tiene valor por defecto `http://172.17.0.1:7878`; en el perfil prod se usa esta variable sin default, así que en prod debe estar definida. |
 
-Reino 2 (si aplica): `WOW_CLIENT_SOAP_URI_REALM_2`, `WOW_CLIENT_SOAP_GM_USERNAME_REALM_2`, `WOW_CLIENT_SOAP_GM_PASSWORD_REALM_2`.
-
-#### Seguridad
-
-| Variable | Descripción |
-|----------|-------------|
-| `WOW_CLIENT_SECRET_JWT` | Clave secreta para firmar/validar JWT (recomendado 256 bits en hex) |
-
-#### Integración con central WoW Libre (opcional)
-
-Si no usas la central, puedes dejar valores dummy. Para integración real:
-
-- `API_KEY_WOW_LIBRE`, `USERNAME_WOW_LIBRE`, `PASSWORD_WOW_LIBRE`  
-Más información: [www.wowlibre.com/integrations](https://www.wowlibre.com/integrations)
-
-#### Google (opcional)
-
-- `GOOGLE_API_SECRET`, `GOOGLE_API_KEY` — para funcionalidades que usen APIs de Google.
+No se usan en `application.yml` variables como `API_KEY_WOW_LIBRE`, `USERNAME_WOW_LIBRE`, `PASSWORD_WOW_LIBRE`, `GOOGLE_*`, `GM_USERNAME`, `GM_PASSWORD` ni `SERVER_WEB_NAME`. Si tu despliegue (p. ej. Docker) las define, es por otro motivo ajeno a este YAML.
 
 ---
 
@@ -263,13 +252,13 @@ java -jar target/wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=pr
 
 ### Docker
 
-El proyecto incluye `docker-compose.yml`. Configura las variables que usa el servicio `app` (por ejemplo en un `.env`) y levanta:
+El proyecto incluye `docker-compose.yml`. Para que la app arranque con perfil `prod` dentro del contenedor, configura las **mismas variables de entorno** que exige el perfil prod en `application.yml` (ver tabla de variables más arriba). Puedes exportarlas en el shell o definirlas en el bloque `environment` del servicio.
 
 ```bash
 docker compose up -d
 ```
 
-La aplicación se expone en el puerto definido (ej. 8090). Nginx puede actuar como reverso proxy (puertos 80/443).
+La aplicación se expone en el puerto definido (p. ej. 8090). Nginx puede actuar como reverso proxy (puertos 80/443).
 
 ---
 
