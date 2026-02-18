@@ -13,6 +13,7 @@ Cliente de conexión a **WoW Libre**: aplicación backend que integra tu servido
 - [Configuración](#configuración)
 - [Base de datos y scripts](#base-de-datos-y-scripts)
 - [Ejecución](#ejecución)
+  - [Docker Compose — solución completa](#docker-compose--solución-completa-guía)
 - [API principal](#api-principal)
 - [Comunidad](#comunidad)
 
@@ -252,13 +253,102 @@ java -jar target/wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=pr
 
 ### Docker
 
-El proyecto incluye `docker-compose.yml`. Para que la app arranque con perfil `prod` dentro del contenedor, configura las **mismas variables de entorno** que exige el perfil prod en `application.yml` (ver tabla de variables más arriba). Puedes exportarlas en el shell o definirlas en el bloque `environment` del servicio.
+El proyecto incluye `docker-compose.yml` para levantar solo este servicio. Para que la app arranque con perfil `prod`, configura las **mismas variables de entorno** que exige el perfil prod en `application.yml` (ver tabla de variables más arriba).
+
+### Docker Compose — solución completa (guía)
+
+A continuación, un **docker-compose de referencia** para desplegar toda la solución WoW Libre: core, realm (este cliente), Nginx y MySQL. Úsalo como guía y adapta imágenes, puertos y `.env` a tu entorno.
+
+**Servicios:**
+
+| Servicio | Imagen | Puerto | Descripción |
+|----------|--------|--------|-------------|
+| **wow-libre-core** | wowlibre96/wow-libre-core:latest | 8091 | API central WoW Libre |
+| **wow-libre-realm** | wowlibre96/wow-libre-realm:latest | 8090 | Este cliente (reino/emulador) |
+| **nginx** | nginx:alpine | 80, 443 | Reverso proxy y TLS |
+| **mysql** | mysql:8.0 | 3307→3306 | Base de datos |
+
+Ambos servicios WoW Libre usan el mismo archivo **`.env`** en la raíz del proyecto. Define ahí las variables que exige el perfil `prod` de cada aplicación (ver sección [Variables de entorno](#variables-de-entorno)).
+
+**`docker-compose.yml` de referencia:**
+
+```yaml
+services:
+  wow-libre-core:
+    image: wowlibre96/wow-libre-core:latest
+    ports:
+      - "8091:8091"
+    mem_limit: 868m
+    networks:
+      - app-network
+    env_file:
+      - ./.env
+
+  wow-libre-realm:
+    image: wowlibre96/wow-libre-realm:latest
+    ports:
+      - "8090:8090"
+    mem_limit: 768m
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ./.env
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    mem_limit: 528m
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - wow-libre-realm
+    networks:
+      - app-network
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    mem_limit: 1g
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: platform
+      MYSQL_USER: api_core
+      MYSQL_PASSWORD: Apicore1996@
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+```
+
+**Uso:**
+
+1. Crea un `.env` en la misma carpeta que el `docker-compose.yml` con las variables del perfil prod (para **wow-libre-realm** las listadas en este README; para **wow-libre-core** las que documente ese proyecto).
+2. Crea la carpeta `nginx` y tu configuración en `./nginx/` (por ejemplo `default.conf`) para que Nginx enrute a `wow-libre-realm` y/o `wow-libre-core`.
+3. Si usas certificados Let's Encrypt, monta el volumen tal como está; si no, adapta o quita ese volumen.
+4. Ejecuta:
 
 ```bash
 docker compose up -d
 ```
 
-La aplicación se expone en el puerto definido (p. ej. 8090). Nginx puede actuar como reverso proxy (puertos 80/443).
+**Nota:** El servicio **wow-libre-realm** corresponde a este repositorio (wow-libre-client). Las variables que debe recibir vía `.env` son las mismas que exige `application.yml` con perfil `prod`. `host.docker.internal:host-gateway` permite que el contenedor acceda al host (por ejemplo para conectar al SOAP del emulador si corre en la máquina host).
 
 ---
 
