@@ -6,6 +6,12 @@
 #define MyAppPublisher "Wow Libre"
 #define MyAppURL "https://github.com/ManuChitiva/wow-libre-client"
 #define JarName "wow-libre-client-0.0.1-SNAPSHOT.jar"
+#ifexist "icon.ico"
+#define HasIcon
+#endif
+#ifexist "IniciarRealm.exe"
+#define UseExeLauncher
+#endif
 
 [Setup]
 AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
@@ -21,7 +27,11 @@ DisableProgramGroupPage=yes
 LicenseFile=
 OutputDir=output
 OutputBaseFilename=WowLibreRealm-Setup-{#MyAppVersion}
-SetupIconFile=
+; Icono del instalador: coloca icon.ico en la carpeta installer (opcional).
+#ifdef HasIcon
+SetupIconFile=icon.ico
+UninstallDisplayIcon={app}\icon.ico
+#endif
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -39,15 +49,38 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "app\{#JarName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "IniciarRealm.bat"; DestDir: "{app}"; Flags: ignoreversion
+; Opcional: IniciarRealm.exe (launcher con icono). Si existe, se usara en los accesos directos.
+Source: "IniciarRealm.exe"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+; Icono: instalador y accesos directos (opcional).
+Source: "icon.ico"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Icons]
+#ifdef UseExeLauncher
+  #ifdef HasIcon
+Name: "{group}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.exe"; WorkingDir: "{app}"; IconFilename: "{app}\icon.ico"
+Name: "{autodesktop}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.exe"; WorkingDir: "{app}"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
+  #else
+Name: "{group}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.exe"; WorkingDir: "{app}"
+Name: "{autodesktop}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.exe"; WorkingDir: "{app}"; Tasks: desktopicon
+  #endif
+#else
+  #ifdef HasIcon
+Name: "{group}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.bat"; WorkingDir: "{app}"; IconFilename: "{app}\icon.ico"
+Name: "{autodesktop}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.bat"; WorkingDir: "{app}"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
+  #else
 Name: "{group}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.bat"; WorkingDir: "{app}"
+Name: "{autodesktop}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.bat"; WorkingDir: "{app}"; Tasks: desktopicon
+  #endif
+#endif
 Name: "{group}\Configurar variables (.env)"; Filename: "notepad.exe"; Parameters: "{app}\.env"; WorkingDir: "{app}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\Iniciar Wow Libre Realm"; Filename: "{app}\IniciarRealm.bat"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
+#ifdef UseExeLauncher
+Filename: "{app}\IniciarRealm.exe"; Description: "Iniciar Wow Libre Realm ahora"; Flags: postinstall nowait skipifsilent
+#else
 Filename: "{app}\IniciarRealm.bat"; Description: "Iniciar Wow Libre Realm ahora"; Flags: postinstall nowait skipifsilent
+#endif
 
 [Code]
 var

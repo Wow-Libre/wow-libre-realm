@@ -45,13 +45,55 @@ Al finalizar, en la carpeta de instalación quedan: el JAR, `.env` y `IniciarRea
 
 El script escribe por defecto: `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `SERVER_PORT`, `JWT_SECRET`, `REALM_BASE_URL` y opcionalmente `CORS_ORIGINS`. Si el core usa otros nombres (por ejemplo `SPRING_DATASOURCE_URL`), hay que modificar las llamadas a `EnvLine` en el `CurStepChanged` del script.
 
+## Icono del instalador y del launcher
+
+- **Icono del .exe del instalador y de los accesos directos:** coloca un archivo `icon.ico` en la carpeta `installer/` (junto al `.iss`). Al compilar, el instalador usará ese icono para:
+  - El propio `WowLibreRealm-Setup-0.0.1.exe`
+  - El desinstalador
+  - Los accesos directos "Iniciar Wow Libre Realm" (menú y escritorio)
+- Tamaño recomendado del .ico: **256×256** o **48×48** (Windows usa varias resoluciones). Puedes crear uno en [favicon.io](https://favicon.io/) o con GIMP/Photoshop y exportar como .ico.
+- Si no pones `icon.ico`, la compilación sigue funcionando y se usan los iconos por defecto de Windows.
+
+## Launcher como .exe con icono (recomendado para la experiencia visual)
+
+Por defecto el launcher es `IniciarRealm.bat`, que en la carpeta siempre se ve con el icono genérico de Windows. Si quieres un **.exe con tu icono** (en la carpeta, menú y escritorio):
+
+### Opción A: Launcher en Go (incluido en el repo)
+
+1. Instala **Go** (https://go.dev/dl/) si no lo tienes.
+2. En una terminal:
+   ```bash
+   cd installer/launcher
+   build.bat
+   ```
+3. Eso genera `installer/IniciarRealm.exe` con el icono de `installer/icon.ico` (o `launcher/icon.ico`). Coloca tu `icon.ico` en `installer/` antes de ejecutar `build.bat`.
+4. Vuelve a compilar el instalador en Inno Setup; usará el .exe en los accesos directos.
+
+Más detalles en `installer/launcher/README.md`.
+
+### Opción B: Herramienta externa (Bat to Exe)
+
+1. Usa [Bat to Exe Converter](https://www.f2ko.de/en/b2e.php) u otra similar.
+2. Convierte `IniciarRealm.bat` a .exe, asigna tu `icon.ico` y guarda como `IniciarRealm.exe` en `installer/`.
+3. Vuelve a compilar el instalador.
+
+El .bat se sigue instalando siempre; cuando existe `IniciarRealm.exe`, el menú y el escritorio usan el .exe (con icono).
+
 ## Estructura esperada antes de compilar
 
 ```
 installer/
 ├── WowLibreRealm.iss
 ├── WowLibreCore.iss
+├── IniciarRealm.bat
 ├── README.md
+├── icon.ico              ← opcional: icono del instalador y accesos directos
+├── IniciarRealm.exe      ← opcional: generado con launcher/build.bat (con icono)
+├── launcher/             ← código Go para generar IniciarRealm.exe
+│   ├── main.go
+│   ├── go.mod
+│   ├── build.bat
+│   └── README.md
 ├── app/
 │   └── wow-libre-client-0.0.1-SNAPSHOT.jar   ← copiar desde target/
 ├── app-core/
