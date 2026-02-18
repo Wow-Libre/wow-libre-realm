@@ -1,94 +1,188 @@
-# World of Warcraft Community Wow Libre
+# Wow Libre Client
 
-<br>
+Cliente de conexión a **WoW Libre**: aplicación backend que integra tu servidor de World of Warcraft (AzerothCore/TrinityCore) con la central WoW Libre para cuentas, personajes, transacciones, recompensas y gestión de reinos.
 
-## ¡Bienvenido a WowLibre!
+---
 
-![Imagen de WhatsApp 2025-02-18 a las 14 05 02_722e5195](https://github.com/user-attachments/assets/2830afc3-a607-45cc-914e-f5e1ef1bd593)
+## Contenido
 
-¿Qué es WowLibre?
-WowLibre es una comunidad dedicada al mundo de World of Warcraft, con el objetivo de ofrecer experiencias de juego innovadoras que mejoren la interacción entre jugadores y administradores. Nuestro propósito es contribuir al crecimiento de la comunidad a través del desarrollo de herramientas útiles que faciliten tanto la gestión de servidores como la experiencia de juego en sí.
+- [¿Qué es Wow Libre?](#qué-es-wow-libre)
+- [Stack técnico](#stack-técnico)
+- [Arquitectura del proyecto](#arquitectura-del-proyecto)
+- [Requisitos](#requisitos)
+- [Configuración](#configuración)
+- [Base de datos y scripts](#base-de-datos-y-scripts)
+- [Ejecución](#ejecución)
+- [API principal](#api-principal)
+- [Comunidad](#comunidad)
 
-Aunque no somos expertos en emuladores, buscamos aportar desde nuestra experiencia y conocimiento en el desarrollo de aplicaciones web y móviles. Queremos crear soluciones que permitan a los administradores de servidores gestionar sus proyectos de manera más sencilla, y a la vez, mejorar la experiencia de juego para toda la comunidad.
+---
 
-Es por esto que hemos creado esta aplicación web con Spring Boot, diseñada para transformar la manera en que los jugadores interactúan con World of Warcraft. ¡Nuestro proyecto es de código abierto y está en constante evolución, siempre enfocado en ofrecer nuevas herramientas que potencien tu experiencia en el juego!
-<br>
-<br>
-<br>
+## ¿Qué es Wow Libre?
 
-# ¡Requisitos!
+**Wow Libre** es una comunidad centrada en World of Warcraft. Este repositorio es el **cliente backend** que:
 
-- Debes tener instalado JDK de java 17 o superior
+- Se conecta a las bases de datos del emulador (AzerothCore: `acore_auth`, `acore_characters`, `acore_world`).
+- Habla con el core del juego vía **SOAP** (envío de comandos GM, ítems, oro, nivel, etc.).
+- Gestiona **transacciones** (compras, suscripciones, promociones, máquina de recompensas).
+- Expone una **API REST** para que la central WoW Libre o un frontend consuman personajes, cuentas, gremios, premium, dashboard, etc.
 
-  - Guía: [Instalación de Java](https://www.youtube.com/watch?v=TRsCMJrKglw)
-  - Descargar : [Java 17](https://www.oracle.com/co/java/technologies/downloads/#java17)
+Es código abierto y está pensado para que administradores y desarrolladores integren su servidor con la central o lo usen como base para su propia plataforma.
 
-  ```sh
-   java --version
-  ```
+---
 
-  - ![image](https://github.com/user-attachments/assets/c0dd8669-ca59-4929-a45b-3ee879f9682f)
+## Stack técnico
 
-## Instalación de Maven en Windows
+| Tecnología        | Uso                                      |
+|-------------------|------------------------------------------|
+| **Java 17**       | Lenguaje                                 |
+| **Spring Boot 3.5** | Web, Security, JPA, Validación         |
+| **Spring WS**     | Cliente SOAP (AzerothCore / TrinityCore) |
+| **MySQL**         | Persistencia (auth, characters, world)   |
+| **JWT (JJWT)**    | Autenticación API                        |
+| **SpringDoc OpenAPI** | Documentación Swagger/OpenAPI      |
+| **Lombok**        | Reducción de boilerplate                 |
+| **Jacoco**        | Cobertura de tests                       |
 
-1. Descarga Maven desde el sitio oficial:
+---
 
-   - [Apache Maven](https://maven.apache.org/download.cgi)  
-     ![image](https://github.com/user-attachments/assets/46306253-45da-40ad-80bb-556f6c004362)
+## Arquitectura del proyecto
 
-2. Extrae el archivo en una ubicación de tu elección (ejemplo: `C:\Program Files\Apache\Maven`)
-   ![image](https://github.com/user-attachments/assets/31019dcc-def1-4ded-a5ea-13c6f38052c3)
+El código sigue un estilo **hexagonal (puertos y adaptadores)**:
 
-3. Configura las variables de entorno:
-
-   - Añade Maven a la variable `Path`  
-     ![image](https://github.com/user-attachments/assets/861cb9c4-4806-4fbd-9774-a9f74236d9c9)
-
-4. Verifica la instalación ejecutando en un CMD o powershell:
-   ```sh
-   mvn -version
-   ```
-   ![image](https://github.com/user-attachments/assets/ec779e69-cf71-4226-883c-021550269937)
-
-## Mysql
-
-Es necesario contar con MySQL instalado y configurado correctamente.
-
-🔹 Descargar MySQL:
-
-- Sitio oficial: MySQL [Community Downloads](https://dev.mysql.com/downloads/workbench/)
-- Guía de instalación: [Cómo instalar MySQL](https://www.youtube.com/watch?v=EmQZt6o6-78)
-
-🔹 Verificar instalación:
-
-Después de instalar MySQL, asegúrate de que el servicio esté en ejecución con el siguiente comando:
-
-```sh
-  mysql --version
+```
+com.auth.wow.libre
+├── domain/                    # Núcleo: modelos, DTOs, enums, constantes
+│   ├── model/                 # Entidades de dominio, DTOs, enums
+│   ├── ports/
+│   │   ├── in/                # Puertos de entrada (casos de uso)
+│   │   │   ├── account, characters, transaction, guild, premium, dashboard, ...
+│   │   └── out/               # Puertos de salida (repositorios, clientes externos)
+│   ├── strategy/              # Estrategias por emulador (LK, War Within, etc.)
+│   └── context/               # Contexto de petición (reino, etc.)
+├── application/               # Capa de aplicación (servicios)
+│   └── services/              # CharactersService, TransactionService, AccountService, ...
+├── infrastructure/            # Adaptadores e implementaciones
+│   ├── controller/            # REST (Account, Characters, Transaction, Guild, etc.)
+│   ├── client/                # SOAP (AzerothCore, TrinityCore), WowLibre HTTP
+│   ├── conf/                  # Configuración, datasources, realm, JWT
+│   ├── repositories/         # JPA (auth, characters, realmlist, premium)
+│   ├── entities/              # JPA entities (auth, characters, world)
+│   ├── security/              # Spring Security, filtros JWT
+│   ├── filter/                # Filtros (JWT, Realm)
+│   └── schedule/              # Tareas programadas (transacciones, stats)
 ```
 
-El emulador AzerothCore utiliza las siguientes bases de datos en MySQL, y la aplicación web está diseñada para integrarse con este emulador:
+- **Dominio**: sin dependencias de framework; define qué hace la aplicación.
+- **Application**: orquesta casos de uso usando los puertos.
+- **Infrastructure**: implementa REST, SOAP, BD y seguridad.
 
-- acore_auth → Gestiona las cuentas de usuario y autenticación.
-- acore_characters → Almacena la información de los personajes.
-- acore_world → Contiene todos los datos del mundo, como NPCs, objetos y misiones.
+Se soportan **múltiples reinos** (multi-tenant por realm) con datasources y clientes SOAP por reino.
 
-Es fundamental que estas bases de datos estén correctamente configuradas para garantizar el correcto funcionamiento tanto del emulador como de la aplicación web. 🚀
+---
 
-![image](https://github.com/user-attachments/assets/17c4ec24-0e68-406c-ac2b-abc8bd3521a9)
+## Requisitos
 
-## Ejecución de Scripts
+- **JDK 17+**
+- **Maven 3.6+**
+- **MySQL 8** (bases del emulador: `acore_auth`, `acore_characters`, `acore_world`)
+- Emulador **AzerothCore** (o compatible) con **SOAP** habilitado (puerto 7878 por defecto)
 
-Para ejecutar los scripts necesarios para el proyecto.
+Guías rápidas:
+
+- [Instalación de Java](https://www.youtube.com/watch?v=TRsCMJrKglw) · [Descargar Java 17](https://www.oracle.com/co/java/technologies/downloads/#java17)
+- [Apache Maven](https://maven.apache.org/download.cgi)
+- [MySQL / Workbench](https://dev.mysql.com/downloads/workbench/) · [Instalar MySQL](https://www.youtube.com/watch?v=EmQZt6o6-78)
+
+Comprobación:
+
+```bash
+java --version
+mvn -version
+mysql --version
+```
+
+---
+
+## Configuración
+
+### Perfiles
+
+- **`local`**: desarrollo local (BD y SOAP en localhost; ver `application.yml`).
+- **`prod`**: producción; toda la configuración sale de variables de entorno.
+
+### Variables de entorno
+
+En **producción** (`--spring.profiles.active=prod`) se usan estas variables (nombres según `application.yml`):
+
+#### Base de datos (requerido)
+
+| Variable | Descripción |
+|----------|-------------|
+| `DB_WOW_CLIENT_HOST_AUTH` | URL JDBC de `acore_auth` |
+| `DB_WOW_CLIENT_HOST_CHARACTERS` | URL JDBC de `acore_characters` (reino 1) |
+| `DB_WOW_CLIENT_HOST_WORLD` | URL JDBC de `acore_world` (reino 1) |
+| `DB_WOW_CLIENT_USERNAME` | Usuario MySQL |
+| `DB_WOW_CLIENT_PASSWORD` | Contraseña MySQL |
+
+Para un **segundo reino** (opcional):  
+`DB_WOW_CLIENT_HOST_CHARACTERS_REALM_2`, `DB_WOW_CLIENT_HOST_WORLD_REALM_2`,  
+`DB_WOW_CLIENT_USERNAME_REALM_2`, `DB_WOW_CLIENT_PASSWORD_REALM_2`.
+
+#### Servidor y red
+
+| Variable | Descripción |
+|----------|-------------|
+| `WOW_CLIENT_SERVER_PORT` | Puerto HTTP de la app (ej. 8090) |
+| `HOST_BASE_CORE` | URL base del core/central WoW Libre (integraciones) |
+
+#### SOAP (emulador)
+
+| Variable | Descripción |
+|----------|-------------|
+| `SOAP_CLIENT_DEFAULT_URI` | URI del servicio SOAP (ej. `http://172.17.0.1:7878`) |
+| `WOW_CLIENT_SOAP_URI` | URI SOAP reino 1 |
+| `WOW_CLIENT_SOAP_GM_USERNAME` | Usuario GM para SOAP reino 1 |
+| `WOW_CLIENT_SOAP_GM_PASSWORD` | Contraseña GM reino 1 |
+
+Reino 2 (si aplica): `WOW_CLIENT_SOAP_URI_REALM_2`, `WOW_CLIENT_SOAP_GM_USERNAME_REALM_2`, `WOW_CLIENT_SOAP_GM_PASSWORD_REALM_2`.
+
+#### Seguridad
+
+| Variable | Descripción |
+|----------|-------------|
+| `WOW_CLIENT_SECRET_JWT` | Clave secreta para firmar/validar JWT (recomendado 256 bits en hex) |
+
+#### Integración con central WoW Libre (opcional)
+
+Si no usas la central, puedes dejar valores dummy. Para integración real:
+
+- `API_KEY_WOW_LIBRE`, `USERNAME_WOW_LIBRE`, `PASSWORD_WOW_LIBRE`  
+Más información: [www.wowlibre.com/integrations](https://www.wowlibre.com/integrations)
+
+#### Google (opcional)
+
+- `GOOGLE_API_SECRET`, `GOOGLE_API_KEY` — para funcionalidades que usen APIs de Google.
+
+---
+
+## Base de datos y scripts
+
+El emulador usa tres bases:
+
+- **acore_auth** — cuentas y autenticación.
+- **acore_characters** — personajes, inventario, transacciones de personaje, gremios.
+- **acore_world** — mundo (ítems, NPCs, misiones, etc.).
+
+Scripts necesarios para este cliente (ejecutar en el orden que tenga sentido para tu esquema):
 
 ```sql
+-- acore_auth: enlace cuenta ↔ usuario de la app
 ALTER TABLE acore_auth.account
    ADD COLUMN user_id bigint;
-```
 
-```sql
-CREATE TABLE acore_auth.client
-(
+-- acore_auth: clientes de la aplicación (admin, integraciones)
+CREATE TABLE acore_auth.client (
     id              bigint AUTO_INCREMENT NOT NULL,
     username        varchar(50)           NOT NULL,
     password        text                  NOT NULL,
@@ -100,18 +194,15 @@ CREATE TABLE acore_auth.client
     PRIMARY KEY (id),
     CONSTRAINT client_username_uq UNIQUE (username)
 );
-```
 
-```sql
+-- acore_characters: gremios (campos extra)
 ALTER TABLE acore_characters.guild
     ADD COLUMN public_access boolean,
     ADD COLUMN discord       text,
     ADD COLUMN multi_faction boolean;
-```
 
-```sql
-CREATE TABLE acore_characters.character_transaction
-(
+-- acore_characters: historial de transacciones por personaje
+CREATE TABLE acore_characters.character_transaction (
     id               bigint auto_increment NOT NULL,
     character_id     bigint                NOT NULL,
     account_id       bigint                NOT NULL,
@@ -128,11 +219,9 @@ CREATE TABLE acore_characters.character_transaction
     PRIMARY KEY (id),
     CONSTRAINT character_transaction_reference_uq UNIQUE (reference)
 );
-```
 
-```sql
-CREATE TABLE acore_auth.server_publications
-(
+-- acore_auth: publicaciones del servidor (opcional)
+CREATE TABLE acore_auth.server_publications (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     img         text NOT NULL,
     title       VARCHAR(80)  NOT NULL,
@@ -140,125 +229,80 @@ CREATE TABLE acore_auth.server_publications
 );
 ```
 
-## Variables de entorno
+Ajusta tipos (`date`/`datetime`) y nombres de columnas si tu esquema del emulador ya tiene cambios.
 
-Para el correcto funcionamiento del sistema, es necesario configurar las siguientes variables de entorno:
+---
 
-- **Opcionales:** Las siguientes variables de entorno están marcadas como opcionales, lo que significa que deben ser creadas y definidas, pero su valor puede ser cualquier atributo.
-  Estas variables permiten la integración con la central de WoW Libre. Si no deseas o no estás interesado en conectarte con WoW Libre, puedes asignarles cualquier valor sin afectar el funcionamiento interno del sistema. ✅
+## Ejecución
 
-  Encuentra mas informacion de las variables de integracion en www.wowlibre.com/integrations
+### Clonar y compilar
 
-  - Ejemplo
-    - ![image](https://github.com/user-attachments/assets/a14a1af0-4b60-4d35-8ddd-617716edc31f)
-
-- **Requeridas:** Las siguientes variables de entorno son obligatorias para la correcta configuración y funcionamiento del sistema web. Sin ellas, el sistema no podrá iniciarse correctamente. Asegúrate de definirlas con los valores adecuados antes de ejecutar la aplicación.
-
-### 1. Configuración de la Base de Datos (Requerido)❤️
-
-Estas variables permiten la conexión con la base de datos.
-
-- **DB_WOW_LIBRE_USERNAME** → Nombre de usuario para acceder a la base de datos.
-- **DB_WOW_LIBRE_PASSWORD** → Contraseña asociada al usuario de la base de datos.
-
-### 2. Credenciales de Administración (Opcional)
-
-Credenciales utilizadas para acceder a la interfaz de administración del sistema.
-
-Asignar una cuenta de Game Master (GM) a la aplicación web permitirá el envío de ítems dentro del sistema. Esto es necesario, ya que la cuenta debe tener los permisos adecuados para ejecutar el comando:
-
-```code
-.send items
+```bash
+git clone https://github.com/ManuChitiva/wow-libre-client.git
+cd wow-libre-client
+mvn clean install
 ```
 
-- **GM_USERNAME** → Nombre de usuario del administrador.
-- **GM_PASSWORD** → Contraseña del administrador.
+### Perfil local (desarrollo)
 
-### 3. Autenticación y API del Sistema (Opcional)
+En `src/main/resources/application.yml` el perfil `local` ya define URLs de BD y SOAP. Solo asegura que MySQL y el emulador estén levantados y que las credenciales coincidan.
 
-Claves necesarias para la integración con la API del sistema central WowLibre
+```bash
+java -jar target/wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
+```
 
-- API_KEY_WOW_LIBRE → Clave de acceso a la API del sistema.
-- **USERNAME_WOW_LIBRE** → Usuario de www.wowlibre.com para la autenticación en la API.
-- **PASSWORD_WOW_LIBRE** → Contraseña de www.wowlibre.com para la autenticación en la API.
+Por defecto la app queda en **http://localhost:8090**.
 
-### 4. Seguridad y Servicios Externos (Requerido)
+### Perfil producción
 
-Variables utilizadas para la seguridad y servicios de terceros.
+Configura las variables de entorno necesarias (ver tabla anterior) y ejecuta:
 
-- **SECRET_JWT** → Clave secreta para la generación y validación de tokens JWT. (Ejemplo A3F1E4B2D0A728C9F54D8B32C7A59A7D0B9A8F94D1F6C762E7DA56231988C158) Genera tu propio SECRET
-- **GOOGLE_API_SECRET** → Clave secreta para integraciones con los servicios de Google.
-- **GOOGLE_API_KEY** → Clave de API para el uso de servicios de Google.
+```bash
+java -jar target/wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+```
 
-### 5. Configuración del Servidor Web (Requerido)❤️
+### Docker
 
-Define el nombre del servidor web en el entorno de ejecución.
+El proyecto incluye `docker-compose.yml`. Configura las variables que usa el servicio `app` (por ejemplo en un `.env`) y levanta:
 
-- **SERVER_WEB_NAME** → Nombre personalizado del servidor web.
-- 📌 Nota: Asegúrate de configurar estas variables en el entorno adecuado para garantizar el correcto funcionamiento del sistema. 🚀
+```bash
+docker compose up -d
+```
 
-## Cómo Iniciar la Aplicación
+La aplicación se expone en el puerto definido (ej. 8090). Nginx puede actuar como reverso proxy (puertos 80/443).
 
-### Compilar aplicacion
+---
 
-- Descargar repositorio
+## API principal
 
-  ```sh
-  git clone https://github.com/ManuChitiva/wow-libre-client.git
-  ```
+Los controladores exponen una API REST bajo prefijos como `/api/...`. Resumen por recurso:
 
-- Compilar proyecto - Maven
+| Recurso | Ruta base | Uso breve |
+|---------|-----------|-----------|
+| Cuentas | `/api/account` | Crear cuenta, cambiar contraseña, listar, obtener por ID |
+| Personajes | `/api/characters` | Listar, detalle, inventario, transferencia, teleport, stats |
+| Transacciones | `/api/transaction` | Compra, beneficios suscripción, promociones, gremio, máquina, deducir tokens |
+| Gremios | `/api/guilds` | Listar, detalle, adjuntar, miembros, editar |
+| Social | `/api/social` | Amigos, enviar dinero/nivel |
+| Profesiones | `/api/professions` | Listar, anuncios |
+| Premium | `/api/premium` | Estado y gestión por cuenta |
+| Dashboard | `/api/dashboard` | Stats, email, ban, configuración emulador, rutas |
+| Reinos | `/api/realmlist` | Lista de reinos |
+| Cliente | `/api/client` | Alta/baja de clientes (admin) |
+| Comandos | `/commands` | Ejecución de comandos (SOAP) |
+| Banco / correo | `/api/bank`, `/api/mails` | Pagos, correo de personaje |
 
-  Ingresar a la carpeta donde clono el repositorio:
+La documentación interactiva **Swagger/OpenAPI** (SpringDoc) suele estar disponible en:
 
-  Ejemplo C:\Users\usuario\Documents\worskpace\wow-libre-client Ejecutar un powershell
-  ![image](https://github.com/user-attachments/assets/6a75b140-13fc-4ee4-8036-24d3fe60ca28)
+- **http://localhost:8090/swagger-ui.html** (o la ruta configurada en tu perfil).
 
-  Ejecutar en el powershell
+La autenticación suele ser por **JWT** en header o cookie según la configuración de seguridad.
 
-  ```sh
-  mvn install
-  ```
+---
 
-  ![image](https://github.com/user-attachments/assets/3ec5ec88-1fab-4d75-b0dd-c5019f070cad)
-  ![image](https://github.com/user-attachments/assets/209a2eb6-6ebd-483c-9325-3cc274108943)
+## Comunidad
 
-  Al compilar el proyecto se debio generar una carpeta llamada "target"
-
-  ![image](https://github.com/user-attachments/assets/f90eddef-8c12-4e88-9164-42eed97ebbbb)
-
-  Dentro de "target" debes tener un .jar como muestra la imagen, esta es nuestra App compilada.
-
-  ![image](https://github.com/user-attachments/assets/421e62d7-385c-4015-b7ee-55d080668ec0)
-
-  En el mismo CMD o Powershell vamos a ejecutar.
-
-  ```sh
-  java -jar wow-libre-client-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
-  ```
-
-  ![image](https://github.com/user-attachments/assets/4aba2c1b-5b69-4efe-9592-5df606e8a088)
-
-  Si la ejecusion fue un exito deberias poder ver que la aplicacion web se esta ejecutando en http://localhost:8090/
-
-  ![image](https://github.com/user-attachments/assets/e0a4760a-aaad-4a81-9bf3-a1a68f281e8b)
-
-## 🌟 APP EJECUTANDOSE CON EXITO 🌟
-
-http://localhost:8090/
-
-![image](https://github.com/user-attachments/assets/5c2f3089-cbca-4e40-9f81-4ff25d2fe9c5)
-![image](https://github.com/user-attachments/assets/a24a8d39-623e-4483-a1be-8a40a8bafafc)
-
-## 🌟 Únete a Nuestra Comunidad 🌟
-
-![fgasdasd](https://github.com/user-attachments/assets/6a4dd599-86ec-4e16-ace0-a9b9f7bdd510)
-
-¡Sumérgete en el universo de World of Warcraft como nunca antes! Síguenos en nuestras redes sociales y sé parte de una comunidad apasionada, donde compartimos la emoción, las aventuras y los secretos del juego que nos une.
-
-Conéctate con otros jugadores, recibe las últimas novedades, y disfruta de contenido exclusivo que te llevará al siguiente nivel. ¡No te pierdas nada!
-
-📲 Síguenos y forma parte de algo épico:
+Wow Libre es un proyecto comunitario. Puedes seguirnos y participar aquí:
 
 [![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/WowLibre/)
 [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@WowLibre)
@@ -266,3 +310,6 @@ Conéctate con otros jugadores, recibe las últimas novedades, y disfruta de con
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://chat.whatsapp.com/BDELJKhuJkWIMKxF8ExIdN)
 [![TikTok](https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white)](https://www.tiktok.com/@wowlibre?_t=8ootaqKLQKj&_r=1)
 
+---
+
+**Nota:** Las credenciales GM (`WOW_CLIENT_SOAP_GM_USERNAME` / `WOW_CLIENT_SOAP_GM_PASSWORD`) deben corresponder a una cuenta con permisos para ejecutar comandos en el emulador (por ejemplo `.send items`). Sin SOAP correctamente configurado, las funcionalidades que envían ítems, oro o nivel no funcionarán.
