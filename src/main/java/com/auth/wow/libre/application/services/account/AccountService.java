@@ -61,8 +61,8 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public Boolean isOnline(Long accountId, String transactionId) {
-        return obtainAccountPort.findById(accountId).map(AccountEntity::isOnline).orElse(null);
+    public boolean isOnline(Long accountId, String transactionId) {
+        return Boolean.TRUE.equals(obtainAccountPort.findById(accountId).map(AccountEntity::isOnline).orElse(null));
     }
 
     @Override

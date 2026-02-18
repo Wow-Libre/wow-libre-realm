@@ -8,17 +8,17 @@ import org.springframework.stereotype.*;
 public class ConfigRandomSerial {
 
 
-    @Bean("recover-password")
+    @Bean("recoverPassword")
     public RandomString configRandomStringSessionId() {
         return new RandomString(5, "abcdefghijklmnopqrstuvwxyz0123456789");
     }
 
-    @Bean("random-string")
+    @Bean("randomString")
     public RandomString configRandomStringReset() {
         return new RandomString(15, "abcdefghijklmnopqrstuvwxyz0123456789");
     }
 
-    @Bean("random-username")
+    @Bean("randomUsername")
     public RandomString configRandomUsernameReset() {
         return new RandomString(5, "abcdefghijklmnopqrstuvwxyz");
     }

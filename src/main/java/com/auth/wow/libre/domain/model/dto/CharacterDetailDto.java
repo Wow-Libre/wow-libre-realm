@@ -6,26 +6,26 @@ import lombok.*;
 
 @Getter
 public class CharacterDetailDto {
-    public Long id;
-    public String name;
+    public final Long id;
+    public final String name;
     @JsonProperty("race_id")
-    public Integer raceId;
-    public String raceLogo;
-    public String race;
+    public final Integer raceId;
+    public final String raceLogo;
+    public final String race;
     @JsonProperty("class")
-    public String classCharacters;
+    public final String classCharacters;
     @JsonProperty("class_id")
-    public Integer classId;
-    public String classLogo;
-    public Integer gender;
-    public Integer level;
-    public Integer xp;
-    public Double money;
-    public Integer logoutTime;
-    public Integer totalTime;
-    public Integer dream;
-    public Integer hunger;
-    public Integer thirst;
+    public final Integer classId;
+    public final String classLogo;
+    public final Integer gender;
+    public final Integer level;
+    public final Integer xp;
+    public final Double money;
+    public final Integer logoutTime;
+    public final Integer totalTime;
+    public final Integer dream;
+    public final Integer hunger;
+    public final Integer thirst;
 
 
     public CharacterDetailDto(CharacterModel character) {

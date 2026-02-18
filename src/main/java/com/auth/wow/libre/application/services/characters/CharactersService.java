@@ -19,12 +19,14 @@ import org.springframework.stereotype.*;
 import org.springframework.ws.client.*;
 import org.springframework.ws.soap.client.*;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 @Service
 public class CharactersService implements CharactersPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(CharactersService.class);
 
+    private final SecureRandom secureRandom = new SecureRandom();
     private final ObtainCharacters obtainCharacters;
     private final SaveCharacters saveCharacters;
     private final CharacterInventoryPort characterInventoryPort;
@@ -280,7 +282,6 @@ public class CharactersService implements CharactersPort {
 
     private boolean sendFeedingReward(CharactersEntity character, Consumables consumable, String emulator,
                                       String transactionId) {
-        Random random = new Random();
         String consumableName = getConsumableName(consumable);
         String characterName = character.getName();
 
@@ -288,16 +289,12 @@ public class CharactersService implements CharactersPort {
 
         RewardInfo reward;
 
-        // Sistema más aleatorio con influencia moderada del bienestar
-        // El wellBeingScore (0-300) da un pequeño bonus: hasta 12% de mejora en
-        // probabilidades
-        // Esto hace que el bienestar ayude pero no domine el sistema
         double wellBeingBonus = Math.min(wellBeingScore / 25.0, 12.0); // Máximo 12% de bonus
 
-        // Múltiples valores aleatorios para mayor variabilidad
-        double randomValue1 = random.nextDouble() * 100;
-        double randomValue2 = random.nextDouble() * 100;
-        double randomValue3 = random.nextDouble() * 100;
+        // Múltiples valores aleatorios para mayor variabilidad (SecureRandom para evitar predicción de recompensas)
+        double randomValue1 = secureRandom.nextDouble() * 100.0;
+        double randomValue2 = secureRandom.nextDouble() * 100.0;
+        double randomValue3 = secureRandom.nextDouble() * 100.0;
 
         // Promedio de los valores aleatorios para más impredecibilidad
         double baseRandom = (randomValue1 + randomValue2 + randomValue3) / 3.0;
@@ -306,9 +303,11 @@ public class CharactersService implements CharactersPort {
         double adjustedValue = baseRandom - wellBeingBonus;
 
         // Rangos dinámicos más aleatorios (varían ligeramente cada vez)
-        double epicThreshold = 3.0 + random.nextDouble() * 4.0; // 3-7%
-        double rareImprovedThreshold = epicThreshold + 10.0 + random.nextDouble() * 8.0; // Variable
-        double rareThreshold = rareImprovedThreshold + 20.0 + random.nextDouble() * 15.0; // Variable
+        double epicThreshold = 3.0 + secureRandom.nextDouble() * 4.0; // 3-7%
+        double rareImprovedThreshold = epicThreshold + 10.0 + secureRandom.nextDouble() * 8.0; //
+        // Variable
+        double rareThreshold = rareImprovedThreshold + 20.0 + secureRandom.nextDouble() * 15.0; //
+        // Variable
 
         if (adjustedValue < epicThreshold) {
             // Premio Épico - burning-blossom
@@ -369,7 +368,7 @@ public class CharactersService implements CharactersPort {
                 double bonusChance = Math.min(wellBeingScore / 60.0, 5.0);
                 double randomItemChance = 30.0 + bonusChance;
 
-                if (random.nextDouble() * 100 < randomItemChance) {
+                if (secureRandom.nextDouble() * 100.0 < randomItemChance) {
                     ItemTemplateEntity item = randomItem.get();
                     String bonusMessage = String.format(
                             "¡BONUS ALEATORIO %s! ¡Has recibido un item sorpresa adicional: %s! " +
@@ -379,9 +378,6 @@ public class CharactersService implements CharactersPort {
 
                     executeCommandsPort.execute(CommandsCore.sendItem(character.getName(),
                             "¡Item Aleatorio Bonus!", bonusMessage, item.getEntry(), 1), emulatorCore, transactionId);
-                    LOGGER.info("[CharactersService] [sendFeedingReward] Random bonus item sent to character {} - " +
-                                    "Item: {} (Entry: {}) - Chance: {}%", character.getName(),
-                            item.getName(), item.getEntry(), String.format("%.1f", randomItemChance));
                 }
             }
             return true;
@@ -483,8 +479,7 @@ public class CharactersService implements CharactersPort {
     }
 
     private void multiplicatorXP(CharactersEntity character, String emulator) {
-        Random random = new Random();
-        int multiplier = random.nextInt(4) + 1; // 1..4
+        int multiplier = secureRandom.nextInt(4) + 1; // 1..4
         int xpGain = 500 * multiplier;
         character.setXp(character.getXp() + xpGain);
 
@@ -493,20 +488,16 @@ public class CharactersService implements CharactersPort {
         int maxLevel = 80;
 
         if (currentLevel < maxLevel) {
-            // Probabilidad base 5%, con variación aleatoria de hasta 2% adicional
-            double levelUpChance = 5.0 + random.nextDouble() * 2.0; // 5-7%
+            double levelUpChance = 5.0 + secureRandom.nextDouble() * 2.0; // 5-7%
 
-            if (random.nextDouble() * 100 < levelUpChance) {
+            if (secureRandom.nextDouble() * 100.0 < levelUpChance) {
                 int newLevel = currentLevel + 1;
                 character.setLevel(newLevel);
-                character.setXp(0); // Resetear XP al subir nivel
+                character.setXp(0);
 
                 try {
                     executeCommandsPort.execute(CommandsCore.sendLevel(character.getName(), newLevel),
                             EmulatorCore.getByName(emulator), "");
-                    LOGGER.info("[CharactersService] [multiplicatorXP] Character {} leveled up from {} to {} - " +
-                                    "Chance was: {}%", character.getName(), currentLevel, newLevel,
-                            String.format("%.1f", levelUpChance));
                 } catch (Exception e) {
                     LOGGER.error("[CharactersService] [multiplicatorXP] Failed to level up character {} - " +
                             "Error: {}", character.getName(), e.getMessage(), e);

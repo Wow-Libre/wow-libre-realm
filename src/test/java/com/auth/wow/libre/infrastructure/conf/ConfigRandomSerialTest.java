@@ -13,9 +13,9 @@ class ConfigRandomSerialTest {
     @Test
     void testConfigRandomStringBeans() {
         Object[][] testCases = {
-                {"recover-password", 5},
-                {"random-string", 15},
-                {"random-username", 5}
+                {"recoverPassword", 5},
+                {"randomString", 15},
+                {"randomUsername", 5}
         };
 
         for (Object[] testCase : testCases) {

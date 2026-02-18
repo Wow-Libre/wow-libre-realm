@@ -102,7 +102,7 @@ public class DashboardService implements DashboardPort {
                 dto.setWorldServer(getLinuxProcessPath("worldserver"));
                 dto.setAuthServer(getLinuxProcessPath("authserver"));
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             LOGGER.error("Error retrieving process paths [{}] transactionId [{}]", e.getMessage(),
                     transactionId);
         }
