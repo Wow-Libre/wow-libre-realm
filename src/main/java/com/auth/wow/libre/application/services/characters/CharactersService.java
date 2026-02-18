@@ -31,6 +31,7 @@ public class CharactersService implements CharactersPort {
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainAccountPort obtainAccountPort;
     private final ObtainItemTemplate obtainItemTemplate;
+    private final Random random = new Random();
 
     public CharactersService(ObtainCharacters obtainCharacters, SaveCharacters saveCharacters,
                              CharacterInventoryPort characterInventoryPort, ExecuteCommandsPort executeCommandsPort,
@@ -280,7 +281,6 @@ public class CharactersService implements CharactersPort {
 
     private boolean sendFeedingReward(CharactersEntity character, Consumables consumable, String emulator,
                                       String transactionId) {
-        Random random = new Random();
         String consumableName = getConsumableName(consumable);
         String characterName = character.getName();
 
@@ -288,10 +288,6 @@ public class CharactersService implements CharactersPort {
 
         RewardInfo reward;
 
-        // Sistema más aleatorio con influencia moderada del bienestar
-        // El wellBeingScore (0-300) da un pequeño bonus: hasta 12% de mejora en
-        // probabilidades
-        // Esto hace que el bienestar ayude pero no domine el sistema
         double wellBeingBonus = Math.min(wellBeingScore / 25.0, 12.0); // Máximo 12% de bonus
 
         // Múltiples valores aleatorios para mayor variabilidad
@@ -480,7 +476,6 @@ public class CharactersService implements CharactersPort {
     }
 
     private void multiplicatorXP(CharactersEntity character, String emulator) {
-        Random random = new Random();
         int multiplier = random.nextInt(4) + 1; // 1..4
         int xpGain = 500 * multiplier;
         character.setXp(character.getXp() + xpGain);

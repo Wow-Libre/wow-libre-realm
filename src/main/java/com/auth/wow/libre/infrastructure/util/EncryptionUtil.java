@@ -10,13 +10,15 @@ public class EncryptionUtil {
     private static final String ALGORITHM = "AES/GCM/NoPadding";
     private static final int TAG_LENGTH_BIT = 128;
     private static final int IV_LENGTH_BYTE = 12;
+    // Reutilizar una única instancia de SecureRandom para todos los métodos estáticos
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     // Cifrar el mensaje con AES-GCM
     public static String encrypt(String message, SecretKey secretKey) throws Exception {
         // Generar un IV (vector de inicialización) aleatorio
         byte[] iv = new byte[IV_LENGTH_BYTE];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(iv);
+        // Reutilizar la instancia estática para generar bytes aleatorios
+        RANDOM.nextBytes(iv);
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(TAG_LENGTH_BIT, iv); // Configurar GCM

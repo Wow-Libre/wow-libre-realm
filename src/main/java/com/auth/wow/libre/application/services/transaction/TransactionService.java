@@ -36,6 +36,7 @@ public class TransactionService implements TransactionPort {
     private final ExecuteCommandsPort executeCommandsPort;
     private final ObtainItemTemplate obtainItemTemplate;
     private final AccountPort accountPort;
+    private final Random random = new Random();
 
     public TransactionService(CharactersPort charactersPort, CharacterTransactionPort characterTransactionPort,
                               ExecuteCommandsPort executeCommandsPort, ObtainItemTemplate obtainItemTemplate,
@@ -201,7 +202,6 @@ public class TransactionService implements TransactionPort {
 
         List<CharacterDetailDto> characters = characterDetailDto.getCharacters();
 
-        Random random = new Random();
         String command;
 
         ItemQuantityDto itemQuantityDto = new ItemQuantityDto();
