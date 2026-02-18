@@ -19,7 +19,7 @@ public class CharacterTransactionService implements CharacterTransactionPort {
 
     public CharacterTransactionService(ObtainCharacterTransaction obtainCharacterTransaction,
                                        SaveCharacterTransaction saveCharacterTransaction,
-                                       @Qualifier("random-string") RandomString randomString) {
+                                       @Qualifier("randomString") RandomString randomString) {
         this.obtainCharacterTransaction = obtainCharacterTransaction;
         this.saveCharacterTransaction = saveCharacterTransaction;
         this.randomString = randomString;

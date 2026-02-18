@@ -9,7 +9,7 @@ public interface AccountPort {
 
     Long countOnline(String transactionId);
 
-    Boolean isOnline(Long accountId, String transactionId);
+    boolean isOnline(Long accountId, String transactionId);
 
     AccountDetailDto account(Long accountId, String transactionId);
 

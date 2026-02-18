@@ -7,7 +7,6 @@ import com.auth.wow.libre.infrastructure.entities.auth.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 @Service
 public class RealmlistService implements RealmlistPort {
@@ -24,7 +23,7 @@ public class RealmlistService implements RealmlistPort {
                         data.getId(),
                         data.getName()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -34,7 +33,7 @@ public class RealmlistService implements RealmlistPort {
                         data.getId(),
                         data.getName()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -44,7 +43,7 @@ public class RealmlistService implements RealmlistPort {
                         data.getId(),
                         data.getName()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

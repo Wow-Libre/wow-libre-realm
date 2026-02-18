@@ -3,8 +3,8 @@ package com.auth.wow.libre.domain.model;
 import com.auth.wow.libre.domain.model.dto.*;
 
 public class CharacterSocialDetail extends CharacterDetailDto {
-    public String flags;
-    public String note;
+    public final String flags;
+    public final String note;
 
     public CharacterSocialDetail(CharacterDetailDto character, CharacterSocial characterSocial) {
         super(character);

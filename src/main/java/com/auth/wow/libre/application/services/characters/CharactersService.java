@@ -379,9 +379,6 @@ public class CharactersService implements CharactersPort {
 
                     executeCommandsPort.execute(CommandsCore.sendItem(character.getName(),
                             "¡Item Aleatorio Bonus!", bonusMessage, item.getEntry(), 1), emulatorCore, transactionId);
-                    LOGGER.info("[CharactersService] [sendFeedingReward] Random bonus item sent to character {} - " +
-                                    "Item: {} (Entry: {}) - Chance: {}%", character.getName(),
-                            item.getName(), item.getEntry(), String.format("%.1f", randomItemChance));
                 }
             }
             return true;
@@ -493,20 +490,16 @@ public class CharactersService implements CharactersPort {
         int maxLevel = 80;
 
         if (currentLevel < maxLevel) {
-            // Probabilidad base 5%, con variación aleatoria de hasta 2% adicional
             double levelUpChance = 5.0 + random.nextDouble() * 2.0; // 5-7%
 
             if (random.nextDouble() * 100 < levelUpChance) {
                 int newLevel = currentLevel + 1;
                 character.setLevel(newLevel);
-                character.setXp(0); // Resetear XP al subir nivel
+                character.setXp(0);
 
                 try {
                     executeCommandsPort.execute(CommandsCore.sendLevel(character.getName(), newLevel),
                             EmulatorCore.getByName(emulator), "");
-                    LOGGER.info("[CharactersService] [multiplicatorXP] Character {} leveled up from {} to {} - " +
-                                    "Chance was: {}%", character.getName(), currentLevel, newLevel,
-                            String.format("%.1f", levelUpChance));
                 } catch (Exception e) {
                     LOGGER.error("[CharactersService] [multiplicatorXP] Failed to level up character {} - " +
                             "Error: {}", character.getName(), e.getMessage(), e);

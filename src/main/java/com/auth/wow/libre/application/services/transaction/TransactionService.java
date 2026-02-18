@@ -89,10 +89,11 @@ public class TransactionService implements TransactionPort {
                             transactionId);
                     try {
                         executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
-                    } catch (JAXBException ignored) {
+                    } catch (JAXBException e) {
+                        LOGGER.error("[TransactionService] [sendItems] It was not possible to send the items, " +
+                                "something has failed in the execution of the core " +
+                                "azeroth/trinity {} id {}", e.getLocalizedMessage(), transactionId);
                     }
-
-
                 }
         );
 
@@ -125,8 +126,8 @@ public class TransactionService implements TransactionPort {
         try {
             executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
         } catch (JAXBException e) {
-            LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
-                    "                    \"the execution of the core azeroth/trinity {}", transactionId);
+            LOGGER.error("[TransactionService] [sendSubscriptionBenefits] It was not possible to claim the premium " +
+                    "benefit, something has failed in the execution of the core azeroth/trinity {}", transactionId);
             throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
                     "the execution of the core azeroth/trinity", transactionId);
         }
@@ -157,8 +158,8 @@ public class TransactionService implements TransactionPort {
         try {
             executeCommandsPort.execute(command, EmulatorCore.getByName(emulator), transactionId);
         } catch (JAXBException e) {
-            LOGGER.error("It was not possible to claim the premium benefit, something has failed in \" +\n" +
-                    "                    \"the execution of the core azeroth/trinity {}", transactionId);
+            LOGGER.error("[TransactionService] [sendPromotion] It was not possible to claim the premium benefit, " +
+                    "something has failed in the execution of the core azeroth/trinity {}", transactionId);
             throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
                     "the execution of the core azeroth/trinity", transactionId);
         }
@@ -180,8 +181,8 @@ public class TransactionService implements TransactionPort {
             executeCommandsPort.execute(CommandsCore.sendItems(characterName, "", "", items),
                     EmulatorCore.getByName(emulator), transactionId);
         } catch (JAXBException e) {
-            LOGGER.error("sendBenefitsGuild It was not possible to claim the premium benefit, something has failed in" +
-                    "the execution of the core azeroth/trinity {}", transactionId);
+            LOGGER.error("[TransactionService] [sendBenefitsGuild]  It was not possible to claim the premium benefit," +
+                    " something has failed in the execution of the core azeroth/trinity {}", transactionId);
             throw new InternalException("It was not possible to claim the premium benefit, something has failed in " +
                     "the execution of the core azeroth/trinity", transactionId);
         }
@@ -265,11 +266,11 @@ public class TransactionService implements TransactionPort {
 
         for (CharacterDetailDto character : characters) {
             try {
-                // Reemplaza el nombre del personaje en el comando generado
                 String personalizedCommand = command.replaceFirst("null", character.name);
                 executeCommandsPort.execute(personalizedCommand, EmulatorCore.getByName(emulator), transactionId);
             } catch (Exception e) {
-                LOGGER.error("It was not possible to send the coin slot winner's prize {}", transactionId);
+                LOGGER.error("[sendMachine] It was not possible to send the coin slot winner's prize {}",
+                        transactionId);
                 return new MachineClaimDto(false);
             }
         }

@@ -5,6 +5,10 @@ import javax.crypto.spec.*;
 import java.security.*;
 
 public class KeyDerivationUtil {
+
+    private KeyDerivationUtil() {
+    }
+
     // Derivar una clave usando PBKDF2
     public static SecretKey deriveKeyFromPassword(String password, byte[] salt) throws Exception {
         PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);

@@ -18,6 +18,9 @@ public class Constants {
     public static final String PARAM_ACCOUNT_ID = "account_id";
 
     public static class Errors {
+        private Errors() {
+        }
+
         public static final String CONSTANT_GENERIC_ERROR_MESSAGE = "An unexpected error has occurred and it was not " +
                 "possible to authenticate to the system, please try again later";
         public static final String CONSTANT_ERROR_NOT_POSSIBLE_OBTAIN_CHARACTER = "It was not possible to obtain the " +
