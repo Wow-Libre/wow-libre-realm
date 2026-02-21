@@ -19,7 +19,7 @@ import org.springframework.stereotype.*;
 import org.springframework.ws.client.*;
 import org.springframework.ws.soap.client.*;
 
-import java.security.SecureRandom;
+import java.security.*;
 import java.util.*;
 
 @Service
@@ -313,7 +313,7 @@ public class CharactersService implements CharactersPort {
             // Premio Épico - burning-blossom
             reward = new RewardInfo(
                     23247L,
-                    3,
+                    20,
                     "¡Premio Épico por Alimentarte!",
                     String.format("¡FELICIDADES %s! ¡Has obtenido un PREMIO ÉPICO! " +
                                     "Tu dedicación a mantenerte saludable ha sido recompensada con un premio especial" +
@@ -324,7 +324,7 @@ public class CharactersService implements CharactersPort {
             // Premio Raro Mejorado - EMBLEMA DE ESCARCHA
             reward = new RewardInfo(
                     49426L,
-                    1,
+                    10,
                     "¡Premio Raro Mejorado!",
                     String.format("¡Excelente %s! Has recibido un premio raro mejorado por mantenerte bien alimentado" +
                                     ". " +
@@ -335,7 +335,7 @@ public class CharactersService implements CharactersPort {
             // Premio Raro - INSIGNIA DE LA JUSTICIA
             reward = new RewardInfo(
                     29434L,
-                    2,
+                    5,
                     "¡Premio Raro!",
                     String.format("¡Bien hecho %s! Por cuidar tu %s, recibes un premio raro. " +
                                     "¡Sigue alimentándote regularmente para obtener mejores recompensas!",
@@ -344,7 +344,7 @@ public class CharactersService implements CharactersPort {
             // Premio Normal - EMBLEMA DE TRIUNFO
             reward = new RewardInfo(
                     47241L,
-                    2,
+                    5,
                     "¡Premio por Alimentarte!",
                     String.format("¡Bien %s! Por mantenerte bien alimentado, recibes un premio. " +
                                     "¡Sigue cuidando tu %s para obtener premios raros y épicos!",
