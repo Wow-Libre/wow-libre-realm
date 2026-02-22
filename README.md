@@ -320,8 +320,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: platform
-      MYSQL_USER: api_core
-      MYSQL_PASSWORD: Apicore1996@
+      MYSQL_USER: tuUser
+      MYSQL_PASSWORD: tuclave
     ports:
       - "3307:3306"
     volumes:
